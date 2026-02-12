@@ -11,6 +11,11 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
+const kompanija_module_1 = require("./resources/kompanija/kompanija.module");
+const korisnik_module_1 = require("./resources/korisnik/korisnik.module");
+const iteracija_projekta_module_1 = require("./resources/iteracija-projekta/iteracija-projekta.module");
+const korisnik_iteracija_module_1 = require("./resources/korisnik-iteracija/korisnik-iteracija.module");
+const kompanija_iteracija_module_1 = require("./resources/kompanija-iteracija/kompanija-iteracija.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -25,7 +30,12 @@ exports.AppModule = AppModule = __decorate([
                 database: 'napredni_rmt_baza',
                 autoLoadEntities: true,
                 synchronize: true,
-            })],
+            }),
+            kompanija_module_1.KompanijaModule,
+            korisnik_module_1.KorisnikModule,
+            iteracija_projekta_module_1.IteracijaProjektaModule,
+            korisnik_iteracija_module_1.KorisnikIteracijaModule,
+            kompanija_iteracija_module_1.KompanijaIteracijaModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
