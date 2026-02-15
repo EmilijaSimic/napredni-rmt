@@ -1,0 +1,31 @@
+:host{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.wrapper{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+
+  :hover{
+    border: 1px solid var(--primary);
+  }
+}
+
+.logo-wrapper{
+  background-color:var(--accent-20) ;
+  padding: 48px;
+  border-radius: 8px;
+  width: 350px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+  img{
+    object-fit: contain;
+    border: none !important;
+  }
+}

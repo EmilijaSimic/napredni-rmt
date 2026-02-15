@@ -1,0 +1,109 @@
+.home-layout {
+  display: flex;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 40px;
+    font-weight: 400;
+  }
+}
+
+.add-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 300;
+  color: var(--black);
+  background-color: var(--primary);
+  cursor: pointer;
+}
+
+.ucenik-table {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border-collapse: separate;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: white;
+  border-spacing: 0;
+
+  th {
+    padding: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    background-color: #f9fafb;
+    text-align: left;
+  }
+
+  td {
+    padding: 12px;
+    border-top: 1px solid #e5e7eb;
+    color: #374151;
+  }
+
+  tr:hover {
+    background-color: #f9fafb;
+  }
+}
+
+.details-btn {
+  padding: 6px 14px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: white;
+  background-color: #2f7cff;
+  cursor: pointer;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(104vh - 40px);
+  padding: 24px;
+  flex: 1;
+}
+
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.pagination {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 8px 0;
+  background: white;
+  gap: 6px;
+
+  button {
+    min-width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    background-color: #f3f4f6;
+    cursor: pointer;
+  }
+
+  button.active {
+    color: white;
+    background-color: #2f7cff;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

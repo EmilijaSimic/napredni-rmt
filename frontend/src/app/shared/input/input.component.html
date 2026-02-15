@@ -1,0 +1,33 @@
+<mat-form-field
+  color="primary"
+  appearance="outline"
+  [hideRequiredMarker]="true"
+  [class.has-label]="!!label"
+  [class.field-readonly]="!!readonly"
+  [class.field-disabled]="!!disabled">
+
+  @if (label) {
+    <label>{{label}}</label>
+  }
+
+  <!-- TODO: handle validation errors -->
+  <input
+    #mainInput
+    matInput
+    [name]="name"
+    [(ngModel)]="value"
+    (ngModelChange)="writeValue($event)"
+    [value]="value"
+    [type]="type"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    [required]="required"
+    [pattern]="pattern"
+    [maxlength]="maxlength"
+    [placeholder]="placeholder"
+    (focus)="focus.emit($event)"
+    (blur)="blur.emit($event)"
+    (keyup.enter)="enterHit.emit()"
+    (ngModelChange)="updateChanges()"
+    #inputModel="ngModel" />
+</mat-form-field>

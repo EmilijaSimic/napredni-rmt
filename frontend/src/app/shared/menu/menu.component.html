@@ -1,0 +1,49 @@
+<div class="square-menu">
+  <div class="logo-title">
+    <img src="assets/images/fonis.png" alt="Logo" class="logo">
+    <a [routerLink]="['/home']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"></a>
+  </div>
+
+  <div class="menu-links">
+<div class="menu-group">
+  <a [routerLink]="['/finansijski']" routerLinkActive="active">
+    <img src="assets/images/finansijski-icon.png" alt="icon" class="icon">
+    Finansijski partneri
+  </a>
+  <div class="submenu">
+    <div class="sub-link-container">
+      <a [routerLink]="['/finansijski/svi']" routerLinkActive="sub-active" class="sub-link">Svi partneri</a>
+    </div>
+    <div class="sub-link-container">
+      <a [routerLink]="['/finansijski/potvrdjene']" routerLinkActive="sub-active" class="sub-link">Potvrđene saradnje</a>
+    </div>
+    <div class="sub-link-container">
+      <a [routerLink]="['/finansijski/odbijene']" routerLinkActive="sub-active" class="sub-link">Odbijene saradnje</a>
+    </div>
+  </div>
+</div>
+
+<div class="menu-group">
+  <a [routerLink]="['/robni-partneri']" routerLinkActive="active">
+    <img src="assets/images/robni-icon.png" alt="icon" class="icon">
+    Robni partneri
+  </a>
+  <div class="submenu">
+    <div class="sub-link-container">
+      <a [routerLink]="['/svi-partneri-robni']" routerLinkActive="sub-active" class="sub-link">Svi partneri</a>
+    </div>
+    <div class="sub-link-container">
+      <a [routerLink]="['/potvrdjeni-robni']" routerLinkActive="sub-active" class="sub-link">Potvrđene saradnje</a>
+    </div>
+    <div class="sub-link-container">
+      <a [routerLink]="['/odbijeni-robni']" routerLinkActive="sub-active" class="sub-link">Odbijene saradnje</a>
+    </div>
+  </div>
+</div>
+
+    <a [routerLink]="['/odbijeni-robni']" routerLinkActive="active">
+      <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+      Promo materijali
+    </a>
+  </div>
+</div>

@@ -11,7 +11,9 @@ describe('IteracijaProjektaController', () => {
       providers: [IteracijaProjektaService],
     }).compile();
 
-    controller = module.get<IteracijaProjektaController>(IteracijaProjektaController);
+    controller = module.get<IteracijaProjektaController>(
+      IteracijaProjektaController,
+    );
   });
 
   it('should be defined', () => {

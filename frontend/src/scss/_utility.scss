@@ -1,0 +1,11 @@
+@import "animate.css";
+
+.fade-in-up {
+  animation: fadeInUp;
+  animation-duration: 0.3s;
+}
+
+.fade-out-up {
+  animation: fadeOutDown;
+  animation-duration: 0.3s;
+}

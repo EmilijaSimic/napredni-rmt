@@ -1,0 +1,38 @@
+<div class="home-layout">
+  <la-menu></la-menu>
+
+  <div class="content">
+    <div class="header">
+      <h2>Robni partneri</h2>
+      <button class="add-btn" (click)="openRobniModal(null)">
+        Dodaj robni partner +
+      </button>
+    </div>
+
+    <div class="table-wrapper" *ngIf="robni.length > 0">
+      <table class="ucenik-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Naziv</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of robni">
+            <td>{{ r.ID }}</td>
+            <td>{{ r.naziv }}</td>
+            <td>
+              <button class="details-btn" (click)="openRobniModal(r)">
+                Detaljnije
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p *ngIf="robni.length === 0">
+      Nema robnih partnera za prikaz.
+    </p>
+  </div>
+</div>

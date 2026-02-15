@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { IteracijaProjektaService } from './iteracija-projekta.service';
 import { CreateIteracijaProjektaDto } from './dto/create-iteracija-projekta.dto';
 import { UpdateIteracijaProjektaDto } from './dto/update-iteracija-projekta.dto';
 
 @Controller('iteracija-projekta')
 export class IteracijaProjektaController {
-  constructor(private readonly iteracijaProjektaService: IteracijaProjektaService) {}
+  constructor(
+    private readonly iteracijaProjektaService: IteracijaProjektaService,
+  ) {}
 
   @Post()
   create(@Body() createIteracijaProjektaDto: CreateIteracijaProjektaDto) {
@@ -23,8 +33,14 @@ export class IteracijaProjektaController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIteracijaProjektaDto: UpdateIteracijaProjektaDto) {
-    return this.iteracijaProjektaService.update(+id, updateIteracijaProjektaDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateIteracijaProjektaDto: UpdateIteracijaProjektaDto,
+  ) {
+    return this.iteracijaProjektaService.update(
+      +id,
+      updateIteracijaProjektaDto,
+    );
   }
 
   @Delete(':id')

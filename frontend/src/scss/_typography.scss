@@ -1,0 +1,71 @@
+@use "variables" as variables;
+
+body {
+  font-family: "Satoshi", serif;
+  font-size: 18px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--white);
+}
+
+h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 45px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+h3 {
+  font-size: 1.1;
+  line-height: 20px;
+}
+
+li {
+  outline: none;
+  list-style: none;
+}
+
+p {
+  color: var(--white);
+}
+
+a {
+  color: var(--white);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:active,
+  &:focus,
+  &:hover {
+    color: var(--alt);
+  }
+
+  &.white {
+    color: var(--alt);
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: var(--alt);
+    }
+  }
+
+  &:visited {
+    text-decoration: none;
+  }
+}
+
+h4 {
+  font-size: 24px;
+}

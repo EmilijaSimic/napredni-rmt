@@ -1,43 +1,60 @@
 {
-  "name": "frontend",
+  "name": "Partnerko",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve -o --port 4304",
+    "start:staging": "ng serve -o --port 4304 --configuration=staging --host",
+    "build": "ng build --configuration=production",
+    "build:staging": "ng build --configuration=staging",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
-  },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
-    ]
+    "test": "ng test",
+    "lint": "ng lint && npx stylelint \"**/*.scss\""
   },
   "private": true,
-  "packageManager": "npm@11.1.0",
   "dependencies": {
-    "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/router": "^21.1.0",
+    "@angular/animations": "^19.0.0",
+    "@angular/cdk": "^19.1.1",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.0",
+    "@angular/material": "^19.1.1",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
+    "@angular/router": "^19.0.0",
+    "@colsen1991/ngx-translate-extract-marker": "^3.0.1",
+    "@ngx-translate/core": "^16.0.3",
+    "@ngx-translate/http-loader": "^16.0.0",
+    "animate.css": "^4.1.1",
+    "ladda": "^2.0.3",
+    "ngx-extended-pdf-viewer": "^25.6.0-alpha.3",
+    "pdfjs-dist": "^5.4.296",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.1.3",
-    "@angular/cli": "^21.1.3",
-    "@angular/compiler-cli": "^21.1.0",
-    "jsdom": "^27.1.0",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "@angular-devkit/build-angular": "^19.0.2",
+    "@angular-eslint/eslint-plugin": "18.4.2",
+    "@angular-eslint/eslint-plugin-template": "18.4.2",
+    "@angular-eslint/schematics": "18.4.2",
+    "@angular-eslint/template-parser": "18.4.2",
+    "@angular/cli": "^19.0.2",
+    "@angular/compiler-cli": "^19.0.0",
+    "@types/jasmine": "~5.1.0",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
+    "eslint": "8.57.0",
+    "jasmine-core": "~5.4.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "stylelint": "^14.16.1",
+    "stylelint-config-standard-scss": "^3.0.0",
+    "stylelint-order": "^5.0.0",
+    "typescript": "~5.6.2"
   }
 }

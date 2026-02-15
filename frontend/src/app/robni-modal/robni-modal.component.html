@@ -1,0 +1,26 @@
+<div class="mat-header">
+  <h3 mat-dialog-title>
+    {{ data.isNew ? 'Dodaj robni partner' : 'Izmeni robni partner' }}
+  </h3>
+  <button mat-dialog-close class="close-modal">X</button>
+</div>
+
+<mat-dialog-content>
+  <form>
+    <la-input
+      label="Naziv"
+      [(ngModel)]="robni.naziv"
+      name="naziv">
+    </la-input>
+
+    <div *ngIf="errorMessages.length" class="messages-wrapper">
+      <div *ngFor="let err of errorMessages">{{ err }}</div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <la-button (buttonClick)="saveChanges()" [isLoading]="saving">
+    Sačuvaj
+  </la-button>
+</mat-dialog-actions>

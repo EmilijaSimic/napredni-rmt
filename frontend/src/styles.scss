@@ -1,1 +1,45 @@
-/* You can add global styles to this file, and also import other style files */
+/* stylelint-disable max-nesting-depth */
+/* stylelint-disable no-duplicate-selectors */
+
+@use "./scss/mixins";
+
+@use "./scss/_fonts.scss";
+
+@use "./scss/_material-restyling.scss";
+
+@use "./scss/_modals.scss";
+
+@use "./scss/_theme.scss";
+
+@use "./scss/_typography.scss";
+
+@use "./scss/_variables.scss";
+
+@use "./scss/_utility.scss";
+
+body {
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+[role="button"] {
+  cursor: pointer;
+  user-select: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

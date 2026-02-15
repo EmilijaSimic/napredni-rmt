@@ -1,0 +1,127 @@
+@mixin scrollbar($autohide: true, $small: false) {
+  overflow: scroll;
+  scrollbar-color: var(--alt) transparent;
+  scrollbar-width: thin;
+
+  @supports (-moz-appearance:none) {
+    scrollbar-color: var(--alt) var(--alt);
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: if($small, var(--alt), var(--alt));
+  }
+
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    border-radius: if($small, 25px, 50px);
+    background-color: if($autohide, transparent, var(--alt));
+
+    @if $small {
+      background-color: if($autohide, transparent, var(--alt));
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: if($small, 4px, 8px);
+    height: if($small, 4px, 8px);
+  }
+}
+
+$m-phone: "only screen and (max-width: 600px)";
+$phone: "only screen and (max-width: 767px)";
+$tablet: "only screen and (max-width: 1024px)";
+$s-tablet: "only screen and (max-width: 860px)";
+$laptop: "only screen and (max-width: 1279px)";
+
+.divider {
+  margin: 16px 0;
+}
+
+mat-dialog-actions {
+  fon-button {
+    margin-right: 12px;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}
+
+// mat-radio-group,
+// .checkbox-wrapper, {
+//   width: 100%;
+
+//   mat-checkbox {
+//     margin-bottom: 8px;
+
+//     &:last-of-type {
+//       margin-bottom: 0;
+//     }
+//   }
+// }
+
+.checkbox-wrapper {
+  height: 40px;
+}
+
+.action-buttons-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  fon-button,
+  fon-button-small {
+    margin-right: 12px;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .form-field {
+    margin-bottom: 16px;
+  }
+}
+
+.mat-header {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px 48px 16px 5px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+
+  &:hover {
+    color: #ff4d4f;
+    transform: scale(1.1);
+  }
+
+  la-icon {
+    display: block;
+    color: #555555;
+  }
+}
+
+mat-dialog-content {
+  padding: 16px 24px;
+}

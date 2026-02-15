@@ -1,0 +1,36 @@
+{
+  "label": {
+    "Država": "Država",
+    "Opština": "Opština",
+    "Grad": "Grad",
+    "JMBG": "JMBG",
+    "Ime": "Ime",
+    "Prezime": "Prezime",
+    "ImeRoditelja": "Ime roditelja",
+    "BrojLicneKarte": "Broj lične karte",
+    "BrojTelefona": "Broj telefona",
+    "OsetljivaGrupa": "Osetljiva grupa",
+    "AdresaId": "Adresa ID"
+  },
+  "placeholders": {
+    "Izaberite državu": "Izaberite državu",
+    "Izaberite opštinu": "Izaberite opštinu",
+    "Izaberite grad": "Izaberite grad",
+    "Unesite JMBG": "Unesite JMBG",
+    "Unesite ime": "Unesite ime",
+    "Unesite prezime": "Unesite prezime",
+    "Unesite ime roditelja": "Unesite ime roditelja",
+    "Unesite broj lične karte": "Unesite broj lične karte",
+    "Unesite broj telefona": "Unesite broj telefona",
+    "Unesite osetljivu grupu": "Unesite osetljivu grupu",
+    "Unesite adresu": "Unesite adresu",
+    "errorCode": "JmbgAlreadyExists",
+  "message": "Učenik sa ovim JMBG već postoji."
+  },
+  "forms": {
+    "validationErrors": {
+      "required": "{{ propertyName }} je obavezno"
+    }
+  },
+  "errors": {}
+}
