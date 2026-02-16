@@ -8,18 +8,18 @@ export class KorisnikController {
   constructor(private readonly korisnikService: KorisnikService) {}
 
   @Post()
-  create(@Body() createKorisnikDto: CreateKorisnikDto) {
-    return this.korisnikService.create(createKorisnikDto);
+  async create(@Body() createKorisnikDto: CreateKorisnikDto) {
+    return await this.korisnikService.create(createKorisnikDto);
   }
 
-  @Get()
-  findAll() {
-    return this.korisnikService.findAll();
+  @Get(':idProjekta')
+  async findAll(@Param('idProjekta') idProjekta: string) {
+    return await this.korisnikService.findAll(+idProjekta);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.korisnikService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.korisnikService.findOne(+id);
   }
 
   @Patch(':id')
@@ -28,7 +28,7 @@ export class KorisnikController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.korisnikService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.korisnikService.remove(+id);
   }
 }

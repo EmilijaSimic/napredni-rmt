@@ -2,7 +2,7 @@ import { TipPartnera } from "src/enums/tip-partnera";
 import { IteracijaProjekta } from "src/resources/iteracija-projekta/entities/iteracija-projekta.entity";
 import { Kompanija } from "src/resources/kompanija/entities/kompanija.entity";
 import { Korisnik } from "src/resources/korisnik/entities/korisnik.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class KompanijaIteracija {
