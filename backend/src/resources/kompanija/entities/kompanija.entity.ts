@@ -1,4 +1,6 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { KompanijaIteracija } from "src/resources/kompanija-iteracija/entities/kompanija-iteracija.entity";
+import { KorisnikIteracija } from "src/resources/korisnik-iteracija/entities/korisnik-iteracija.entity";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Kompanija {
@@ -14,4 +16,7 @@ export class Kompanija {
 
     @Column()
     kontakt:string;
+
+    @OneToMany(() => KompanijaIteracija, ki => ki.kompanija)
+    kompanijaIteracije: KompanijaIteracija[];
 }

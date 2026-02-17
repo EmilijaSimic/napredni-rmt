@@ -18,10 +18,10 @@ export class KorisnikService {
     return await this.korisnikRepository.save(korisnik);
   }
 
-  async findAll(idProjekta: number) {
+  async findAllByProject(idProjekta: number) {
     return await this.korisnikRepository.find({
-      relations: {ki: true},
-      where: {ki: {iteracija_id: idProjekta},
+      relations: {korisnikIteracije: true},
+      where: {korisnikIteracije: {iteracija_id: idProjekta},
       },},
   );
   }

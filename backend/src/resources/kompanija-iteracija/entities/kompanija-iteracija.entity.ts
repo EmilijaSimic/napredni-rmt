@@ -10,14 +10,14 @@ export class KompanijaIteracija {
     @PrimaryColumn()
     kompanija_id: number;
 
-    @OneToOne(() => Kompanija)
+    @ManyToOne(() => Kompanija, kompanija => kompanija.kompanijaIteracije)
     @JoinColumn({ name: 'kompanija_id' })
     kompanija: Kompanija;
 
     @PrimaryColumn()
     iteracija_id: number;
 
-    @OneToOne(() => IteracijaProjekta)
+    @ManyToOne(() => IteracijaProjekta, iteracija => iteracija.kompanijaIteracije)
     @JoinColumn({ name: 'iteracija_id' })
     iteracija:IteracijaProjekta;
 
@@ -33,7 +33,7 @@ export class KompanijaIteracija {
     @Column({ type: 'date' })
     datum_poziv: Date;
 
-    @Column({ type: 'date' })
+    @Column()
     odobrena:boolean;
 
     @ManyToOne(() => Korisnik, korisnik => korisnik.ki)

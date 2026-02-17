@@ -1,6 +1,6 @@
 import { IteracijaProjekta } from "src/resources/iteracija-projekta/entities/iteracija-projekta.entity";
 import { Korisnik } from "src/resources/korisnik/entities/korisnik.entity";
-import { Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class KorisnikIteracija {
@@ -8,14 +8,15 @@ export class KorisnikIteracija {
     @PrimaryColumn()
     korisnik_id:number;
 
-    @OneToOne(() => Korisnik)
+    @ManyToOne(() => Korisnik, korisnik => korisnik.korisnikIteracije)
     @JoinColumn({ name: 'korisnik_id' })
-    korisnik:Korisnik;
+    korisnik: Korisnik;
 
     @PrimaryColumn()
     iteracija_id:number;
 
-    @OneToOne(() => IteracijaProjekta)
+    @ManyToOne(() => IteracijaProjekta, iteracija => iteracija.korisnikIteracije)
     @JoinColumn({ name: 'iteracija_id' })
-    iteracija:IteracijaProjekta;
+    iteracija: IteracijaProjekta;
 }
+ 
