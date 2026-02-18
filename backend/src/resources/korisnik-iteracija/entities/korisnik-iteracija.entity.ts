@@ -8,7 +8,8 @@ export class KorisnikIteracija {
     @PrimaryColumn()
     korisnik_id:number;
 
-    @ManyToOne(() => Korisnik, korisnik => korisnik.korisnikIteracije)
+    @ManyToOne(() => Korisnik, korisnik => korisnik.korisnikIteracije, {
+    onDelete: 'CASCADE'})
     @JoinColumn({ name: 'korisnik_id' })
     korisnik: Korisnik;
 

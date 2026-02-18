@@ -1,20 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateKorisnikDto } from './dto/create-korisnik.dto';
 import { UpdateKorisnikDto } from './dto/update-korisnik.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Korisnik } from './entities/korisnik.entity';
 import { Repository } from 'typeorm';
+import { TipKorisnika } from 'src/enums/tip-korisnika';
+import { KorisnikIteracija } from '../korisnik-iteracija/entities/korisnik-iteracija.entity';
+import { IteracijaProjekta } from '../iteracija-projekta/entities/iteracija-projekta.entity';
 
 @Injectable()
 export class KorisnikService {
 
   constructor(
     @InjectRepository(Korisnik) private readonly korisnikRepository:Repository<Korisnik>,
+    @InjectRepository(KorisnikIteracija) private readonly korisnikIteracijaRepository: Repository<KorisnikIteracija>,
+    @InjectRepository(IteracijaProjekta) private readonly iteracijaRepository: Repository<IteracijaProjekta>
   ) 
   {}
 
   async create(createKorisnikDto: CreateKorisnikDto) {
-    const korisnik = this.korisnikRepository.create(createKorisnikDto);
+    
+    const { iteracija_id, ...korisnikData } = createKorisnikDto;
+    const korisnik = this.korisnikRepository.create(korisnikData);
+
+    // Ako nije admin
+    if (korisnik.tip !== TipKorisnika.ADMIN) {
+
+        if (!iteracija_id) {
+            throw new BadRequestException('Morate izabrati projekat.');
+        }
+
+        const iteracija = await this.iteracijaRepository.findOne({
+            where: { id: iteracija_id }
+        });
+
+        if (!iteracija) {
+            throw new BadRequestException('Projekat ne postoji.');
+        }
+
+        const sacuvanKorisnik = await this.korisnikRepository.save(korisnik);
+
+        const veza = this.korisnikIteracijaRepository.create({
+            korisnik_id: sacuvanKorisnik.id,
+            iteracija_id: iteracija_id
+        });
+
+        await this.korisnikIteracijaRepository.save(veza);
+
+        return sacuvanKorisnik;
+    }
+
+    // admin slučaj
     return await this.korisnikRepository.save(korisnik);
   }
 
