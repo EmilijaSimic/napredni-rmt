@@ -8,8 +8,8 @@ export class KompanijaController {
   constructor(private readonly kompanijaService: KompanijaService) {}
 
   @Post()
-  create(@Body() createKompanijaDto: CreateKompanijaDto) {
-    return this.kompanijaService.create(createKompanijaDto);
+  async create(@Body() createKompanijaDto: CreateKompanijaDto) {
+    return await this.kompanijaService.create(createKompanijaDto);
   }
 
   @Get()

@@ -3,13 +3,14 @@ import { KompanijaIteracijaService } from './kompanija-iteracija.service';
 import { CreateKompanijaIteracijaDto } from './dto/create-kompanija-iteracija.dto';
 import { UpdateKompanijaIteracijaDto } from './dto/update-kompanija-iteracija.dto';
 
-@Controller('kompanija-iteracija')
+@Controller('kompanija/:kompanijaId/iteracija')
 export class KompanijaIteracijaController {
   constructor(private readonly kompanijaIteracijaService: KompanijaIteracijaService) {}
 
   @Post()
-  create(@Body() createKompanijaIteracijaDto: CreateKompanijaIteracijaDto) {
-    return this.kompanijaIteracijaService.create(createKompanijaIteracijaDto);
+  create(@Param('kompanijaId') kompanijaId: number,
+  @Body() createKompanijaIteracijaDto: CreateKompanijaIteracijaDto) {
+    return this.kompanijaIteracijaService.create(kompanijaId, createKompanijaIteracijaDto);
   }
 
   @Get()

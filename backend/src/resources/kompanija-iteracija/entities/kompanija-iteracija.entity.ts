@@ -24,16 +24,16 @@ export class KompanijaIteracija {
     @Column()
     tip_partnera: TipPartnera;
 
-    @Column({ type: 'date' })
+    @Column({ type: 'date', nullable: true })
     datum_cimanja: Date;
 
-    @Column({ type: 'date' })
+    @Column({ type: 'date', nullable: true })
     datum_podsetnik: Date;
 
-    @Column({ type: 'date' })
+    @Column({ type: 'date', nullable: true })
     datum_poziv: Date;
 
-    @Column()
+    @Column({ nullable: true })
     odobrena:boolean;
 
     @ManyToOne(() => Korisnik, korisnik => korisnik.ki)

@@ -1,11 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import { CreateKompanijaDto } from './dto/create-kompanija.dto';
 import { UpdateKompanijaDto } from './dto/update-kompanija.dto';
+import { IteracijaProjekta } from '../iteracija-projekta/entities/iteracija-projekta.entity';
+import { Repository } from 'typeorm/repository/Repository';
+import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
+import { KompanijaIteracija } from '../kompanija-iteracija/entities/kompanija-iteracija.entity';
+import { Kompanija } from './entities/kompanija.entity';
+import { Korisnik } from '../korisnik/entities/korisnik.entity';
 
 @Injectable()
 export class KompanijaService {
-  create(createKompanijaDto: CreateKompanijaDto) {
-    return 'This action adds a new kompanija';
+
+  constructor(
+    @InjectRepository(Kompanija) private readonly kompanijaRepository: Repository<Kompanija>,
+    @InjectRepository(KompanijaIteracija) private readonly kompanijaIteracijaRepository: Repository<KompanijaIteracija>,
+    @InjectRepository(IteracijaProjekta) private readonly iteracijaRepository: Repository<IteracijaProjekta>,
+    @InjectRepository(Korisnik) private readonly korisnikRepository: Repository<Korisnik>
+  ) {}
+
+  async create(createKompanijaDto: CreateKompanijaDto) {
+    const { naziv, websajt, kontakt, ...vezaData } = createKompanijaDto;
+    const kompanijaData = { naziv, websajt, kontakt };
+    const kompanija = this.kompanijaRepository.create(kompanijaData);
+
+    if (!vezaData.iteracija_id) {
+      throw new Error('Morate izabrati projekat.');
+    }
+
+    if (!this.iteracijaRepository.findOne({ where: { id: vezaData.iteracija_id } })) {
+      throw new Error('Projekat ne postoji.');
+    }
+
+    const korisnik = await this.korisnikRepository.findOne({ where: { id: vezaData.korisnik_id } });
+
+    if(vezaData.korisnik_id && !korisnik) {
+      throw new Error('Korisnik ne postoji.');
+    }
+
+    const sacuvanaKompanija = await this.kompanijaRepository.save(kompanija);
+
+    const veza = await this.kompanijaIteracijaRepository.create({ ...vezaData, kompanija_id: sacuvanaKompanija.id });
+    await this.kompanijaIteracijaRepository.save(veza);
+   
+    return null;
   }
 
   findAll() {
