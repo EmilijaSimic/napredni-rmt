@@ -1,4 +1,4 @@
-export enum TipKorisnikva {
+export enum TipKorisnika {
     ADMIN = 'admin',
         KOORDINATOR = 'koordinator',
         CLAN = 'clan',
