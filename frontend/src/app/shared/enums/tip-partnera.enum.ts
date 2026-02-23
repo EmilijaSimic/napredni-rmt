@@ -1,4 +1,4 @@
 export enum TipPartnera {
+  ROBNI = 'robni',
     FINANSIJSKI = 'finansijski',
-        ROBNI = 'robni',
 }

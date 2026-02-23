@@ -2,29 +2,29 @@
   overflow: auto;
   overflow: overlay;
   overflow-x: hidden;
-  scrollbar-color: #2C80FC transparent;
+  scrollbar-color:  #F6AA1B transparent;
   scrollbar-width: thin;
 
   @supports (-moz-appearance:none) {
-    scrollbar-color: #2C80FC #2C80FC;
+    scrollbar-color:  #F6AA1B #F6AA1B;
   }
 
   &:hover::-webkit-scrollbar-thumb {
-    background-color: #2C80FC;
+    background-color:  #F6AA1B;
   }
 
   &::-webkit-scrollbar,
   &::-webkit-scrollbar-thumb {
     border-radius: if($small, 25px, 50px);
-    background-color: if($autohide, transparent, #2C80FC);
+    background-color: if($autohide, transparent, #F6AA1B);
 
     @if $small {
-      background-color: if($autohide, transparent, #2C80FC);
+      background-color: if($autohide, transparent, #F6AA1B);
     }
   }
 
   &::-webkit-scrollbar {
-    width: if($small, 4px, 6px); 
+    width: if($small, 4px, 6px);
     height: if($small, 4px, 6px);
   }
 }

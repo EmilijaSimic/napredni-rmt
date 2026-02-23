@@ -1,0 +1,106 @@
+<div class="modal-header">
+  <h4>{{ data.naziv }}</h4>
+  <button class="close-btn" (click)="zatvori()">✕</button>
+</div>
+
+<div class="modal-body">
+
+  <!-- STATISTIKA -->
+  <div class="stats-section">
+    <div class="stat-card">
+      <div class="stat-main">
+        <span class="stat-value">{{ data.brojCimanja }}</span>
+        <span class="stat-label">Cimanja</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-main">
+        <span class="stat-value">{{ data.brojOdbijanja }}</span>
+        <span class="stat-label">Odbijanja</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-main">
+        <span class="stat-value">{{ data.brojPrihvatanja }}</span>
+        <span class="stat-label">Prihvatanja</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM GRID -->
+  <div class="form-grid">
+
+    <!-- Naziv -->
+    <div class="form-group">
+      <label>Naziv</label>
+      <div class="input-wrapper">
+        <input type="text" [(ngModel)]="data.naziv" [readonly]="!edit.naziv" [class.disabled]="!edit.naziv">
+        <button class="edit-btn" (click)="toggleEdit('naziv')"></button>
+      </div>
+    </div>
+
+    <!-- Websajt -->
+    <div class="form-group">
+      <label>Websajt</label>
+      <div class="input-wrapper">
+        <input type="text" [(ngModel)]="data.websajt" [readonly]="!edit.websajt" [class.disabled]="!edit.websajt">
+        <button class="edit-btn" (click)="toggleEdit('websajt')"></button>
+      </div>
+    </div>
+
+    <!-- Kontakt -->
+    <div class="form-group">
+      <label>Kontakt</label>
+      <div class="input-wrapper">
+        <input type="text" [(ngModel)]="data.kontakt" [readonly]="!edit.kontakt" [class.disabled]="!edit.kontakt">
+        <button class="edit-btn" (click)="toggleEdit('kontakt')"></button>
+      </div>
+    </div>
+
+    <!-- Zaduzen (custom dropdown) -->
+    <div class="form-group">
+      <label>Član</label>
+      <div class="custom-select" [class.open]="dropdownOpen" (click)="$event.stopPropagation()">
+        <div class="select-display" (click)="toggleDropdown()">
+          <span>{{ data.zaduzen || 'Izaberi člana' }}</span>
+          <svg class="arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="select-options" *ngIf="dropdownOpen">
+          <div class="option" *ngFor="let clan of clanovi" (click)="selectClan(clan)">
+            {{ clan }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stanje (trenutno iz servisa, kasnije dropdown isto kao za članove) -->
+   <!-- Stanje -->
+<div class="custom-select" [class.open]="stanjeDropdownOpen" (click)="$event.stopPropagation()">
+  <div class="select-display" (click)="toggleStanjeDropdown()">
+    <span>{{ data.stanje }}</span>
+    <svg class="arrow" viewBox="0 0 24 24">
+      <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="select-options" *ngIf="stanjeDropdownOpen">
+    <div class="option" *ngFor="let stanje of stanja" (click)="selectStanje(stanje)">
+      {{ stanje }}
+    </div>
+  </div>
+</div>
+    <!-- Napomena -->
+    <div class="form-group full">
+      <label>Napomena</label>
+      <div class="input-wrapper textarea-wrapper">
+        <textarea rows="3" [(ngModel)]="data.napomena" [readonly]="!edit.napomena" [class.disabled]="!edit.napomena"></textarea>
+        <button class="edit-btn" (click)="toggleEdit('napomena')"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <button (click)="zatvori()">Sačuvaj</button>
+</div>

@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4>Dodaj robne partnere</h4>
+  <button class="close-btn" (click)="otkazi()">✕</button>
+</div>
+
+<div class="search-wrapper">
+  <input
+    type="text"
+    placeholder="Pretraži partnere..."
+    [(ngModel)]="searchTerm"
+  />
+</div>
+
+<div class="modal-body" *ngIf="!loading; else loadingTpl">
+  <div *ngFor="let k of filtriraneKompanije()" class="kompanija-item">
+    <div class="row">
+      <input name="Kompanija {{k.ID}}" ngModel type="checkbox" [checked]="selektovane.has(k.ID)" (ngModelChange)="toggleSelektovan(k.ID)">
+      <span>{{ k.naziv }}</span>
+      <button (click)="toggleDetaljnije(k.ID)" class="details-button">Detaljnije</button>
+    </div>
+
+  <div *ngIf="otvorenoDetaljnije.has(k.ID)" class="detaljnije">
+  <p data-label="Cimano">{{ k.brojCimanja }}</p>
+  <p data-label="Odbijeno">{{ k.brojOdbijanja }}</p>
+  <p data-label="Prihvaćeno">{{ k.brojPrihvatanja }}</p>
+  <p data-label="Napomena">{{ k.napomena }}</p>
+</div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+
+</ng-template>
+
+<div class="actions">
+  <button (click)="potvrdi()">Dodaj</button>
+</div>

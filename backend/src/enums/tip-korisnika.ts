@@ -1,6 +1,6 @@
-export enum TipKorisnika{
+export enum TipKorisnikva {
     ADMIN = 'admin',
-    KOORDINATOR = 'koordinator',
-    CLAN = 'clan',
-    KOMPANIJA = 'kompanija'
+        KOORDINATOR = 'koordinator',
+        CLAN = 'clan',
+        KOMPANIJA = 'kompanija'
 }
