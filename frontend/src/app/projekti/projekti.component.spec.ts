@@ -2,22 +2,22 @@ import {
   ComponentFixture,
   TestBed
 } from '@angular/core/testing';
+
 import {
-  PartneriComponent
-} from './partneri.component';
+  ProjektiComponent
+} from './projekti.component';
 
-
-describe('RobniListComponent', () => {
-  let component: PartneriComponent;
-  let fixture: ComponentFixture < PartneriComponent > ;
+describe('PartneriComponent', () => {
+  let component: ProjektiComponent;
+  let fixture: ComponentFixture < ProjektiComponent > ;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-        imports: [PartneriComponent]
+        imports: [ProjektiComponent]
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(PartneriComponent);
+    fixture = TestBed.createComponent(ProjektiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

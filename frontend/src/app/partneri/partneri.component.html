@@ -1,14 +1,51 @@
-<div class="wrapper">
-  <div class="logo-wrapper">
-    <img src="assets/images/hahaton.png" alt="">
-  </div>
-  <div class="logo-wrapper">
-    <img src="assets/images/c2s.png" alt="">
-  </div>
-  <div class="logo-wrapper">
-    <img src="assets/images/s2s.png" alt="">
-  </div>
-  <div class="logo-wrapper">
-    <img src="assets/images/hzs.png" alt="">
+<div class="home-layout">
+  <la-partneri-menu></la-partneri-menu>
+
+  <div class="content">
+
+    <div class="header">
+      <h2>{{tipPartnera === TipPartnera.ROBNI ? 'Robni' : 'Finansijski'}} partneri</h2>
+      <div class="header-actions">
+        <button class="add-btn" (click)="openRobniModal()">Dodaj {{tipPartnera === TipPartnera.ROBNI ? 'robnog' : 'finansijskog'}} partnera +</button>
+        <button class="create-btn" (click)="openKreirajKompanijuModal()">Kreiraj kompaniju</button>
+      </div>
+    </div>
+
+    <div class="list-wrapper" *ngIf="partneri.length > 0">
+      <div
+        *ngFor="let r of partneri"
+        class="partner-card"
+        [ngClass]="getBorderClass(r.stanje)">
+        <div class="col naziv-col">
+          <div class="logo-placeholder">
+            {{ r.naziv.charAt(0) }}
+          </div>
+          <span class="naziv">{{ r.naziv }}</span>
+        </div>
+
+        <div class="col status-col">
+          <span class="status-pill" [ngClass]="getStanjeClass(r.stanje)">
+            {{ r.stanje || 'Nije dodeljeno' }}
+          </span>
+        </div>
+
+        <div class="col zaduzen-col">
+          {{ r.zaduzen || '-' }}
+        </div>
+
+        <div class="col datum-col">
+          {{ r.datumCimanja ? (r.datumCimanja | date:'MMMM d, y') : '-' }}
+        </div>
+
+        <div class="col actions-col">
+          <button (click)="openDetaljiModal(r)">
+            Detalji
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <p *ngIf="partneri.length === 0">Nema {{tipPartnera === TipPartnera.ROBNI ? 'robnih' : 'finansijskih'}} partneri partnera za prikaz.</p>
   </div>
 </div>

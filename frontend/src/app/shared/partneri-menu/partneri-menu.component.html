@@ -1,0 +1,99 @@
+<div class="square-menu">
+  <div class="logo-title">
+    <img src="assets/images/fonis.png" alt="Logo" class="logo">
+    <a
+      [routerLink]="['/home']"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+    </a>
+  </div>
+
+  <div class="menu-links">
+
+    <!-- FINANSIJSKI PARTNERI -->
+    <div class="menu-group">
+      <a
+        [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
+        [queryParams]="{ tipPartnera: 'finansijski' }"
+        routerLinkActive="active">
+
+        <img src="assets/images/finansijski-icon.png" alt="icon" class="icon">
+        Finansijski partneri
+      </a>
+
+      <div class="submenu">
+        <div class="sub-link-container">
+          <a
+            [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
+            [queryParams]="{ tipPartnera: 'finansijski', status: 'potvrdjene' }"
+            routerLinkActive="sub-active"
+            class="sub-link">
+            Potvrđene saradnje
+          </a>
+        </div>
+
+        <div class="sub-link-container">
+          <a
+            [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
+            [queryParams]="{ tipPartnera: 'finansijski', status: 'odbijene' }"
+            routerLinkActive="sub-active"
+            class="sub-link">
+            Odbijene saradnje
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ROBNI PARTNERI -->
+    <div class="menu-group">
+      <a
+        [routerLink]="['/projekat', projekatId, 'robni-partneri']"
+        [queryParams]="{ tipPartnera: 'robni' }"
+        routerLinkActive="active">
+
+        <img src="assets/images/robni-icon.png" alt="icon" class="icon">
+        Robni partneri
+      </a>
+
+      <div class="submenu">
+        <div class="sub-link-container">
+          <a
+            [routerLink]="['/projekat', projekatId, 'robni-partneri']"
+            [queryParams]="{ tipPartnera: 'robni', status: 'potvrdjeni' }"
+            routerLinkActive="sub-active"
+            class="sub-link">
+            Potvrđene saradnje
+          </a>
+        </div>
+
+        <div class="sub-link-container">
+          <a
+            [routerLink]="['/projekat', projekatId, 'robni-partneri']"
+            [queryParams]="{ tipPartnera: 'robni', status: 'odbijeni' }"
+            routerLinkActive="sub-active"
+            class="sub-link">
+            Odbijene saradnje
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- PROMO MATERIJALI -->
+    <a
+      [routerLink]="['/projekat', projekatId, 'promo-materijali']"
+      routerLinkActive="active">
+
+      <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+      Promo materijali
+    </a>
+
+
+    <!-- LOGOUT -->
+    <a (click)="signOut()">
+      Odjavi se
+    </a>
+
+  </div>
+</div>

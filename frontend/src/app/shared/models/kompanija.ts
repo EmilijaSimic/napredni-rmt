@@ -7,7 +7,7 @@ export interface KompanijaModel {
   napomena: string;
 }
 
-export interface KompanijaResponseModel{
+export interface KompanijaResponseModel {
   ID: number;
   naziv: string;
   brojCimanja: number;
@@ -16,10 +16,10 @@ export interface KompanijaResponseModel{
   napomena: string;
   websajt: string;
   kontakt: string;
-  stanje: string;
   zaduzen: string;
-  datumCimanja:Date;
-  datumpodsetnik:Date;
+  stanje: string; // ovde može običan string da TS ne kuka
+  datumCimanja: Date;
+  datumPodsetnik: Date;
   datumPoziva: Date;
   odobreno: boolean;
 }

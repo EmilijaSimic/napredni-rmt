@@ -3,11 +3,8 @@
   flex-direction: column;
   justify-content: flex-start;
   width: 300px;
-  height: 96vh;
-  margin-top: 20px;
-  margin-left: 20px;
-  border-radius: 20px;
-  background-color: #181818;
+  height: 100vh;
+  background-color: #111111;
   gap: 20px;
 }
 
@@ -57,63 +54,57 @@
 }
 
 .submenu {
-  margin-left: 25px;
-  border-left: 1.5px solid #333;
-  padding-left: 4px;
-  margin-top: 2px;
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  gap: 2px;
 }
 
 .sub-link-container {
-  padding-right: 10px;
+  margin-left: -10px;
   border-radius: 8px;
-  margin: 1px 0;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    margin-left: 5px;
-  }
+.sub-link-container:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .sub-link {
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 10px 0 10px 25px !important;
+  padding: 8px 12px 8px 20px !important;
   font-size: 14px !important;
-  color: #777 !important;
+  color: #777777 !important;
   text-decoration: none;
-  position: relative;
-  transition: all 0.2s ease;
   background: transparent !important;
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: -5.5px;
-    top: 0;
-    width: 20px;
-    height: 20px;
-    border-left: 1.5px solid #333;
-    border-bottom: 1.5px solid #333;
-    border-bottom-left-radius: 10px;
-    transition: border-color 0.2s ease;
-  }
-
-  &:hover, &.sub-active {
-    color: #ffffff !important;
-
-    &::before {
-      border-color: var(--accent);
-      border-left-width: 1.5px;
-    }
-  }
+  transition: color 0.2s ease;
+  gap: 10px;
 }
 
-.sub-link-container:last-child .sub-link::before {
-  background-color: #181818;
-  height: 21px;
-  top: -1px;
+/* DOT BULLET */
+.sub-link::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #444444;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover + Active */
+.sub-link:hover,
+.sub-link.sub-active {
+  color: #ffffff !important;
+}
+
+.sub-link:hover::before,
+.sub-link.sub-active::before {
+  background: var(--accent);
+  transform: scale(1.3);
 }
 
 .square-menu .log-out {

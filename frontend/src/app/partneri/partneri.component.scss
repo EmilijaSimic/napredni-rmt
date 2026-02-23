@@ -1,31 +1,176 @@
-:host{
+.home-layout {
   display: flex;
+  min-height: 100vh;
+  color: #ffffff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  margin-bottom: 30px;
 }
 
-.wrapper{
+.header-actions {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-
-  :hover{
-    border: 1px solid var(--primary);
-  }
+  gap: 12px;
 }
 
-.logo-wrapper{
-  background-color:var(--accent-20) ;
-  padding: 48px;
+h2 {
+  font-size: 40px;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+.add-btn {
+  padding: 10px 16px;
+  border: none;
   border-radius: 8px;
-  width: 350px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
+  font-weight: 300;
+  color: #000000;
+  background-color: #ffa600;
+  cursor: pointer;
+  transition: all 0.2s;
 
-  img{
-    object-fit: contain;
-    border: none !important;
+  &:hover {
+    background-color: #e59400;
   }
+}
+
+.create-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 300;
+  width: 160px;
+  color: var(--primary);
+  background: none;
+  border: 1px solid var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.partner-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 18px 24px;
+  transition: 0.2s ease;
+}
+
+.partner-card:hover {
+  background: #1b1b1b;
+  border-color: #3a3a3a;
+}
+
+.col {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.naziv-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.naziv {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.logo-placeholder {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #aaa;
+}
+
+.status-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: inline-block;
+  text-align: center;
+  min-width: 90px;
+}
+
+.stanje-odobreno {
+  background: rgba(31, 139, 76, 0.15);
+  color: #1f8b4c;
+}
+
+.stanje-odbijeno {
+  background: rgba(254, 75, 75, 0.15);
+  color: #d33c3c;
+}
+
+.stanje-nije-dodeljeno {
+  background: #444;
+  color: #888;
+}
+
+.stanje-poziv-email {
+  background: rgba(255, 194, 0, 0.15);
+  color: #ffc200;
+}
+
+.border-odobreno {
+  border-left: 4px solid #1f8b4c;
+}
+
+.border-odbijeno {
+  border-left: 4px solid #a12a2a;
+}
+
+.actions-col button {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 400;
+  background-color: #ffa600;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actions-col button:hover {
+  background-color: #e59400;
+}
+
+.no-img {
+  width: 600px;
+  margin: auto;
+  justify-content: center;
+  display: flex;
+  align-items: center;
 }

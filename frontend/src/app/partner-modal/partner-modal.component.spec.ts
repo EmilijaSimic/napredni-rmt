@@ -3,21 +3,20 @@ import {
   TestBed
 } from '@angular/core/testing';
 import {
-  PartneriComponent
-} from './partneri.component';
+  PartnerModalComponent
+} from './partner-modal.component';
 
-
-describe('RobniListComponent', () => {
-  let component: PartneriComponent;
-  let fixture: ComponentFixture < PartneriComponent > ;
+describe('RobniModalComponent', () => {
+  let component: PartnerModalComponent;
+  let fixture: ComponentFixture < PartnerModalComponent > ;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-        imports: [PartneriComponent]
+        imports: [PartnerModalComponent]
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(PartneriComponent);
+    fixture = TestBed.createComponent(PartnerModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

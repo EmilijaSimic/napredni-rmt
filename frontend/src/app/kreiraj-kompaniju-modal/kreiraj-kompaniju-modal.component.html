@@ -1,0 +1,41 @@
+<div class="modal-header">
+  <h4>Kreiraj novu kompaniju</h4>
+  <button class="close-btn" (click)="otkazi()">✕</button>
+</div>
+
+<div class="modal-body">
+
+  <div class="section">
+    <label>Naziv kompanije</label>
+    <input type="text" [(ngModel)]="model.naziv" />
+  </div>
+
+  <div class="section">
+    <label>Napomena</label>
+    <textarea [(ngModel)]="model.napomena"></textarea>
+  </div>
+
+  <div class="grid-2">
+
+    <div class="section">
+      <label>Websajt</label>
+      <input type="text" [(ngModel)]="model.websajt" />
+    </div>
+
+    <div class="section">
+      <label>Kontakt</label>
+      <input type="text" [(ngModel)]="model.kontakt" />
+    </div>
+
+    <div class="section">
+      <label>Zadužen</label>
+      <input type="text" [(ngModel)]="model.zaduzen" />
+    </div>
+
+  </div>
+
+</div>
+
+<div class="actions">
+  <button class="primary-btn" (click)="potvrdi()">Kreiraj</button>
+</div>
