@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber } from 'class-validator';
 import { NazivProjekta } from 'src/enums/naziv-projekta';
 
 export class CreateIteracijaProjektaDto {

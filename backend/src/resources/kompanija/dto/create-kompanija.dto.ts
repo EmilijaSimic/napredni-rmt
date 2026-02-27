@@ -1,5 +1,4 @@
-import { IsBoolean, IsDateString, IsEnum, IsNumber, IsOptional } from "class-validator";
-import { IsString } from "class-validator/types/decorator/typechecker/IsString";
+import { IsBoolean, IsDateString, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 import { TipPartnera } from "src/enums/tip-partnera";
 
 export class CreateKompanijaDto {
@@ -12,7 +11,7 @@ export class CreateKompanijaDto {
     @IsString()
     kontakt:string;
     
-    @IsString()
+    @IsNumber()
     iteracija_id: number;
         
     @IsEnum(TipPartnera)

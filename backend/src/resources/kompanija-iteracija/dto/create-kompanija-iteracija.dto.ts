@@ -1,11 +1,8 @@
-import { IsOptional } from "class-validator/types/decorator/common/IsOptional";
-import { IsEnum } from "class-validator/types/decorator/typechecker/IsEnum";
-import { IsNumber } from "class-validator/types/decorator/typechecker/IsNumber";
-import { IsString } from "class-validator/types/decorator/typechecker/IsString";
+import { IsOptional, IsEnum, IsNumber } from "class-validator";
 import { TipPartnera } from "src/enums/tip-partnera";
 
 export class CreateKompanijaIteracijaDto {
-    @IsString()
+    @IsNumber()
     iteracija_id: number;
             
     @IsEnum(TipPartnera)
