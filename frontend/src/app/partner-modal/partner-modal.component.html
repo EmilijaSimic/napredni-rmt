@@ -14,7 +14,7 @@
 <div class="modal-body" *ngIf="!loading; else loadingTpl">
   <div *ngFor="let k of filtriraneKompanije()" class="kompanija-item">
     <div class="row">
-      <input name="Kompanija {{k.ID}}" ngModel type="checkbox" [checked]="selektovane.has(k.ID)" (ngModelChange)="toggleSelektovan(k.ID)">
+      <input type="checkbox" [checked]="selektovane.has(k.ID)" (change)="toggleSelektovan(k.ID)">
       <span>{{ k.naziv }}</span>
       <button (click)="toggleDetaljnije(k.ID)" class="details-button">Detaljnije</button>
     </div>
