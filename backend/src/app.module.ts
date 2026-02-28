@@ -9,6 +9,7 @@ import { KorisnikIteracijaModule } from './resources/korisnik-iteracija/korisnik
 import { KompanijaIteracijaModule } from './resources/kompanija-iteracija/kompanija-iteracija.module';
 import { Materijali } from './resources/materijali/entities/materijali.entity';
 import { MaterijaliModule } from './resources/materijali/materijali.module';
+import { AccountsModule } from './resources/accounts/accounts.module';
 
 
 @Module({
@@ -27,7 +28,8 @@ import { MaterijaliModule } from './resources/materijali/materijali.module';
   IteracijaProjektaModule,
   KorisnikIteracijaModule,
   KompanijaIteracijaModule,
-  MaterijaliModule],
+  MaterijaliModule,
+  AccountsModule],
   controllers: [AppController],
   providers: [AppService],
 })

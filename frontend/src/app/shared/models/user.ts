@@ -6,7 +6,7 @@ export interface UserInitialsModel {
 }
 
 export interface UserLoginModel {
-  email: string;
+  username: string;
   password: string;
 }
 

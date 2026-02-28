@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { TipKorisnika } from 'src/enums/tip-korisnika';
 import { KorisnikIteracija } from '../korisnik-iteracija/entities/korisnik-iteracija.entity';
 import { IteracijaProjekta } from '../iteracija-projekta/entities/iteracija-projekta.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class KorisnikService {
@@ -19,8 +20,9 @@ export class KorisnikService {
   {}
 
   async create(createKorisnikDto: CreateKorisnikDto) {
-    
+
     const { iteracija_id, ...korisnikData } = createKorisnikDto;
+    korisnikData.lozinka = await bcrypt.hash(korisnikData.lozinka, 10);
     const korisnik = this.korisnikRepository.create(korisnikData);
 
     // Ako nije admin
