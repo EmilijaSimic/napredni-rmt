@@ -1,3 +1,10 @@
+export interface KompanijaBasicModel {
+  id: number;
+  naziv: string;
+  websajt: string;
+  kontakt: string;
+}
+
 export interface KompanijaModel {
   ID: number;
   naziv: string;

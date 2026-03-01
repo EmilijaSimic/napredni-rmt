@@ -14,6 +14,7 @@ import {
   TipPartnera
 } from '../enums/tip-partnera.enum';
 import {
+  KompanijaBasicModel,
   KompanijaResponseModel
 } from '../models/kompanija';
 
@@ -25,8 +26,8 @@ export class KompanijaService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<KompanijaResponseModel[]> {
-    return this.http.get<KompanijaResponseModel[]>(`${environment.apiUrl}/kompanija`);
+  getAll(): Observable<KompanijaBasicModel[]> {
+    return this.http.get<KompanijaBasicModel[]>(`${environment.apiUrl}/kompanija`);
   }
 
   create(naziv: string, websajt: string, kontakt: string): Observable<any> {

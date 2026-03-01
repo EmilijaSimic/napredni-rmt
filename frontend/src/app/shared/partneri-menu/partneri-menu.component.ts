@@ -23,10 +23,12 @@ import {
 })
 export class PartneriMenuComponent implements OnInit {
   projekatId: number;
+  isAdmin = false;
 
   constructor(private accountService: AccountService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    this.isAdmin = this.accountService.isInRole('admin');
     this.route.params.subscribe(params => {
       this.projekatId = params.id;
     });

@@ -33,7 +33,8 @@ export class LoginComponent {
 
     this.accountService.signIn(this.loginForm.value).subscribe({
       next: () => {
-        this.router.navigate(['/projekti']);
+        const route = this.accountService.isInRole('kompanija') ? '/promo-materijali' : '/projekti';
+        this.router.navigate([route]);
       },
       error: (err) => {
         this.isLoading = false;

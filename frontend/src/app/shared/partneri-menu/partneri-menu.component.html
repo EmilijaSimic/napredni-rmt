@@ -80,9 +80,10 @@
     </div>
 
 
-    <!-- PROMO MATERIJALI -->
+    <!-- PROMO MATERIJALI (samo admin) -->
     <a
-      [routerLink]="['/projekat', projekatId, 'promo-materijali']"
+      *ngIf="isAdmin"
+      [routerLink]="['/promo-materijali']"
       routerLinkActive="active">
 
       <img src="assets/images/promo-icon.png" alt="icon" class="icon">
