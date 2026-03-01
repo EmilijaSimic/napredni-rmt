@@ -1,37 +1,37 @@
 .home-layout {
   display: flex;
   min-height: 100vh;
-  color: #ffffff;
+  background: var(--bg);
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 32px 36px;
   flex: 1;
   overflow: hidden;
 }
 
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 
   h2 {
-    font-size: 40px;
-    font-weight: 400;
-    color: #ffffff;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
   }
 }
 
-/* ── Upload panel ── */
 .upload-panel {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #141414;
-  border: 1px solid #2a2a2a;
-  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 24px;
   max-width: 620px;
+  box-shadow: var(--shadow-sm);
 }
 
 .select-wrapper {
@@ -41,25 +41,28 @@
 
   label {
     font-size: 13px;
-    color: #888;
+    font-weight: 500;
+    color: var(--text-secondary);
   }
 
   select {
-    background: #1e1e1e;
-    border: 1px solid #333;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text);
     padding: 10px 14px;
     font-size: 14px;
     cursor: pointer;
     outline: none;
+    transition: border-color 0.2s;
 
     &:focus {
-      border-color: #ffa600;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     option {
-      background: #1e1e1e;
+      background: var(--surface);
     }
   }
 }
@@ -77,20 +80,20 @@
 .file-btn {
   display: block;
   padding: 10px 16px;
-  background: #1e1e1e;
-  border: 1px dashed #444;
+  background: var(--surface-2);
+  border: 1px dashed #cbd5e1;
   border-radius: 8px;
   font-size: 14px;
-  color: #aaa;
+  color: var(--text-secondary);
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, color 0.2s;
 
   &:hover {
-    border-color: #ffa600;
-    color: #fff;
+    border-color: var(--primary);
+    color: var(--primary);
   }
 }
 
@@ -98,15 +101,16 @@
   padding: 10px 24px;
   border: none;
   border-radius: 8px;
-  background-color: #ffa600;
-  color: #000;
+  background-color: var(--primary);
+  color: #fff;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   white-space: nowrap;
 
   &:hover:not(:disabled) {
-    background-color: #e59400;
+    background-color: var(--primary-hover);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
   }
 
   &:disabled {
@@ -116,57 +120,58 @@
 }
 
 .error {
-  color: #d33c3c;
+  color: var(--danger);
   font-size: 13px;
   margin: 0;
 }
 
-/* ── Materials section ── */
 .materials-section {
   margin-top: 32px;
 }
 
 .section-label {
-  font-size: 14px;
-  color: #888;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
   margin-bottom: 16px;
 }
 
 .empty-msg {
   font-size: 14px;
-  color: #555;
+  color: var(--text-muted);
   margin-top: 16px;
 }
 
 .info-msg {
   font-size: 15px;
-  color: #777;
+  color: var(--text-muted);
   margin-top: 20px;
 }
 
-/* ── Material cards ── */
 .materials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
 .material-card {
-  background: #141414;
-  border: 1px solid #2a2a2a;
-  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   overflow: hidden;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 
   &:hover {
-    border-color: #3a3a3a;
+    border-color: #bfdbfe;
+    box-shadow: var(--shadow);
   }
 }
 
 .media-wrapper {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: #0d0d0d;
+  background: var(--surface-2);
   overflow: hidden;
 }
 
@@ -187,7 +192,7 @@
 .file-name {
   flex: 1;
   font-size: 13px;
-  color: #ccc;
+  color: var(--text-secondary);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -195,22 +200,22 @@
 
 .date {
   font-size: 12px;
-  color: #555;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
 .delete-btn {
-  padding: 5px 12px;
-  border: 1px solid #a12a2a;
+  padding: 4px 10px;
+  border: 1px solid #fecaca;
   border-radius: 6px;
   background: transparent;
-  color: #d33c3c;
+  color: var(--danger);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
 
   &:hover {
-    background: rgba(211, 60, 60, 0.12);
+    background: var(--danger-light);
   }
 }

@@ -17,6 +17,7 @@ export class AccountsService {
   async login(loginDto: LoginDto) {
     const korisnik = await this.korisnikRepository.findOne({
       where: { username: loginDto.username },
+      relations: { korisnikIteracije: true },
     });
 
     if (!korisnik) {
@@ -28,11 +29,15 @@ export class AccountsService {
       throw new UnauthorizedException('Pogrešno korisničko ime ili lozinka.');
     }
 
+    const latestIteracija = korisnik.korisnikIteracije
+      ?.sort((a, b) => b.iteracija_id - a.iteracija_id)[0];
+
     const payload = {
       sub: korisnik.id,
       username: korisnik.username,
       roles: korisnik.tip,
       kompanija_id: korisnik.kompanija_id ?? null,
+      iteracija_id: latestIteracija?.iteracija_id ?? null,
     };
 
     const token = this.jwtService.sign(payload);

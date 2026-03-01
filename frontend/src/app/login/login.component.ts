@@ -33,8 +33,20 @@ export class LoginComponent {
 
     this.accountService.signIn(this.loginForm.value).subscribe({
       next: () => {
-        const route = this.accountService.isInRole('kompanija') ? '/promo-materijali' : '/projekti';
-        this.router.navigate([route]);
+        if (this.accountService.isInRole('kompanija')) {
+          this.router.navigate(['/promo-materijali']);
+        } else if (this.accountService.isInRole('admin')) {
+          this.router.navigate(['/projekti']);
+        } else {
+          const iteracijaId = this.accountService.getIteracijaId();
+          if (iteracijaId) {
+            this.router.navigate(['/projekat', iteracijaId, 'robni-partneri'], {
+              queryParams: { tipPartnera: 'robni' },
+            });
+          } else {
+            this.router.navigate(['/projekti']);
+          }
+        }
       },
       error: (err) => {
         this.isLoading = false;

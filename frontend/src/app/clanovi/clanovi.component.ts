@@ -1,84 +1,100 @@
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  FormsModule
-} from '@angular/forms';
-import {
-  ActivatedRoute
-} from '@angular/router';
-import {
-  KorisnikModel
-} from '../shared/models/kompanija';
-import {
-  PartneriMenuComponent
-} from '../shared/partneri-menu/partneri-menu.component';
-import {
-  KorisnikService
-} from '../shared/services/korisnik.service';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { KreirajKorisnikaModalComponent } from '../kreiraj-korisnika-modal/kreiraj-korisnika-modal.component';
+import { NazivProjekta } from '../shared/enums/naziv-projekta.enum';
+import { IteracijaProjekta } from '../shared/models/iteracija-projekta';
+import { KorisnikModel } from '../shared/models/kompanija';
+import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.component';
+import { IteracijaProjektaService } from '../shared/services/iteracija-projekta.service';
+import { KorisnikService } from '../shared/services/korisnik.service';
+
+interface ProjekatTab {
+  naziv: NazivProjekta;
+  label: string;
+  iteracija: IteracijaProjekta | null;
+}
 
 @Component({
   selector: 'la-clanovi',
   standalone: true,
-  imports: [CommonModule, FormsModule, PartneriMenuComponent],
+  imports: [CommonModule, FormsModule, MatDialogModule, PartneriMenuComponent],
   templateUrl: './clanovi.component.html',
   styleUrl: './clanovi.component.scss',
 })
 export class ClanoviComponent implements OnInit {
-  iteracijaId: number;
+  projekti: ProjekatTab[] = [
+    { naziv: NazivProjekta.FON_HAKATON, label: 'Fon hakaton',              iteracija: null },
+    { naziv: NazivProjekta.HZS,         label: 'Hakaton za srednjoškolce', iteracija: null },
+    { naziv: NazivProjekta.S2S,         label: 'Studenti studentima',      iteracija: null },
+    { naziv: NazivProjekta.C2S,         label: 'Kompanije studentima',     iteracija: null },
+  ];
+
+  selectedProjekat: ProjekatTab | null = null;
 
   clanovi: KorisnikModel[] = [];
   sviKorisnici: KorisnikModel[] = [];
   selectedKorisnikId: number | null = null;
 
-  noviKorisnik = {
-    ime: '',
-    prezime: '',
-    username: '',
-    lozinka: '',
-    tip: 'clan',
-  };
-
-  tipovi = ['koordinator', 'clan'];
-
   loadingClanovi = false;
   addingExisting = false;
-  creatingNew = false;
   errorMsg = '';
   successMsg = '';
 
   constructor(
     private route: ActivatedRoute,
     private korisnikService: KorisnikService,
+    private iteracijaService: IteracijaProjektaService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.iteracijaId = +params['id'];
-      this.loadClanove();
-      this.loadSveKorisnike();
+    this.korisnikService.getSvi().subscribe({ next: (data) => this.sviKorisnici = data });
+
+    forkJoin({
+      hakaton: this.iteracijaService.findLast(NazivProjekta.FON_HAKATON),
+      hzs:     this.iteracijaService.findLast(NazivProjekta.HZS),
+      s2s:     this.iteracijaService.findLast(NazivProjekta.S2S),
+      c2s:     this.iteracijaService.findLast(NazivProjekta.C2S),
+    }).subscribe(({ hakaton, hzs, s2s, c2s }) => {
+      const map: Record<NazivProjekta, IteracijaProjekta> = {
+        [NazivProjekta.FON_HAKATON]: hakaton,
+        [NazivProjekta.HZS]: hzs,
+        [NazivProjekta.S2S]: s2s,
+        [NazivProjekta.C2S]: c2s,
+      };
+      this.projekti.forEach(p => p.iteracija = map[p.naziv]);
+
+      // Pre-select project from route if available
+      this.route.params.subscribe(params => {
+        const idFromRoute = +params['id'];
+        const match = this.projekti.find(p => p.iteracija?.id === idFromRoute);
+        this.selectProjekat(match ?? this.projekti[0]);
+      });
     });
   }
 
-  private loadClanove(): void {
+  selectProjekat(p: ProjekatTab): void {
+    this.selectedProjekat = p;
+    this.selectedKorisnikId = null;
+    this.errorMsg = '';
+    this.successMsg = '';
+    if (p.iteracija) this.loadClanove(p.iteracija.id);
+  }
+
+  private loadClanove(iteracijaId: number): void {
     this.loadingClanovi = true;
-    this.korisnikService.getByProject(this.iteracijaId).subscribe({
-      next: (data) => {
-        this.clanovi = data;
-        this.loadingClanovi = false;
-      },
+    this.korisnikService.getByProject(iteracijaId).subscribe({
+      next: (data) => { this.clanovi = data; this.loadingClanovi = false; },
       error: () => this.loadingClanovi = false,
     });
   }
 
-  private loadSveKorisnike(): void {
-    this.korisnikService.getSvi().subscribe({
-      next: (data) => this.sviKorisnici = data,
-    });
+  get iteracijaId(): number | null {
+    return this.selectedProjekat?.iteracija?.id ?? null;
   }
 
   get dostupniKorisnici(): KorisnikModel[] {
@@ -87,7 +103,7 @@ export class ClanoviComponent implements OnInit {
   }
 
   dodajPostojeceg(): void {
-    if (!this.selectedKorisnikId) return;
+    if (!this.selectedKorisnikId || !this.iteracijaId) return;
     this.addingExisting = true;
     this.errorMsg = '';
     this.korisnikService.addToIteracija(this.selectedKorisnikId, this.iteracijaId).subscribe({
@@ -95,7 +111,7 @@ export class ClanoviComponent implements OnInit {
         this.addingExisting = false;
         this.selectedKorisnikId = null;
         this.successMsg = 'Član dodat na iteraciju.';
-        this.loadClanove();
+        this.loadClanove(this.iteracijaId!);
         setTimeout(() => this.successMsg = '', 3000);
       },
       error: (err) => {
@@ -105,52 +121,26 @@ export class ClanoviComponent implements OnInit {
     });
   }
 
-  kreirajNovog(): void {
-    const {
-      ime,
-      prezime,
-      username,
-      lozinka,
-      tip
-    } = this.noviKorisnik;
-    if (!ime || !prezime || !username || !lozinka) {
-      this.errorMsg = 'Sva polja su obavezna.';
-      return;
-    }
-    this.creatingNew = true;
-    this.errorMsg = '';
-    this.korisnikService.create({
-      ime,
-      prezime,
-      username,
-      lozinka,
-      tip,
-      iteracija_id: this.iteracijaId
-    }).subscribe({
-      next: () => {
-        this.creatingNew = false;
-        this.noviKorisnik = {
-          ime: '',
-          prezime: '',
-          username: '',
-          lozinka: '',
-          tip: 'clan'
-        };
+  openKreirajModal(): void {
+    if (!this.iteracijaId) return;
+    const ref = this.dialog.open(KreirajKorisnikaModalComponent, {
+      width: '560px',
+      data: { iteracijaId: this.iteracijaId },
+    });
+    ref.afterClosed().subscribe((created: boolean) => {
+      if (created) {
         this.successMsg = 'Korisnik kreiran i dodat na iteraciju.';
-        this.loadClanove();
-        this.loadSveKorisnike();
+        this.loadClanove(this.iteracijaId!);
+        this.korisnikService.getSvi().subscribe({ next: (data) => this.sviKorisnici = data });
         setTimeout(() => this.successMsg = '', 3000);
-      },
-      error: (err) => {
-        this.creatingNew = false;
-        this.errorMsg = err?.error?.message ?? 'Greška pri kreiranju korisnika.';
-      },
+      }
     });
   }
 
   ukloni(clan: KorisnikModel): void {
+    if (!this.iteracijaId) return;
     this.korisnikService.removeFromIteracija(clan.id, this.iteracijaId).subscribe({
-      next: () => this.loadClanove(),
+      next: () => this.loadClanove(this.iteracijaId!),
       error: (err) => this.errorMsg = err?.error?.message ?? 'Greška pri uklanjanju.',
     });
   }
