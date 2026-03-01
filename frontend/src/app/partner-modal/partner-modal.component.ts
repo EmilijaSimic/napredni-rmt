@@ -1,23 +1,15 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  FormsModule
-} from '@angular/forms';
-import {
-  MatDialogModule,
-  MatDialogRef
-} from '@angular/material/dialog';
-import {
-  KompanijaService
-} from '../shared/services/kompanija.service';
-import {
-  KompanijaResponseModel
-} from '../shared/models/kompanija';
+import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { KompanijaService } from '../shared/services/kompanija.service';
+import { TipPartnera } from '../shared/enums/tip-partnera.enum';
+import { KompanijaResponseModel } from '../shared/models/kompanija';
+
+interface DialogData {
+  projekatId: number;
+  tipPartnera: TipPartnera;
+}
 
 @Component({
   selector: 'la-partner-modal',
@@ -28,31 +20,37 @@ import {
 })
 export class PartnerModalComponent implements OnInit {
   kompanije: KompanijaResponseModel[] = [];
-  selektovane: Set < number > = new Set();
-  otvorenoDetaljnije: Set < number > = new Set();
+  selektovane: Set<number> = new Set();
+  otvorenoDetaljnije: Set<number> = new Set();
   loading = false;
+  saving = false;
+  searchTerm = '';
 
-  constructor(private dialogRef: MatDialogRef < PartnerModalComponent > , private kompanijaService: KompanijaService) {}
+  constructor(
+    private dialogRef: MatDialogRef<PartnerModalComponent>,
+    private kompanijaService: KompanijaService,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {}
 
   ngOnInit(): void {
     this.loading = true;
     this.kompanijaService.getAll().subscribe({
-      next: res => {
-        // sve kompanije sa dodatnim poljima
-        this.kompanije = res.map(r => ({
+      next: (res) => {
+        this.kompanije = res.map((r: any) => ({
           ...r,
+          ID: r.ID ?? r.id,
           websajt: r.websajt ?? '',
           kontakt: r.kontakt ?? '',
-          stanje: r.stanje || 'Nije dodeljeno', // <-- obavezno default
+          stanje: r.stanje || 'Nije dodeljeno',
           zaduzen: r.zaduzen ?? '',
           datumCimanja: r.datumCimanja ?? new Date(),
           datumPodsetnik: r.datumPodsetnik ?? new Date(),
           datumPoziva: r.datumPoziva ?? new Date(),
-          odobreno: r.odobreno ?? false
+          odobreno: r.odobreno ?? false,
         }));
         this.loading = false;
       },
-      error: () => (this.loading = false)
+      error: () => (this.loading = false),
     });
   }
 
@@ -72,26 +70,28 @@ export class PartnerModalComponent implements OnInit {
     }
   }
 
-  potvrdi() {
-    // vraćamo samo selektovane kompanije
-    const result = this.kompanije.filter(k => this.selektovane.has(k.ID));
-    this.dialogRef.close(result);
+  filtriraneKompanije(): KompanijaResponseModel[] {
+    if (!this.searchTerm.trim()) return this.kompanije;
+    const term = this.searchTerm.toLowerCase();
+    return this.kompanije.filter(k => k.naziv.toLowerCase().includes(term));
   }
 
-  searchTerm = '';
+  potvrdi() {
+    if (this.selektovane.size === 0) return;
 
-  filtriraneKompanije(): KompanijaResponseModel[] {
-    if (!this.searchTerm.trim()) {
-      return this.kompanije;
-    }
+    this.saving = true;
+    const ids = Array.from(this.selektovane);
 
-    const term = this.searchTerm.toLowerCase();
-    return this.kompanije.filter(k =>
-      k.naziv.toLowerCase().includes(term)
-    );
+    this.kompanijaService.batchAddToIteracija(this.data.projekatId, ids, this.data.tipPartnera).subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        console.error('Greška pri dodavanju partnera', err);
+        this.saving = false;
+      },
+    });
   }
 
   otkazi() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 }

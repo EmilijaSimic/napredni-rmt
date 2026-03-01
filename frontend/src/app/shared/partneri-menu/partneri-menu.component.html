@@ -80,18 +80,36 @@
     </div>
 
 
-    <!-- PROMO MATERIJALI -->
+    <!-- CLANOVI (samo admin) -->
     <a
-      [routerLink]="['/projekat', projekatId, 'promo-materijali']"
+      *ngIf="isAdmin"
+      [routerLink]="['/projekat', projekatId, 'clanovi']"
+      routerLinkActive="active">
+      <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+      Članovi
+    </a>
+
+    <!-- PROMO MATERIJALI (samo admin) -->
+    <a
+      *ngIf="isAdmin"
+      [routerLink]="['/promo-materijali']"
       routerLinkActive="active">
 
       <img src="assets/images/promo-icon.png" alt="icon" class="icon">
       Promo materijali
     </a>
 
+    <!-- NOVA ITERACIJA (samo admin) -->
+    <div class="menu-group" *ngIf="isAdmin">
+      <a [routerLink]="['/nova-iteracija']" routerLinkActive="active">
+        <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+        Nova iteracija
+      </a>
+    </div>
+
 
     <!-- LOGOUT -->
-    <a (click)="signOut()">
+    <a class="log-out" (click)="signOut()">
       Odjavi se
     </a>
 

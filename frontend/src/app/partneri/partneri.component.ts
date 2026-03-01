@@ -1,36 +1,18 @@
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  MatDialog,
-  MatDialogModule
-} from '@angular/material/dialog';
-import {
-  ActivatedRoute
-} from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
 
-import {
-  KompanijaDetaljiModalComponent
-} from '../kompanija-detalji-modal/kompanija-detalji-modal.component';
-import {
-  KreirajKompanijuModalComponent
-} from '../kreiraj-kompaniju-modal/kreiraj-kompaniju-modal.component';
-import {
-  PartnerModalComponent
-} from '../partner-modal/partner-modal.component';
-import {
-  TipPartnera
-} from '../shared/enums/tip-partnera.enum';
-import {
-  KompanijaResponseModel
-} from '../shared/models/kompanija';
-import {
-  PartneriMenuComponent
-} from '../shared/partneri-menu/partneri-menu.component';
+import { KompanijaDetaljiModalComponent } from '../kompanija-detalji-modal/kompanija-detalji-modal.component';
+import { KreirajKompanijuModalComponent } from '../kreiraj-kompaniju-modal/kreiraj-kompaniju-modal.component';
+import { PartnerModalComponent } from '../partner-modal/partner-modal.component';
+import { TipPartnera } from '../shared/enums/tip-partnera.enum';
+import { IteracijaProjekta } from '../shared/models/iteracija-projekta';
+import { KompanijaResponseModel } from '../shared/models/kompanija';
+import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.component';
+import { IteracijaProjektaService } from '../shared/services/iteracija-projekta.service';
+import { KompanijaService } from '../shared/services/kompanija.service';
 
 @Component({
   selector: 'la-partneri',
@@ -41,159 +23,102 @@ import {
 })
 export class PartneriComponent implements OnInit {
   partneri: KompanijaResponseModel[] = [];
+  iteracije: IteracijaProjekta[] = [];
   projekatId: number;
   tipPartnera: TipPartnera;
   status: string;
+  routeSegment: string;
   TipPartnera = TipPartnera;
 
-  constructor(private dialog: MatDialog, private route: ActivatedRoute) {}
+  constructor(
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router,
+    private kompanijaService: KompanijaService,
+    private iteracijaService: IteracijaProjektaService,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.projekatId = params.id;
+    combineLatest([this.route.params, this.route.queryParams]).subscribe(([params, qParams]) => {
+      this.projekatId = +params['id'];
+      this.tipPartnera = qParams['tipPartnera'];
+      this.status = qParams['status'];
+
+      // Determine route segment for switching iterations
+      const url = this.router.url;
+      if (url.includes('robni-partneri')) this.routeSegment = 'robni-partneri';
+      else if (url.includes('finansijski-partneri')) this.routeSegment = 'finansijski-partneri';
+
+      this.loadPartneri();
+      this.loadIteracije();
     });
-
-    this.route.queryParams.subscribe(params => {
-      this.tipPartnera = params.tipPartnera;
-      this.status = params.status;
-    });
-
-    // TODO: napraviti poziv ka backu na osnovu projekatId, tipPartnera i status
-
-    // TODO: ovo je samo fake poziva
-    if (this.tipPartnera === TipPartnera.ROBNI) {
-      this.partneri = [{
-          ID: 1,
-          naziv: 'Coca Cola Srbija',
-          brojCimanja: 3,
-          brojOdbijanja: 1,
-          brojPrihvatanja: 2,
-          napomena: 'Daju piće za događaje',
-          websajt: 'https://coca-cola.rs',
-          kontakt: 'office@coca-cola.rs',
-          zaduzen: 'Nevena',
-          stanje: this.status || 'u_toku',
-          datumCimanja: new Date(),
-          datumPodsetnik: new Date(),
-          datumPoziva: new Date(),
-          odobreno: this.status === 'potvrdjeni'
-        },
-        {
-          ID: 2,
-          naziv: 'Red Bull Srbija',
-          brojCimanja: 2,
-          brojOdbijanja: 0,
-          brojPrihvatanja: 2,
-          napomena: 'Energetska pića',
-          websajt: 'https://redbull.com',
-          kontakt: 'info@redbull.rs',
-          zaduzen: 'Marko',
-          stanje: this.status || 'u_toku',
-          datumCimanja: new Date(),
-          datumPodsetnik: new Date(),
-          datumPoziva: new Date(),
-          odobreno: this.status === 'potvrdjeni'
-        }
-      ];
-    }
-
-    if (this.tipPartnera === TipPartnera.FINANSIJSKI) {
-      this.partneri = [{
-          ID: 3,
-          naziv: 'Raiffeisen Banka',
-          brojCimanja: 4,
-          brojOdbijanja: 2,
-          brojPrihvatanja: 1,
-          napomena: 'Sponzorstvo za IT događaj',
-          websajt: 'https://raiffeisenbank.rs',
-          kontakt: 'sponzorstva@raiffeisen.rs',
-          zaduzen: 'Jovana',
-          stanje: this.status || 'u_toku',
-          datumCimanja: new Date(),
-          datumPodsetnik: new Date(),
-          datumPoziva: new Date(),
-          odobreno: this.status === 'potvrdjene'
-        },
-        {
-          ID: 4,
-          naziv: 'NLB Komercijalna',
-          brojCimanja: 1,
-          brojOdbijanja: 0,
-          brojPrihvatanja: 1,
-          napomena: 'Finansijska podrška',
-          websajt: 'https://nlbkb.rs',
-          kontakt: 'office@nlbkb.rs',
-          zaduzen: 'Nikola',
-          stanje: this.status || 'u_toku',
-          datumCimanja: new Date(),
-          datumPodsetnik: new Date(),
-          datumPoziva: new Date(),
-          odobreno: this.status === 'potvrdjene'
-        }
-      ];
-    }
   }
 
+  private loadPartneri(): void {
+    this.kompanijaService.getByIteracija(this.projekatId, this.tipPartnera, this.status).subscribe({
+      next: (data) => this.partneri = data,
+      error: (err) => console.error('Greška pri učitavanju partnera', err),
+    });
+  }
+
+  private loadIteracije(): void {
+    this.iteracijaService.findById(this.projekatId).subscribe({
+      next: (iteracija) => {
+        this.iteracijaService.findAllByNaziv(iteracija.naziv_projekta).subscribe({
+          next: (sve) => this.iteracije = sve,
+        });
+      },
+    });
+  }
+
+  switchIteracija(iteracija: IteracijaProjekta): void {
+    const segment = this.routeSegment || 'robni-partneri';
+    const qParams: any = { tipPartnera: this.tipPartnera };
+    if (this.status) qParams['status'] = this.status;
+    this.router.navigate(['/projekat', iteracija.id, segment], { queryParams: qParams });
+  }
 
   openRobniModal() {
     const dialogRef = this.dialog.open(PartnerModalComponent, {
-      width: '700px'
+      width: '700px',
+      data: { projekatId: this.projekatId, tipPartnera: this.tipPartnera },
     });
 
-    dialogRef.afterClosed().subscribe((result: KompanijaResponseModel[] | undefined) => {
-      if (result) {
-        result.forEach(k => {
-          if (!this.partneri.find(r => r.ID === k.ID)) {
-            this.partneri.push(k);
-          }
-        });
-      }
+    dialogRef.afterClosed().subscribe((created: boolean) => {
+      if (created) this.loadPartneri();
     });
   }
 
   openKreirajKompanijuModal() {
-    const dialogRef = this.dialog.open(KreirajKompanijuModalComponent, {
-      width: '700px'
-    });
-
-    dialogRef.afterClosed().subscribe((result: KompanijaResponseModel | undefined) => {
-      if (result) {
-        this.partneri.push(result);
-      }
-    });
+    this.dialog.open(KreirajKompanijuModalComponent, { width: '700px' });
   }
-
 
   getStanjeClass(stanje: string | undefined): string {
     switch (stanje) {
-      case 'Odobreno':
-        return 'stanje-odobreno';
-      case 'Odbijeno':
-        return 'stanje-odbijeno';
+      case 'Odobreno': return 'stanje-odobreno';
+      case 'Odbijeno': return 'stanje-odbijeno';
       case 'Poziv':
-      case 'Poslat email':
-        return 'stanje-poziv-email';
-      case 'Nije dodeljeno':
-      default:
-        return 'stanje-nije-dodeljeno';
+      case 'Poslat email': return 'stanje-poziv-email';
+      default: return 'stanje-nije-dodeljeno';
     }
   }
 
   getBorderClass(stanje: string | undefined): string {
     switch (stanje) {
-      case 'Odobreno':
-        return 'border-odobreno';
-      case 'Odbijeno':
-        return 'border-odbijeno';
-      default:
-        return '';
+      case 'Odobreno': return 'border-odobreno';
+      case 'Odbijeno': return 'border-odbijeno';
+      default: return '';
     }
   }
 
   openDetaljiModal(kompanija: KompanijaResponseModel) {
-    this.dialog.open(KompanijaDetaljiModalComponent, {
+    const dialogRef = this.dialog.open(KompanijaDetaljiModalComponent, {
       width: '600px',
-      data: kompanija
+      data: { ...kompanija, iteracijaId: this.projekatId }
+    });
+
+    dialogRef.afterClosed().subscribe((saved: boolean) => {
+      if (saved) this.loadPartneri();
     });
   }
 }

@@ -11,6 +11,17 @@
       </div>
     </div>
 
+    <!-- Iteration year switcher -->
+    <div class="iteracija-switcher" *ngIf="iteracije.length > 1">
+      <button
+        *ngFor="let it of iteracije"
+        class="iteracija-pill"
+        [class.active]="it.id === projekatId"
+        (click)="switchIteracija(it)">
+        {{ it.godina }}
+      </button>
+    </div>
+
     <div class="list-wrapper" *ngIf="partneri.length > 0">
       <div
         *ngFor="let r of partneri"

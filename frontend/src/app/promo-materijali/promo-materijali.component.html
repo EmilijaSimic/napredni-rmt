@@ -1,0 +1,82 @@
+<div class="home-layout">
+  <la-partneri-menu></la-partneri-menu>
+
+  <div class="content">
+    <div class="header">
+      <h2>Promo Materijali</h2>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <ng-container *ngIf="isAdmin">
+
+      <div class="upload-panel">
+        <div class="select-wrapper">
+          <label>Kompanija</label>
+          <select [(ngModel)]="selectedKompanijaId" (change)="onKompanijaChange()">
+            <option [ngValue]="null" disabled>Odaberi kompaniju...</option>
+            <option *ngFor="let k of kompanije" [ngValue]="k.id">{{ k.naziv }}</option>
+          </select>
+        </div>
+
+        <div class="file-row">
+          <label class="file-label">
+            <input type="file" accept="image/*,video/*" (change)="onFileSelected($event)" hidden>
+            <span class="file-btn">{{ fileName || 'Odaberi fajl' }}</span>
+          </label>
+
+          <button
+            class="upload-btn"
+            [disabled]="!selectedFile || !selectedKompanijaId || isUploading"
+            (click)="upload()">
+            {{ isUploading ? 'Uploaduje se...' : 'Upload' }}
+          </button>
+        </div>
+
+        <p class="error" *ngIf="uploadError">{{ uploadError }}</p>
+      </div>
+
+      <div *ngIf="selectedKompanijaId" class="materials-section">
+        <p class="section-label" *ngIf="materijali.length > 0">
+          {{ selectedKompanijaNaziv() }} — {{ materijali.length }} materijal{{ materijali.length === 1 ? '' : 'a' }}
+        </p>
+        <p class="empty-msg" *ngIf="materijali.length === 0">
+          Nema materijala za ovu kompaniju.
+        </p>
+
+        <div class="materials-grid" *ngIf="materijali.length > 0">
+          <div class="material-card" *ngFor="let m of materijali">
+            <div class="media-wrapper">
+              <video *ngIf="isVideo(m.url)" [src]="m.url" controls class="media"></video>
+              <img *ngIf="!isVideo(m.url)" [src]="m.url" [alt]="m.originalnoIme" class="media">
+            </div>
+            <div class="card-footer">
+              <span class="file-name" [title]="m.originalnoIme">{{ m.originalnoIme }}</span>
+              <span class="date">{{ m.datumKreiranja | date:'d.M.yyyy.' }}</span>
+              <button class="delete-btn" (click)="deleteMaterijal(m.id)">Obriši</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- KOMPANIJA VIEW -->
+    <ng-container *ngIf="!isAdmin">
+      <p class="empty-msg" *ngIf="materijali.length === 0">Nema promo materijala za vašu kompaniju.</p>
+
+      <div class="materials-grid" *ngIf="materijali.length > 0">
+        <div class="material-card" *ngFor="let m of materijali">
+          <div class="media-wrapper">
+            <video *ngIf="isVideo(m.url)" [src]="m.url" controls class="media"></video>
+            <img *ngIf="!isVideo(m.url)" [src]="m.url" [alt]="m.originalnoIme" class="media">
+          </div>
+          <div class="card-footer">
+            <span class="file-name" [title]="m.originalnoIme">{{ m.originalnoIme }}</span>
+            <span class="date">{{ m.datumKreiranja | date:'d.M.yyyy.' }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

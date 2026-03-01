@@ -43,7 +43,20 @@ export const routes: Routes = [{
   {
     path: 'promo-materijali',
     loadComponent: () =>
-      import('./projekti/projekti.component').then(c => c.ProjektiComponent),
+      import('./promo-materijali/promo-materijali.component').then(c => c.PromoMaterijaliComponent),
+    canActivate: [AuthenticatedGuard],
+  },
+  {
+    path: 'nova-iteracija',
+    loadComponent: () =>
+      import('./nova-iteracija/nova-iteracija.component').then(c => c.NovaIteracijaComponent),
+    canActivate: [AuthenticatedGuard],
+  },
+  {
+    path: 'projekat/:id/clanovi',
+    loadComponent: () =>
+      import('./clanovi/clanovi.component').then(c => c.ClanoviComponent),
+    canActivate: [AuthenticatedGuard],
   },
   {
     path: 'svi-partneri-robni',

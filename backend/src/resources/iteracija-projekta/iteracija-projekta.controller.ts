@@ -1,9 +1,10 @@
-import {
-  Controller, Get, Post, Body, Patch, Param, Delete, Query, } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { IteracijaProjektaService } from './iteracija-projekta.service';
 import { CreateIteracijaProjektaDto } from './dto/create-iteracija-projekta.dto';
 import { UpdateIteracijaProjektaDto } from './dto/update-iteracija-projekta.dto';
+import { BatchKompanijaIteracijaDto } from './dto/batch-kompanija-iteracija.dto';
 import { NazivProjekta } from 'src/enums/naziv-projekta';
+import { TipPartnera } from 'src/enums/tip-partnera';
 
 @Controller('iteracija-projekta')
 export class IteracijaProjektaController {
@@ -19,6 +20,25 @@ export class IteracijaProjektaController {
   @Get('poslednji')
   findAll(@Query('naziv') naziv: NazivProjekta) {
     return this.iteracijaProjektaService.findLast(naziv);
+  }
+
+  @Post(':id/kompanije/batch')
+  batchAddKompanije(@Param('id') id: string, @Body() dto: BatchKompanijaIteracijaDto) {
+    return this.iteracijaProjektaService.batchAddKompanije(+id, dto);
+  }
+
+  @Get(':id/kompanije')
+  findKompanije(
+    @Param('id') id: string,
+    @Query('tipPartnera') tipPartnera: TipPartnera,
+    @Query('status') status?: string,
+  ) {
+    return this.iteracijaProjektaService.findKompanije(+id, tipPartnera, status);
+  }
+
+  @Get('sve')
+  findAllByNaziv(@Query('naziv') naziv: NazivProjekta) {
+    return this.iteracijaProjektaService.findAllByNaziv(naziv);
   }
 
   @Get(':id')

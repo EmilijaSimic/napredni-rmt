@@ -23,9 +23,13 @@ export class KompanijaIteracijaController {
     return this.kompanijaIteracijaService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateKompanijaIteracijaDto: UpdateKompanijaIteracijaDto) {
-    return this.kompanijaIteracijaService.update(+id, updateKompanijaIteracijaDto);
+  @Patch(':iteracijaId')
+  update(
+    @Param('kompanijaId') kompanijaId: string,
+    @Param('iteracijaId') iteracijaId: string,
+    @Body() updateKompanijaIteracijaDto: UpdateKompanijaIteracijaDto,
+  ) {
+    return this.kompanijaIteracijaService.update(+kompanijaId, +iteracijaId, updateKompanijaIteracijaDto);
   }
 
   @Delete(':id')

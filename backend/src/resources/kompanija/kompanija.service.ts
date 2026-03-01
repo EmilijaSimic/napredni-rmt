@@ -19,34 +19,12 @@ export class KompanijaService {
   ) {}
 
   async create(createKompanijaDto: CreateKompanijaDto) {
-    const { naziv, websajt, kontakt, ...vezaData } = createKompanijaDto;
-    const kompanijaData = { naziv, websajt, kontakt };
-    const kompanija = this.kompanijaRepository.create(kompanijaData);
-
-    if (!vezaData.iteracija_id) {
-      throw new Error('Morate izabrati projekat.');
-    }
-
-    if (!this.iteracijaRepository.findOne({ where: { id: vezaData.iteracija_id } })) {
-      throw new Error('Projekat ne postoji.');
-    }
-
-    const korisnik = await this.korisnikRepository.findOne({ where: { id: vezaData.korisnik_id } });
-
-    if(vezaData.korisnik_id && !korisnik) {
-      throw new Error('Korisnik ne postoji.');
-    }
-
-    const sacuvanaKompanija = await this.kompanijaRepository.save(kompanija);
-
-    const veza = await this.kompanijaIteracijaRepository.create({ ...vezaData, kompanija_id: sacuvanaKompanija.id });
-    await this.kompanijaIteracijaRepository.save(veza);
-   
-    return null;
+    const kompanija = this.kompanijaRepository.create(createKompanijaDto);
+    return await this.kompanijaRepository.save(kompanija);
   }
 
-  findAll() {
-    return `This action returns all kompanija`;
+  async findAll() {
+    return await this.kompanijaRepository.find();
   }
 
   findOne(id: number) {

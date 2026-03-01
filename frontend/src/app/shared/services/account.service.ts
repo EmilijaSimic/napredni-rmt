@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-import { LS_USER_LANGUAGE, LS_USER_ROLES, LS_USER_TOKEN } from '../constants';
+import { LS_USER_ITERACIJA_ID, LS_USER_LANGUAGE, LS_USER_ROLES, LS_USER_TOKEN } from '../constants';
 import { AuthResponseModel, UserLoginModel, UserMeModel, UserRegisterModel } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
@@ -50,6 +50,16 @@ export class AccountService {
     const parsedToken = this.parseJwt(authResponse.token);
     localStorage.setItem(LS_USER_TOKEN, authResponse.token);
     localStorage.setItem(LS_USER_ROLES, parsedToken.roles);
+    if (parsedToken.iteracija_id != null) {
+      localStorage.setItem(LS_USER_ITERACIJA_ID, String(parsedToken.iteracija_id));
+    } else {
+      localStorage.removeItem(LS_USER_ITERACIJA_ID);
+    }
+  }
+
+  getIteracijaId(): number | null {
+    const id = localStorage.getItem(LS_USER_ITERACIJA_ID);
+    return id ? +id : null;
   }
 
   getLoggedUserRoles() {

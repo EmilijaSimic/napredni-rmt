@@ -33,8 +33,23 @@ export class KompanijaIteracija {
     @Column({ type: 'date', nullable: true })
     datum_poziv: Date;
 
-    @Column({ nullable: true })
-    odobrena:boolean;
+    @Column({ nullable: true, type: 'boolean' })
+    odobrena: boolean | null;
+
+    @Column({ nullable: true, type: 'varchar' })
+    stanje: string;
+
+    @Column({ default: 0 })
+    broj_cimanja: number;
+
+    @Column({ default: 0 })
+    broj_odbijanja: number;
+
+    @Column({ default: 0 })
+    broj_prihvatanja: number;
+
+    @Column({ nullable: true, type: 'text' })
+    napomena: string;
 
     @ManyToOne(() => Korisnik, korisnik => korisnik.ki)
     @JoinColumn({ name: 'korisnik_id' })

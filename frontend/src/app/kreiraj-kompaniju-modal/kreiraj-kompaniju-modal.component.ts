@@ -1,20 +1,8 @@
-import {
-  Component
-} from '@angular/core';
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  FormsModule
-} from '@angular/forms';
-import {
-  MatDialogRef,
-  MatDialogModule
-} from '@angular/material/dialog';
-
-import {
-  KompanijaResponseModel
-} from '../shared/models/kompanija';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { KompanijaService } from '../shared/services/kompanija.service';
 
 @Component({
   selector: 'la-kreiraj-kompaniju-modal',
@@ -24,36 +12,30 @@ import {
   styleUrls: ['./kreiraj-kompaniju-modal.component.scss']
 })
 export class KreirajKompanijuModalComponent {
+  naziv = '';
+  websajt = '';
+  kontakt = '';
+  saving = false;
 
-  model: KompanijaResponseModel = {
-    ID: 0,
-    naziv: '',
-    brojCimanja: 0,
-    brojOdbijanja: 0,
-    brojPrihvatanja: 0,
-    napomena: '',
-    websajt: '',
-    kontakt: '',
-    stanje: 'Nije dodeljeno',
-    zaduzen: '',
-    datumCimanja: new Date(),
-    datumPodsetnik: new Date(),
-    datumPoziva: new Date(),
-    odobreno: false
-  };
-
-  constructor(private dialogRef: MatDialogRef < KreirajKompanijuModalComponent > ) {}
+  constructor(
+    private dialogRef: MatDialogRef<KreirajKompanijuModalComponent>,
+    private kompanijaService: KompanijaService,
+  ) {}
 
   potvrdi() {
-    if (!this.model.naziv.trim()) {
-      return;
-    }
+    if (!this.naziv.trim()) return;
 
-    this.model.ID = Date.now(); // privremeni ID dok nema backend
-    this.dialogRef.close(this.model);
+    this.saving = true;
+    this.kompanijaService.create(this.naziv, this.websajt, this.kontakt).subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        console.error('Greška pri kreiranju kompanije', err);
+        this.saving = false;
+      },
+    });
   }
 
   otkazi() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 }
