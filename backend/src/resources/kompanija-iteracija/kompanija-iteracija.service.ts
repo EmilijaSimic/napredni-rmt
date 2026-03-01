@@ -25,8 +25,7 @@ export class KompanijaIteracijaService {
       tip_partnera: createKompanijaIteracijaDto.tip_partnera,
       korisnik: { id: createKompanijaIteracijaDto.korisnik_id }
     });
-    this.kompanijaIteracijaRepository.save(kompanijaIteracija);
-    return 'This action adds a new kompanijaIteracija';
+    return this.kompanijaIteracijaRepository.save(kompanijaIteracija);
   }
 
   findAll() {

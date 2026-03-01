@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateKompanijaDto } from './dto/create-kompanija.dto';
 import { UpdateKompanijaDto } from './dto/update-kompanija.dto';
 import { IteracijaProjekta } from '../iteracija-projekta/entities/iteracija-projekta.entity';
@@ -31,8 +31,15 @@ export class KompanijaService {
     return `This action returns a #${id} kompanija`;
   }
 
-  update(id: number, updateKompanijaDto: UpdateKompanijaDto) {
-    return `This action updates a #${id} kompanija`;
+  async update(id: number, updateKompanijaDto: UpdateKompanijaDto) {
+     const kompanija = await this.kompanijaRepository.findOneBy({ id });
+
+  if (!kompanija) {
+    throw new NotFoundException('Kompanija ne postoji');
+  }
+
+  Object.assign(kompanija, updateKompanijaDto);
+  return this.kompanijaRepository.save(kompanija);
   }
 
   remove(id: number) {
