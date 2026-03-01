@@ -36,7 +36,6 @@ export class AccountsService {
       sub: korisnik.id,
       username: korisnik.username,
       roles: korisnik.tip,
-      kompanija_id: korisnik.kompanija_id ?? null,
       iteracija_id: latestIteracija?.iteracija_id ?? null,
     };
 

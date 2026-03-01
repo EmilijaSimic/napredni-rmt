@@ -17,12 +17,17 @@ export class MaterijaliService {
     return this.http.post<MaterijaliModel>(this.API_ENDPOINT, formData);
   }
 
-  getByKompanija(kompanija_id: number): Observable<MaterijaliModel[]> {
-    return this.http.get<MaterijaliModel[]>(`${this.API_ENDPOINT}/kompanija/${kompanija_id}`);
+  getAll(search?: string): Observable<MaterijaliModel[]> {
+    const params = search ? `?search=${encodeURIComponent(search)}` : '';
+    return this.http.get<MaterijaliModel[]>(`${this.API_ENDPOINT}${params}`);
   }
 
-  getMoje(): Observable<MaterijaliModel[]> {
-    return this.http.get<MaterijaliModel[]>(`${this.API_ENDPOINT}/moje`);
+  getKompanije(): Observable<{ id: number; naziv: string }[]> {
+    return this.http.get<{ id: number; naziv: string }[]>(`${this.API_ENDPOINT}/kompanije`);
+  }
+
+  syncTags(): Observable<{ message: string; updated: number }> {
+    return this.http.post<{ message: string; updated: number }>(`${this.API_ENDPOINT}/sync-tags`, {});
   }
 
   delete(id: number): Observable<any> {

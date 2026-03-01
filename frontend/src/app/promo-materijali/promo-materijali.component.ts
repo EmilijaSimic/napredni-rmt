@@ -18,14 +18,18 @@ import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.com
 export class PromoMaterijaliComponent implements OnInit {
   isAdmin = false;
 
-  // Admin state
+  // Admin upload state
   kompanije: KompanijaBasicModel[] = [];
   selectedKompanijaId: number | null = null;
   selectedFile: File | null = null;
-  materijali: MaterijaliModel[] = [];
   isUploading = false;
+  isSyncing = false;
   uploadError = '';
   fileName = '';
+
+  // Shared state
+  materijali: MaterijaliModel[] = [];
+  searchTerm = '';
 
   constructor(
     private accountService: AccountService,
@@ -40,19 +44,40 @@ export class PromoMaterijaliComponent implements OnInit {
       this.kompanijaService.getAll().subscribe({
         next: (data) => this.kompanije = data,
       });
-    } else {
-      this.materijaliService.getMoje().subscribe({
-        next: (data) => this.materijali = data,
-      });
     }
-  }
 
-  onKompanijaChange(): void {
-    if (!this.selectedKompanijaId) return;
-    this.materijali = [];
-    this.materijaliService.getByKompanija(this.selectedKompanijaId).subscribe({
+    this.materijaliService.getAll().subscribe({
       next: (data) => this.materijali = data,
     });
+  }
+
+  syncTags(): void {
+    this.isSyncing = true;
+    this.materijaliService.syncTags().subscribe({
+      next: () => {
+        this.isSyncing = false;
+        this.materijaliService.getAll(this.searchTerm).subscribe({
+          next: (data) => this.materijali = data,
+        });
+      },
+      error: () => { this.isSyncing = false; },
+    });
+  }
+
+  onSearch(): void {
+    this.materijaliService.getAll(this.searchTerm).subscribe({
+      next: (data) => this.materijali = data,
+    });
+  }
+
+  get materijaliPoKompaniji(): { naziv: string; stavke: MaterijaliModel[] }[] {
+    const map = new Map<string, MaterijaliModel[]>();
+    for (const m of this.materijali) {
+      const naziv = m.kompanija?.naziv ?? 'Nepoznato';
+      if (!map.has(naziv)) map.set(naziv, []);
+      map.get(naziv)!.push(m);
+    }
+    return Array.from(map.entries()).map(([naziv, stavke]) => ({ naziv, stavke }));
   }
 
   onFileSelected(event: Event): void {
@@ -69,11 +94,13 @@ export class PromoMaterijaliComponent implements OnInit {
     this.uploadError = '';
 
     this.materijaliService.upload(this.selectedFile, this.selectedKompanijaId).subscribe({
-      next: (novi) => {
-        this.materijali = [novi, ...this.materijali];
+      next: () => {
         this.selectedFile = null;
         this.fileName = '';
         this.isUploading = false;
+        this.materijaliService.getAll(this.searchTerm).subscribe({
+          next: (data) => this.materijali = data,
+        });
       },
       error: () => {
         this.uploadError = 'Greška pri uploadu. Pokušajte ponovo.';
@@ -92,9 +119,5 @@ export class PromoMaterijaliComponent implements OnInit {
 
   isVideo(url: string): boolean {
     return /\.(mp4|mov|avi|webm|mkv)(\?.*)?$/i.test(url);
-  }
-
-  selectedKompanijaNaziv(): string {
-    return this.kompanije.find(k => k.id === this.selectedKompanijaId)?.naziv ?? '';
   }
 }

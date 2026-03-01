@@ -5,5 +5,6 @@ export interface MaterijaliModel {
   originalnoIme: string;
   imeCloud: string;
   datumKreiranja: string;
-  kompanija_id: number;
+  tags?: string[];
+  kompanija?: { id: number; naziv: string };
 }

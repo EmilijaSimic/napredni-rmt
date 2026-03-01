@@ -24,6 +24,9 @@ export class Materijali {
   @Column()
   kompanija_id: number;
 
+  @Column({ type: 'simple-array', nullable: true })
+  tags: string[];
+
   @ManyToOne(() => Kompanija, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'kompanija_id' })
   kompanija: Kompanija;
