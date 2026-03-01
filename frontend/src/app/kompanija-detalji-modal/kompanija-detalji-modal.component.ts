@@ -2,8 +2,10 @@ import { Component, Inject, OnInit, ElementRef, HostListener } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-import { KompanijaResponseModel } from '../shared/models/kompanija';
+import { KompanijaResponseModel, KorisnikModel } from '../shared/models/kompanija';
 import { ClanService } from '../shared/services/clan.service';
+import { KompanijaService } from '../shared/services/kompanija.service';
+import { KorisnikService } from '../shared/services/korisnik.service';
 
 @Component({
   selector: 'la-kompanija-detalji-modal',
@@ -14,10 +16,12 @@ import { ClanService } from '../shared/services/clan.service';
 })
 export class KompanijaDetaljiModalComponent implements OnInit {
 
-  clanovi: string[] = [];
+  korisnici: KorisnikModel[] = [];
   stanja: string[] = [];
+  selectedKorisnikId: number | null = null;
   dropdownOpen = false;
   stanjeDropdownOpen = false;
+  saving = false;
 
   edit = {
     naziv: false,
@@ -32,6 +36,8 @@ export class KompanijaDetaljiModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: KompanijaResponseModel,
     private dialogRef: MatDialogRef<KompanijaDetaljiModalComponent>,
     private clanService: ClanService,
+    private kompanijaService: KompanijaService,
+    private korisnikService: KorisnikService,
     private el: ElementRef
   ) {}
 
@@ -40,12 +46,56 @@ export class KompanijaDetaljiModalComponent implements OnInit {
       this.data.stanje = 'Nije dodeljeno';
     }
 
-    this.clanService.getClanovi().subscribe(res => this.clanovi = res);
+    this.selectedKorisnikId = this.data.korisnikId ?? null;
+
     this.clanService.getStanja().subscribe(res => this.stanja = res);
+
+    if (this.data.iteracijaId) {
+      this.korisnikService.getByProject(this.data.iteracijaId).subscribe({
+        next: (res) => this.korisnici = res,
+        error: () => this.korisnici = [],
+      });
+    }
+  }
+
+  get selectedKorisnikNaziv(): string {
+    const k = this.korisnici.find(k => k.id === this.selectedKorisnikId);
+    return k ? `${k.ime} ${k.prezime}` : (this.data.zaduzen || 'Izaberi člana');
+  }
+
+  sacuvaj() {
+    if (!this.data.iteracijaId) {
+      this.dialogRef.close();
+      return;
+    }
+
+    const payload: Record<string, any> = {
+      stanje: this.data.stanje,
+    };
+
+    if (this.data.napomena != null) {
+      payload['napomena'] = this.data.napomena;
+    }
+
+    if (this.selectedKorisnikId != null) {
+      payload['korisnik_id'] = this.selectedKorisnikId;
+    }
+
+    this.saving = true;
+    this.kompanijaService.updateKompanijaIteracija(this.data.ID, this.data.iteracijaId, payload).subscribe({
+      next: () => {
+        this.saving = false;
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.error('Greška pri čuvanju', err);
+        this.saving = false;
+      }
+    });
   }
 
   zatvori() {
-    this.dialogRef.close(this.data);
+    this.dialogRef.close();
   }
 
   toggleEdit(field: keyof typeof this.edit) {
@@ -60,8 +110,9 @@ export class KompanijaDetaljiModalComponent implements OnInit {
     this.stanjeDropdownOpen = !this.stanjeDropdownOpen;
   }
 
-  selectClan(clan: string) {
-    this.data.zaduzen = clan;
+  selectKorisnik(k: KorisnikModel) {
+    this.selectedKorisnikId = k.id;
+    this.data.zaduzen = `${k.ime} ${k.prezime}`;
     this.dropdownOpen = false;
   }
 

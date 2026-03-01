@@ -57,39 +57,45 @@
       </div>
     </div>
 
-    <!-- Zaduzen (custom dropdown) -->
+    <!-- Član (real korisnici from DB) -->
     <div class="form-group">
       <label>Član</label>
       <div class="custom-select" [class.open]="dropdownOpen" (click)="$event.stopPropagation()">
         <div class="select-display" (click)="toggleDropdown()">
-          <span>{{ data.zaduzen || 'Izaberi člana' }}</span>
+          <span>{{ selectedKorisnikNaziv }}</span>
           <svg class="arrow" viewBox="0 0 24 24">
             <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div class="select-options" *ngIf="dropdownOpen">
-          <div class="option" *ngFor="let clan of clanovi" (click)="selectClan(clan)">
-            {{ clan }}
+          <div class="option" *ngIf="korisnici.length === 0" style="color: #666; font-style: italic;">
+            Nema članova za ovaj projekat
+          </div>
+          <div class="option" *ngFor="let k of korisnici" (click)="selectKorisnik(k)">
+            {{ k.ime }} {{ k.prezime }}
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Stanje (trenutno iz servisa, kasnije dropdown isto kao za članove) -->
-   <!-- Stanje -->
-<div class="custom-select" [class.open]="stanjeDropdownOpen" (click)="$event.stopPropagation()">
-  <div class="select-display" (click)="toggleStanjeDropdown()">
-    <span>{{ data.stanje }}</span>
-    <svg class="arrow" viewBox="0 0 24 24">
-      <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <div class="select-options" *ngIf="stanjeDropdownOpen">
-    <div class="option" *ngFor="let stanje of stanja" (click)="selectStanje(stanje)">
-      {{ stanje }}
+    <!-- Stanje -->
+    <div class="form-group">
+      <label>Stanje</label>
+      <div class="custom-select" [class.open]="stanjeDropdownOpen" (click)="$event.stopPropagation()">
+        <div class="select-display" (click)="toggleStanjeDropdown()">
+          <span>{{ data.stanje }}</span>
+          <svg class="arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="select-options" *ngIf="stanjeDropdownOpen">
+          <div class="option" *ngFor="let s of stanja" (click)="selectStanje(s)">
+            {{ s }}
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
     <!-- Napomena -->
     <div class="form-group full">
       <label>Napomena</label>
@@ -102,5 +108,5 @@
 </div>
 
 <div class="actions">
-  <button (click)="zatvori()">Sačuvaj</button>
+  <button (click)="sacuvaj()" [disabled]="saving">{{ saving ? 'Čuvanje...' : 'Sačuvaj' }}</button>
 </div>

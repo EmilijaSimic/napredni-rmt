@@ -1,26 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { KorisnikIteracija } from './entities/korisnik-iteracija.entity';
 import { CreateKorisnikIteracijaDto } from './dto/create-korisnik-iteracija.dto';
-import { UpdateKorisnikIteracijaDto } from './dto/update-korisnik-iteracija.dto';
 
 @Injectable()
 export class KorisnikIteracijaService {
-  create(createKorisnikIteracijaDto: CreateKorisnikIteracijaDto) {
-    return 'This action adds a new korisnikIteracija';
+  constructor(
+    @InjectRepository(KorisnikIteracija)
+    private readonly repo: Repository<KorisnikIteracija>,
+  ) {}
+
+  async create(dto: CreateKorisnikIteracijaDto) {
+    const existing = await this.repo.findOne({
+      where: { korisnik_id: dto.korisnik_id, iteracija_id: dto.iteracija_id },
+    });
+    if (existing) throw new ConflictException('Korisnik je već dodat na ovu iteraciju.');
+
+    const record = this.repo.create({
+      korisnik_id: dto.korisnik_id,
+      iteracija_id: dto.iteracija_id,
+    });
+    return await this.repo.save(record);
   }
 
-  findAll() {
-    return `This action returns all korisnikIteracija`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} korisnikIteracija`;
-  }
-
-  update(id: number, updateKorisnikIteracijaDto: UpdateKorisnikIteracijaDto) {
-    return `This action updates a #${id} korisnikIteracija`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} korisnikIteracija`;
+  async remove(korisnikId: number, iteracijaId: number) {
+    const record = await this.repo.findOne({
+      where: { korisnik_id: korisnikId, iteracija_id: iteracijaId },
+    });
+    if (!record) throw new NotFoundException('Veza nije pronađena.');
+    return await this.repo.delete({ korisnik_id: korisnikId, iteracija_id: iteracijaId });
   }
 }

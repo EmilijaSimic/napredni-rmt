@@ -80,6 +80,15 @@
     </div>
 
 
+    <!-- CLANOVI (samo admin) -->
+    <a
+      *ngIf="isAdmin"
+      [routerLink]="['/projekat', projekatId, 'clanovi']"
+      routerLinkActive="active">
+      <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+      Članovi
+    </a>
+
     <!-- PROMO MATERIJALI (samo admin) -->
     <a
       *ngIf="isAdmin"
@@ -89,6 +98,14 @@
       <img src="assets/images/promo-icon.png" alt="icon" class="icon">
       Promo materijali
     </a>
+
+    <!-- NOVA ITERACIJA (samo admin) -->
+    <div class="menu-group" *ngIf="isAdmin">
+      <a [routerLink]="['/nova-iteracija']" routerLinkActive="active">
+        <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+        Nova iteracija
+      </a>
+    </div>
 
 
     <!-- LOGOUT -->

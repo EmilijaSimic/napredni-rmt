@@ -1,0 +1,53 @@
+<div class="home-layout">
+  <la-partneri-menu></la-partneri-menu>
+
+  <div class="content">
+    <div class="header">
+      <h2>Nova iteracija</h2>
+    </div>
+
+    <div class="projekti-grid">
+      <div class="projekat-card" *ngFor="let p of projekti">
+        <img [src]="p.image" [alt]="p.displayNaziv" class="projekat-img">
+
+        <div class="card-body">
+          <p class="projekat-naziv">{{ p.displayNaziv }}</p>
+
+          <div class="iteracija-info" *ngIf="p.trenutna">
+            <span class="trenutna-label">Trenutna</span>
+            <span class="godina">{{ p.trenutna.godina }}</span>
+            <span class="arrow">→</span>
+            <span class="nova-godina">{{ p.trenutna.godina + 1 }}</span>
+          </div>
+
+          <p class="no-iteracija" *ngIf="!p.trenutna">Nema iteracija za ovaj projekat.</p>
+
+          <p class="error-msg" *ngIf="p.error">{{ p.error }}</p>
+
+          <div class="card-actions">
+            <!-- Initial button -->
+            <button
+              *ngIf="!p.createdId && p.trenutna && !p.pendingConfirm"
+              class="kreiraj-btn"
+              [disabled]="p.isCreating"
+              (click)="requestConfirm(p)">
+              {{ p.isCreating ? 'Kreiranje...' : 'Kreiraj ' + (p.trenutna.godina + 1) }}
+            </button>
+
+            <!-- Confirmation prompt -->
+            <div class="confirm-row" *ngIf="p.pendingConfirm && !p.createdId">
+              <span class="confirm-text">Da li ste sigurni?</span>
+              <button class="confirm-btn" (click)="kreiraj(p)">Da, kreiraj</button>
+              <button class="cancel-btn" (click)="cancelKreiraj(p)">Otkaži</button>
+            </div>
+
+            <div class="success-row" *ngIf="p.createdId">
+              <span class="success-badge">✓ Kreirana {{ p.trenutna?.godina }}</span>
+              <button class="idi-btn" (click)="idNaIteraciju(p)">Idi na iteraciju →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

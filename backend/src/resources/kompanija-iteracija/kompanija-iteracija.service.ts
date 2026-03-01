@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateKompanijaIteracijaDto } from './dto/create-kompanija-iteracija.dto';
 import { UpdateKompanijaIteracijaDto } from './dto/update-kompanija-iteracija.dto';
 import { KompanijaIteracija } from './entities/kompanija-iteracija.entity';
@@ -19,26 +19,12 @@ export class KompanijaIteracijaService {
   ) {}
 
   create(kompanijaId: number, createKompanijaIteracijaDto: CreateKompanijaIteracijaDto) {
-
     const kompanijaIteracija = this.kompanijaIteracijaRepository.create({
       iteracija: { id: createKompanijaIteracijaDto.iteracija_id },
-      kompanija: { id: kompanijaId },      
+      kompanija: { id: kompanijaId },
       tip_partnera: createKompanijaIteracijaDto.tip_partnera,
       korisnik: { id: createKompanijaIteracijaDto.korisnik_id }
     });
-
-     if (!this.kompanijaRepository.findOne({ where: { id: kompanijaId } } )) {
-      throw new Error('Kompanija ne postoji.');
-    }
-
-     if (!this.korisnikRepository.findOne({ where: { id: createKompanijaIteracijaDto.korisnik_id } } )) {
-      throw new Error('Korisnik ne postoji.');
-     }
-
-    if(!this.iteracijaRepository.findOne({ where: { id: createKompanijaIteracijaDto.iteracija_id } })) {
-      throw new Error('Iteracija ne postoji.');
-    }
-    
     this.kompanijaIteracijaRepository.save(kompanijaIteracija);
     return 'This action adds a new kompanijaIteracija';
   }
@@ -51,8 +37,28 @@ export class KompanijaIteracijaService {
     return `This action returns a #${id} kompanijaIteracija`;
   }
 
-  update(id: number, updateKompanijaIteracijaDto: UpdateKompanijaIteracijaDto) {
-    return `This action updates a #${id} kompanijaIteracija`;
+  async update(kompanijaId: number, iteracijaId: number, dto: UpdateKompanijaIteracijaDto) {
+    const record = await this.kompanijaIteracijaRepository.findOne({
+      where: { kompanija_id: kompanijaId, iteracija_id: iteracijaId },
+    });
+    if (!record) throw new NotFoundException('Zapis nije pronađen.');
+
+    const { korisnik_id, stanje, ...rest } = dto;
+
+    Object.assign(record, rest);
+
+    if (stanje !== undefined) {
+      record.stanje = stanje;
+      if (stanje === 'Odobreno') record.odobrena = true;
+      else if (stanje === 'Odbijeno') record.odobrena = false;
+      else record.odobrena = null;
+    }
+
+    if (korisnik_id !== undefined) {
+      record.korisnik = { id: korisnik_id } as Korisnik;
+    }
+
+    return await this.kompanijaIteracijaRepository.save(record);
   }
 
   remove(id: number) {

@@ -24,9 +24,19 @@ export interface KompanijaResponseModel {
   websajt: string;
   kontakt: string;
   zaduzen: string;
-  stanje: string; // ovde može običan string da TS ne kuka
+  korisnikId: number | null;
+  stanje: string;
   datumCimanja: Date;
   datumPodsetnik: Date;
   datumPoziva: Date;
   odobreno: boolean;
+  iteracijaId?: number;
+}
+
+export interface KorisnikModel {
+  id: number;
+  ime: string;
+  prezime: string;
+  username: string;
+  tip: string;
 }

@@ -61,6 +61,35 @@ h2 {
   overflow: hidden;
 }
 
+.iteracija-switcher {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.iteracija-pill {
+  padding: 6px 18px;
+  border-radius: 20px;
+  border: 1px solid #3a3a3a;
+  background: #1a1a1a;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #ffa600;
+    color: #fff;
+  }
+
+  &.active {
+    background: #ffa600;
+    border-color: #ffa600;
+    color: #000;
+    font-weight: 500;
+  }
+}
+
 .list-wrapper {
   display: flex;
   flex-direction: column;

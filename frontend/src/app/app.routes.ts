@@ -47,6 +47,18 @@ export const routes: Routes = [{
     canActivate: [AuthenticatedGuard],
   },
   {
+    path: 'nova-iteracija',
+    loadComponent: () =>
+      import('./nova-iteracija/nova-iteracija.component').then(c => c.NovaIteracijaComponent),
+    canActivate: [AuthenticatedGuard],
+  },
+  {
+    path: 'projekat/:id/clanovi',
+    loadComponent: () =>
+      import('./clanovi/clanovi.component').then(c => c.ClanoviComponent),
+    canActivate: [AuthenticatedGuard],
+  },
+  {
     path: 'svi-partneri-robni',
     loadComponent: () =>
       import('./svi-robni/svi-robni.component').then(c => c.SviRobniComponent),

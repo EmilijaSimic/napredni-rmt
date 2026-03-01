@@ -64,6 +64,17 @@ export class KorisnikService {
   );
   }
 
+  async findAllNonKompanija() {
+    return await this.korisnikRepository.find({
+      where: [
+        { tip: TipKorisnika.ADMIN },
+        { tip: TipKorisnika.KOORDINATOR },
+        { tip: TipKorisnika.CLAN },
+      ],
+      select: ['id', 'ime', 'prezime', 'username', 'tip'],
+    });
+  }
+
   async findOne(id: number) {
     return await this.korisnikRepository.findOneBy({id});
   }

@@ -1,40 +1,18 @@
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  MatDialog,
-  MatDialogModule
-} from '@angular/material/dialog';
-import {
-  ActivatedRoute
-} from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 
-import {
-  KompanijaDetaljiModalComponent
-} from '../kompanija-detalji-modal/kompanija-detalji-modal.component';
-import {
-  KreirajKompanijuModalComponent
-} from '../kreiraj-kompaniju-modal/kreiraj-kompaniju-modal.component';
-import {
-  PartnerModalComponent
-} from '../partner-modal/partner-modal.component';
-import {
-  TipPartnera
-} from '../shared/enums/tip-partnera.enum';
-import {
-  KompanijaResponseModel
-} from '../shared/models/kompanija';
-import {
-  PartneriMenuComponent
-} from '../shared/partneri-menu/partneri-menu.component';
-import {
-  KompanijaService
-} from '../shared/services/kompanija.service';
+import { KompanijaDetaljiModalComponent } from '../kompanija-detalji-modal/kompanija-detalji-modal.component';
+import { KreirajKompanijuModalComponent } from '../kreiraj-kompaniju-modal/kreiraj-kompaniju-modal.component';
+import { PartnerModalComponent } from '../partner-modal/partner-modal.component';
+import { TipPartnera } from '../shared/enums/tip-partnera.enum';
+import { IteracijaProjekta } from '../shared/models/iteracija-projekta';
+import { KompanijaResponseModel } from '../shared/models/kompanija';
+import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.component';
+import { IteracijaProjektaService } from '../shared/services/iteracija-projekta.service';
+import { KompanijaService } from '../shared/services/kompanija.service';
 
 @Component({
   selector: 'la-partneri',
@@ -45,15 +23,19 @@ import {
 })
 export class PartneriComponent implements OnInit {
   partneri: KompanijaResponseModel[] = [];
+  iteracije: IteracijaProjekta[] = [];
   projekatId: number;
   tipPartnera: TipPartnera;
   status: string;
+  routeSegment: string;
   TipPartnera = TipPartnera;
 
   constructor(
     private dialog: MatDialog,
     private route: ActivatedRoute,
+    private router: Router,
     private kompanijaService: KompanijaService,
+    private iteracijaService: IteracijaProjektaService,
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +43,14 @@ export class PartneriComponent implements OnInit {
       this.projekatId = +params['id'];
       this.tipPartnera = qParams['tipPartnera'];
       this.status = qParams['status'];
+
+      // Determine route segment for switching iterations
+      const url = this.router.url;
+      if (url.includes('robni-partneri')) this.routeSegment = 'robni-partneri';
+      else if (url.includes('finansijski-partneri')) this.routeSegment = 'finansijski-partneri';
+
       this.loadPartneri();
+      this.loadIteracije();
     });
   }
 
@@ -72,6 +61,22 @@ export class PartneriComponent implements OnInit {
     });
   }
 
+  private loadIteracije(): void {
+    this.iteracijaService.findById(this.projekatId).subscribe({
+      next: (iteracija) => {
+        this.iteracijaService.findAllByNaziv(iteracija.naziv_projekta).subscribe({
+          next: (sve) => this.iteracije = sve,
+        });
+      },
+    });
+  }
+
+  switchIteracija(iteracija: IteracijaProjekta): void {
+    const segment = this.routeSegment || 'robni-partneri';
+    const qParams: any = { tipPartnera: this.tipPartnera };
+    if (this.status) qParams['status'] = this.status;
+    this.router.navigate(['/projekat', iteracija.id, segment], { queryParams: qParams });
+  }
 
   openRobniModal() {
     const dialogRef = this.dialog.open(PartnerModalComponent, {
@@ -80,9 +85,7 @@ export class PartneriComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((created: boolean) => {
-      if (created) {
-        this.loadPartneri();
-      }
+      if (created) this.loadPartneri();
     });
   }
 
@@ -90,37 +93,32 @@ export class PartneriComponent implements OnInit {
     this.dialog.open(KreirajKompanijuModalComponent, { width: '700px' });
   }
 
-
   getStanjeClass(stanje: string | undefined): string {
     switch (stanje) {
-      case 'Odobreno':
-        return 'stanje-odobreno';
-      case 'Odbijeno':
-        return 'stanje-odbijeno';
+      case 'Odobreno': return 'stanje-odobreno';
+      case 'Odbijeno': return 'stanje-odbijeno';
       case 'Poziv':
-      case 'Poslat email':
-        return 'stanje-poziv-email';
-      case 'Nije dodeljeno':
-      default:
-        return 'stanje-nije-dodeljeno';
+      case 'Poslat email': return 'stanje-poziv-email';
+      default: return 'stanje-nije-dodeljeno';
     }
   }
 
   getBorderClass(stanje: string | undefined): string {
     switch (stanje) {
-      case 'Odobreno':
-        return 'border-odobreno';
-      case 'Odbijeno':
-        return 'border-odbijeno';
-      default:
-        return '';
+      case 'Odobreno': return 'border-odobreno';
+      case 'Odbijeno': return 'border-odbijeno';
+      default: return '';
     }
   }
 
   openDetaljiModal(kompanija: KompanijaResponseModel) {
-    this.dialog.open(KompanijaDetaljiModalComponent, {
+    const dialogRef = this.dialog.open(KompanijaDetaljiModalComponent, {
       width: '600px',
-      data: kompanija
+      data: { ...kompanija, iteracijaId: this.projekatId }
+    });
+
+    dialogRef.afterClosed().subscribe((saved: boolean) => {
+      if (saved) this.loadPartneri();
     });
   }
 }

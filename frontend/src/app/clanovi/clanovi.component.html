@@ -1,0 +1,81 @@
+<div class="home-layout">
+  <la-partneri-menu></la-partneri-menu>
+
+  <div class="content">
+    <div class="header">
+      <h2>Članovi iteracije</h2>
+    </div>
+
+    <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+    <div class="alert error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+    <!-- Current members -->
+    <div class="section">
+      <h3>Trenutni članovi</h3>
+      <p class="empty-msg" *ngIf="!loadingClanovi && clanovi.length === 0">Nema dodeljenih članova za ovu iteraciju.</p>
+      <div class="member-list">
+        <div class="member-card" *ngFor="let clan of clanovi">
+          <div class="member-avatar">{{ clan.ime.charAt(0) }}{{ clan.prezime.charAt(0) }}</div>
+          <div class="member-info">
+            <span class="member-name">{{ clan.ime }} {{ clan.prezime }}</span>
+            <span class="member-meta">{{ clan.username }} · {{ clan.tip }}</span>
+          </div>
+          <button class="remove-btn" (click)="ukloni(clan)">Ukloni</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Add existing user -->
+    <div class="section">
+      <h3>Dodaj postojećeg korisnika</h3>
+      <div class="add-existing-row">
+        <select class="select-input" [(ngModel)]="selectedKorisnikId">
+          <option [ngValue]="null" disabled>Izaberi korisnika...</option>
+          <option *ngFor="let k of dostupniKorisnici" [ngValue]="k.id">
+            {{ k.ime }} {{ k.prezime }} ({{ k.username }})
+          </option>
+        </select>
+        <button class="primary-btn" (click)="dodajPostojeceg()" [disabled]="!selectedKorisnikId || addingExisting">
+          {{ addingExisting ? 'Dodavanje...' : 'Dodaj' }}
+        </button>
+      </div>
+      <p class="empty-msg" *ngIf="dostupniKorisnici.length === 0">Svi korisnici su već dodati na ovu iteraciju.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Create new user -->
+    <div class="section">
+      <h3>Kreiraj novog korisnika</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Ime</label>
+          <input type="text" [(ngModel)]="noviKorisnik.ime" placeholder="Ime">
+        </div>
+        <div class="form-group">
+          <label>Prezime</label>
+          <input type="text" [(ngModel)]="noviKorisnik.prezime" placeholder="Prezime">
+        </div>
+        <div class="form-group">
+          <label>Korisničko ime</label>
+          <input type="text" [(ngModel)]="noviKorisnik.username" placeholder="username">
+        </div>
+        <div class="form-group">
+          <label>Lozinka</label>
+          <input type="password" [(ngModel)]="noviKorisnik.lozinka" placeholder="Lozinka">
+        </div>
+        <div class="form-group">
+          <label>Tip</label>
+          <select class="select-input" [(ngModel)]="noviKorisnik.tip">
+            <option *ngFor="let t of tipovi" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+      </div>
+      <button class="primary-btn" (click)="kreirajNovog()" [disabled]="creatingNew">
+        {{ creatingNew ? 'Kreiranje...' : 'Kreiraj i dodaj na iteraciju' }}
+      </button>
+    </div>
+  </div>
+</div>

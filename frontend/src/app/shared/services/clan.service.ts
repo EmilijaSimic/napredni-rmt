@@ -20,7 +20,11 @@ export class ClanService {
       'Nije dodeljeno',
       'Aktivno',
       'Na čekanju',
-      'Zatvoreno'
+      'Poslat email',
+      'Poziv',
+      'Zatvoreno',
+      'Odobreno',
+      'Odbijeno',
     ]);
   }
 }

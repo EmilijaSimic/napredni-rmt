@@ -14,8 +14,13 @@ export class KorisnikController {
 
   @Get()
   async findAll(@Query('idProjekta') idProjekta: string) {
-  return await this.korisnikService.findAllByProject(+idProjekta);
-}
+    return await this.korisnikService.findAllByProject(+idProjekta);
+  }
+
+  @Get('svi')
+  async findAllNonKompanija() {
+    return await this.korisnikService.findAllNonKompanija();
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateKorisnikDto: UpdateKorisnikDto) {

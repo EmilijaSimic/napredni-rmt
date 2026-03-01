@@ -36,6 +36,11 @@ export class IteracijaProjektaController {
     return this.iteracijaProjektaService.findKompanije(+id, tipPartnera, status);
   }
 
+  @Get('sve')
+  findAllByNaziv(@Query('naziv') naziv: NazivProjekta) {
+    return this.iteracijaProjektaService.findAllByNaziv(naziv);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.iteracijaProjektaService.findOne(+id);

@@ -29,8 +29,15 @@ export class IteracijaProjektaService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} iteracijaProjekta`;
+  async findAllByNaziv(naziv: NazivProjekta) {
+    return await this.iteracijaProjektaRepository.find({
+      where: { naziv_projekta: naziv },
+      order: { godina: 'DESC' },
+    });
+  }
+
+  async findOne(id: number) {
+    return await this.iteracijaProjektaRepository.findOneBy({ id });
   }
 
   update(id: number, updateIteracijaProjektaDto: UpdateIteracijaProjektaDto) {
@@ -69,15 +76,16 @@ export class IteracijaProjektaService {
       websajt: item.kompanija.websajt,
       kontakt: item.kompanija.kontakt,
       zaduzen: item.korisnik ? `${item.korisnik.ime} ${item.korisnik.prezime}` : null,
+      korisnikId: item.korisnik?.id ?? null,
       datumCimanja: item.datum_cimanja,
       datumPodsetnik: item.datum_podsetnik,
       datumPoziva: item.datum_poziv,
       odobreno: item.odobrena,
-      stanje: item.odobrena === true ? 'Odobreno' : item.odobrena === false ? 'Odbijeno' : 'Nije dodeljeno',
-      brojCimanja: 0,
-      brojOdbijanja: 0,
-      brojPrihvatanja: 0,
-      napomena: '',
+      stanje: item.stanje ?? (item.odobrena === true ? 'Odobreno' : item.odobrena === false ? 'Odbijeno' : 'Nije dodeljeno'),
+      brojCimanja: item.broj_cimanja,
+      brojOdbijanja: item.broj_odbijanja,
+      brojPrihvatanja: item.broj_prihvatanja,
+      napomena: item.napomena ?? '',
     }));
   }
 }

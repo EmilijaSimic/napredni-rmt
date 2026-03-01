@@ -50,4 +50,11 @@ export class KompanijaService {
       { params },
     );
   }
+
+  updateKompanijaIteracija(kompanijaId: number, iteracijaId: number, dto: Record<string, any>): Observable<any> {
+    return this.http.patch(
+      `${environment.apiUrl}/kompanija/${kompanijaId}/iteracija/${iteracijaId}`,
+      dto,
+    );
+  }
 }
