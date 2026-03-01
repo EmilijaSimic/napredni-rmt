@@ -4,11 +4,27 @@
   background: var(--bg);
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 36px 40px;
+  background: var(--bg);
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 28px;
+  margin: 0 0 28px;
+
+  h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+  }
 }
 
 .header-actions {
@@ -16,69 +32,55 @@
   gap: 10px;
 }
 
-h2 {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--text);
-}
-
 .add-btn {
-  padding: 9px 18px;
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   color: #ffffff;
-  background-color: var(--primary);
+  background: var(--primary);
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: var(--primary-hover);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    background: var(--primary-hover);
   }
 }
 
 .create-btn {
-  padding: 9px 18px;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--primary);
-  background: var(--primary-light);
-  border: 1px solid #bfdbfe;
+  color: var(--text-secondary);
+  background: var(--surface);
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: #dbeafe;
     border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
   }
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  padding: 32px 32px;
-  flex: 1;
-  overflow: hidden;
-  background: var(--bg);
 }
 
 .iteracija-switcher {
   display: flex;
   gap: 6px;
-  margin-bottom: 20px;
+  margin: 0 0 24px;
 }
 
 .iteracija-pill {
   padding: 5px 16px;
-  border-radius: 20px;
   border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-secondary);
-  cursor: pointer;
+  border-radius: 20px;
   font-size: 13px;
+  color: var(--text-secondary);
+  background: var(--surface);
+  cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
@@ -87,40 +89,68 @@ h2 {
   }
 
   &.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
     font-weight: 500;
+    color: #ffffff;
+    border-color: var(--primary);
+    background: var(--primary);
   }
 }
 
-.list-wrapper {
+.list-container {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  background: var(--surface);
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 16px;
+  padding: 11px 22px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--surface-2);
+}
+
+.list-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 16px;
 }
 
-.partner-card {
+.partner-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  gap: 16px;
   align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 22px;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
-}
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 16px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
 
-.partner-card:hover {
-  border-color: #bfdbfe;
-  box-shadow: var(--shadow);
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--surface-2);
+  }
+
+  &.border-odobreno {
+    border-left: 3px solid var(--success);
+  }
+
+  &.border-odbijeno {
+    border-left: 3px solid var(--danger);
+  }
 }
 
 .col {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
@@ -130,86 +160,83 @@ h2 {
   gap: 12px;
 }
 
+.logo-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
 .naziv {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text);
 }
 
-.logo-placeholder {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--primary-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  flex-shrink: 0;
-}
-
 .status-pill {
+  display: inline-block;
+  min-width: 100px;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  display: inline-block;
   text-align: center;
-  min-width: 90px;
 }
 
 .stanje-odobreno {
-  background: var(--success-light);
   color: var(--success);
+  background: var(--success-light);
 }
 
 .stanje-odbijeno {
-  background: var(--danger-light);
   color: var(--danger);
+  background: var(--danger-light);
 }
 
 .stanje-nije-dodeljeno {
-  background: #f1f5f9;
   color: #94a3b8;
+  background: #f1f5f9;
 }
 
 .stanje-poziv-email {
-  background: var(--warning-light);
   color: var(--warning);
+  background: var(--warning-light);
 }
 
-.border-odobreno {
-  border-left: 3px solid var(--success);
+.zaduzen-col,
+.datum-col {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
-.border-odbijeno {
-  border-left: 3px solid var(--danger);
-}
-
-.actions-col button {
+.detalji-btn {
   padding: 7px 16px;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  border: 1px solid #bfdbfe;
   font-size: 13px;
   font-weight: 500;
-  background-color: var(--primary-light);
-  color: var(--primary);
+  color: var(--text-secondary);
+  background: var(--surface);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+  }
 }
 
-.actions-col button:hover {
-  background-color: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
-}
-
-.no-img {
-  width: 600px;
-  margin: auto;
-  justify-content: center;
-  display: flex;
-  align-items: center;
+.empty-state {
+  margin-top: 48px;
+  font-size: 15px;
+  color: var(--text-muted);
+  text-align: center;
 }

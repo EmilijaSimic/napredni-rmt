@@ -1,117 +1,103 @@
-<div class="square-menu">
-  <div class="logo-title">
-    <img src="assets/images/fonis.png" alt="Logo" class="logo">
-    <a
-      [routerLink]="['/home']"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }">
-    </a>
-  </div>
+<div class="sidebar">
 
-  <div class="menu-links">
+  <a class="sidebar-logo" [routerLink]="['/projekti']">
+    <img src="assets/images/beliLogo.png" alt="Logo" class="logo">
+  </a>
 
-    <!-- FINANSIJSKI PARTNERI -->
-    <div class="menu-group">
-      <a
+  <nav class="sidebar-nav">
+
+    <div class="nav-group">
+      <a class="nav-link"
         [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
         [queryParams]="{ tipPartnera: 'finansijski' }"
         routerLinkActive="active">
-
-        <img src="assets/images/finansijski-icon.png" alt="icon" class="icon">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+        </svg>
         Finansijski partneri
       </a>
-
-      <div class="submenu">
-        <div class="sub-link-container">
-          <a
-            [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
-            [queryParams]="{ tipPartnera: 'finansijski', status: 'potvrdjene' }"
-            routerLinkActive="sub-active"
-            class="sub-link">
-            Potvrđene saradnje
-          </a>
-        </div>
-
-        <div class="sub-link-container">
-          <a
-            [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
-            [queryParams]="{ tipPartnera: 'finansijski', status: 'odbijene' }"
-            routerLinkActive="sub-active"
-            class="sub-link">
-            Odbijene saradnje
-          </a>
-        </div>
+      <div class="subnav">
+        <a class="sub-link"
+          [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
+          [queryParams]="{ tipPartnera: 'finansijski', status: 'potvrdjene' }"
+          routerLinkActive="sub-active">
+          Potvrđene saradnje
+        </a>
+        <a class="sub-link"
+          [routerLink]="['/projekat', projekatId, 'finansijski-partneri']"
+          [queryParams]="{ tipPartnera: 'finansijski', status: 'odbijene' }"
+          routerLinkActive="sub-active">
+          Odbijene saradnje
+        </a>
       </div>
     </div>
 
-
-    <!-- ROBNI PARTNERI -->
-    <div class="menu-group">
-      <a
+    <div class="nav-group">
+      <a class="nav-link"
         [routerLink]="['/projekat', projekatId, 'robni-partneri']"
         [queryParams]="{ tipPartnera: 'robni' }"
         routerLinkActive="active">
-
-        <img src="assets/images/robni-icon.png" alt="icon" class="icon">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.11.88 2 1.99 2H19c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+        </svg>
         Robni partneri
       </a>
-
-      <div class="submenu">
-        <div class="sub-link-container">
-          <a
-            [routerLink]="['/projekat', projekatId, 'robni-partneri']"
-            [queryParams]="{ tipPartnera: 'robni', status: 'potvrdjeni' }"
-            routerLinkActive="sub-active"
-            class="sub-link">
-            Potvrđene saradnje
-          </a>
-        </div>
-
-        <div class="sub-link-container">
-          <a
-            [routerLink]="['/projekat', projekatId, 'robni-partneri']"
-            [queryParams]="{ tipPartnera: 'robni', status: 'odbijeni' }"
-            routerLinkActive="sub-active"
-            class="sub-link">
-            Odbijene saradnje
-          </a>
-        </div>
+      <div class="subnav">
+        <a class="sub-link"
+          [routerLink]="['/projekat', projekatId, 'robni-partneri']"
+          [queryParams]="{ tipPartnera: 'robni', status: 'potvrdjeni' }"
+          routerLinkActive="sub-active">
+          Potvrđene saradnje
+        </a>
+        <a class="sub-link"
+          [routerLink]="['/projekat', projekatId, 'robni-partneri']"
+          [queryParams]="{ tipPartnera: 'robni', status: 'odbijeni' }"
+          routerLinkActive="sub-active">
+          Odbijene saradnje
+        </a>
       </div>
     </div>
 
+    <div class="nav-divider" *ngIf="isAdmin"></div>
 
-    <!-- CLANOVI (samo admin) -->
-    <a
-      *ngIf="isAdmin"
-      [routerLink]="['/projekat', projekatId, 'clanovi']"
-      routerLinkActive="active">
-      <img src="assets/images/promo-icon.png" alt="icon" class="icon">
-      Članovi
-    </a>
+    <ng-container *ngIf="isAdmin">
 
-    <!-- PROMO MATERIJALI (samo admin) -->
-    <a
-      *ngIf="isAdmin"
-      [routerLink]="['/promo-materijali']"
-      routerLinkActive="active">
+      <a class="nav-link"
+        [routerLink]="['/projekat', projekatId, 'clanovi']"
+        routerLinkActive="active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+        </svg>
+        Članovi
+      </a>
 
-      <img src="assets/images/promo-icon.png" alt="icon" class="icon">
-      Promo materijali
-    </a>
+      <a class="nav-link"
+        [routerLink]="['/promo-materijali']"
+        routerLinkActive="active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+        </svg>
+        Promo materijali
+      </a>
 
-    <!-- NOVA ITERACIJA (samo admin) -->
-    <div class="menu-group" *ngIf="isAdmin">
-      <a [routerLink]="['/nova-iteracija']" routerLinkActive="active">
-        <img src="assets/images/promo-icon.png" alt="icon" class="icon">
+      <a class="nav-link"
+        [routerLink]="['/nova-iteracija']"
+        routerLinkActive="active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
+        </svg>
         Nova iteracija
       </a>
-    </div>
 
+    </ng-container>
 
-    <!-- LOGOUT -->
-    <a class="log-out" (click)="signOut()">
-      Odjavi se
-    </a>
+  </nav>
 
-  </div>
+  <a class="sidebar-logout" (click)="signOut()">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+    </svg>
+    Odjavi se
+  </a>
+
 </div>

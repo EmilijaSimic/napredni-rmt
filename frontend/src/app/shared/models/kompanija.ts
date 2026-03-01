@@ -8,18 +8,12 @@ export interface KompanijaBasicModel {
 export interface KompanijaModel {
   ID: number;
   naziv: string;
-  brojCimanja: number;
-  brojOdbijanja: number;
-  brojPrihvatanja: number;
   napomena: string;
 }
 
 export interface KompanijaResponseModel {
   ID: number;
   naziv: string;
-  brojCimanja: number;
-  brojOdbijanja: number;
-  brojPrihvatanja: number;
   napomena: string;
   websajt: string;
   kontakt: string;
@@ -31,6 +25,9 @@ export interface KompanijaResponseModel {
   datumPoziva: Date;
   odobreno: boolean;
   iteracijaId?: number;
+  brojCimanja: number;
+  brojOdobravanja: number;
+  brojOdbijanja: number;
 }
 
 export interface KorisnikModel {

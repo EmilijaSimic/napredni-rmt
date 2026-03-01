@@ -39,15 +39,6 @@ export class KompanijaIteracija {
     @Column({ nullable: true, type: 'varchar' })
     stanje: string;
 
-    @Column({ default: 0 })
-    broj_cimanja: number;
-
-    @Column({ default: 0 })
-    broj_odbijanja: number;
-
-    @Column({ default: 0 })
-    broj_prihvatanja: number;
-
     @Column({ nullable: true, type: 'text' })
     napomena: string;
 

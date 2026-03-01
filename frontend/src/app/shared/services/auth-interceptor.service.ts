@@ -1,84 +1,74 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-
-import { LS_USER_TOKEN } from '../constants';
-import { ExceptionDetail } from '../exception-detail';
+import { LS_REFRESH_TOKEN, LS_USER_TOKEN } from '../constants';
 import { AccountService } from './account.service';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-  constructor(private accountService: AccountService) { }
+  private isRefreshing = false;
+  private refreshSubject = new BehaviorSubject<string | null>(null);
+
+  constructor(private accountService: AccountService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem(LS_USER_TOKEN);
-    let headers = request.headers;
 
-    if (token && request.url.indexOf(environment.apiBaseUrl) > -1) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+    if (token && request.url.includes(environment.apiBaseUrl)) {
+      request = this.attachToken(request, token);
     }
 
-    request = request.clone({ headers });
-
     return next.handle(request).pipe(
-      map((response: any) => {
-        if (response instanceof HttpResponse) {
-          const refreshedToken = response.headers.get('refreshed-token');
-          if (refreshedToken) {
-            localStorage.setItem(LS_USER_TOKEN, refreshedToken);
-          }
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.handle401(request, next);
         }
-        return response;
-      }),
-      catchError((response, caught) => this.handleErrors(response, caught))
+        return throwError(() => error.error ?? error);
+      })
     );
   }
 
-  private handleErrors(response: any, _: Observable<HttpEvent<any>>) {
-    if (response instanceof HttpErrorResponse) {
-      if (response.status === 401) {
-        this.processAuthError();
-        return throwError(() => response.error);
-      }
+  private handle401(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const refreshToken = localStorage.getItem(LS_REFRESH_TOKEN);
 
-      if (typeof response.error === 'object') {
-        if (Array.isArray(response.error)) {
-          const payload = response.error as ExceptionDetail[];
-          return throwError(() => payload);
-        } else {
-          if (response.status === 0) {
-            console.log(
-              'Please wait 1-2 minutes and refresh the page while we reconnect you to our servers. Thank you for your understanding.'
-            );
-          }
-          return throwError(() => response.error);
-        }
-      } else if (typeof response.error === 'string') {
-        const errors: ExceptionDetail[] = [];
-        if (response.error.indexOf('Status Code: 404; Not Found') >= 0) {
-          return throwError(() => errors);
-        } else if (response.error.indexOf('Status Code: 403; Forbidden') >= 0) {
-          errors.push({ errorCode: 'AuthorizationError' } as ExceptionDetail);
-          return throwError(() => errors);
-        }
-        errors.push({ errorCode: 'InternalServerError' } as ExceptionDetail);
-        return throwError(() => errors);
-      }
-
-      return throwError(() => response.error);
+    // No refresh token or it's the refresh call itself failing → sign out
+    if (!refreshToken || request.url.includes('/accounts/refresh')) {
+      this.accountService.signOut();
+      return throwError(() => new Error('Session expired'));
     }
 
-    return throwError(() => response);
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshSubject.next(null);
+
+      return this.accountService.refreshAccessToken().pipe(
+        switchMap(res => {
+          this.isRefreshing = false;
+          this.refreshSubject.next(res.token);
+          return next.handle(this.attachToken(request, res.token));
+        }),
+        catchError(err => {
+          this.isRefreshing = false;
+          this.refreshSubject.next(null);
+          this.accountService.signOut();
+          return throwError(() => err);
+        })
+      );
+    }
+
+    // Another request is already refreshing — wait for it then retry
+    return this.refreshSubject.pipe(
+      filter(token => token !== null),
+      take(1),
+      switchMap(token => next.handle(this.attachToken(request, token)))
+    );
   }
 
-  private processAuthError(): void {
-    if (window.location.pathname.indexOf('login') >= 0) {
-      return;
-    }
-
-    this.accountService.signOut();
+  private attachToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    return request.clone({
+      headers: request.headers.set('Authorization', `Bearer ${token}`),
+    });
   }
 }

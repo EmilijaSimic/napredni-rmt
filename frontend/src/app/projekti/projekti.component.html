@@ -1,7 +1,24 @@
-<div class="wrapper">
-  <div class="logo-wrapper"
-    *ngFor="let project of projects"
-    (click)="goToProjectPartners(project.iteracija.id)">
-    <img [src]="project.image" [alt]="project.iteracija.naziv_projekta">
+<div class="page">
+
+  <div class="page-header">
+    <h1>Projekti</h1>
+    <p class="subtitle">Odaberite projekat</p>
   </div>
+
+  <div class="cards">
+    <button
+      class="card"
+      *ngFor="let p of projects"
+      (click)="goToProject(p.iteracija.id)">
+
+      <div class="card-logo">
+        <img [src]="p.image" [alt]="p.iteracija.naziv_projekta">
+      </div>
+
+      <div class="card-info">
+        <span class="card-name">{{ p.iteracija.naziv_projekta }}</span>
+      </div>
+    </button>
+  </div>
+
 </div>

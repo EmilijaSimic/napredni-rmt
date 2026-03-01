@@ -4,14 +4,15 @@
   <div class="content">
 
     <div class="header">
-      <h2>{{tipPartnera === TipPartnera.ROBNI ? 'Robni' : 'Finansijski'}} partneri</h2>
+      <h2>{{ tipPartnera === TipPartnera.ROBNI ? 'Robni' : 'Finansijski' }} partneri</h2>
       <div class="header-actions">
-        <button class="add-btn" (click)="openRobniModal()">Dodaj {{tipPartnera === TipPartnera.ROBNI ? 'robnog' : 'finansijskog'}} partnera +</button>
+        <button class="add-btn" (click)="openRobniModal()">
+          + Dodaj {{ tipPartnera === TipPartnera.ROBNI ? 'robnog' : 'finansijskog' }} partnera
+        </button>
         <button class="create-btn" (click)="openKreirajKompanijuModal()">Kreiraj kompaniju</button>
       </div>
     </div>
 
-    <!-- Iteration year switcher -->
     <div class="iteracija-switcher" *ngIf="iteracije.length > 1">
       <button
         *ngFor="let it of iteracije"
@@ -22,41 +23,48 @@
       </button>
     </div>
 
-    <div class="list-wrapper" *ngIf="partneri.length > 0">
-      <div
-        *ngFor="let r of partneri"
-        class="partner-card"
-        [ngClass]="getBorderClass(r.stanje)">
-        <div class="col naziv-col">
-          <div class="logo-placeholder">
-            {{ r.naziv.charAt(0) }}
+    <div class="list-container" *ngIf="partneri.length > 0">
+      <div class="list-header">
+        <span>Kompanija</span>
+        <span>Status</span>
+        <span>Zadužen</span>
+        <span>Datum cimanja</span>
+        <span></span>
+      </div>
+
+      <div class="list-body">
+        <div
+          *ngFor="let r of partneri"
+          class="partner-row"
+          [ngClass]="getBorderClass(r.stanje)">
+
+          <div class="col naziv-col">
+            <div class="logo-placeholder">{{ r.naziv.charAt(0) }}</div>
+            <span class="naziv">{{ r.naziv }}</span>
           </div>
-          <span class="naziv">{{ r.naziv }}</span>
-        </div>
 
-        <div class="col status-col">
-          <span class="status-pill" [ngClass]="getStanjeClass(r.stanje)">
-            {{ r.stanje || 'Nije dodeljeno' }}
-          </span>
-        </div>
+          <div class="col status-col">
+            <span class="status-pill" [ngClass]="getStanjeClass(r.stanje)">
+              {{ r.stanje || 'Nije dodeljeno' }}
+            </span>
+          </div>
 
-        <div class="col zaduzen-col">
-          {{ r.zaduzen || '-' }}
-        </div>
+          <div class="col zaduzen-col">{{ r.zaduzen || '—' }}</div>
 
-        <div class="col datum-col">
-          {{ r.datumCimanja ? (r.datumCimanja | date:'MMMM d, y') : '-' }}
-        </div>
+          <div class="col datum-col">
+            {{ r.datumCimanja ? (r.datumCimanja | date:'d.M.yyyy.') : '—' }}
+          </div>
 
-        <div class="col actions-col">
-          <button (click)="openDetaljiModal(r)">
-            Detalji
-          </button>
+          <div class="col actions-col">
+            <button class="detalji-btn" (click)="openDetaljiModal(r)">Detalji</button>
+          </div>
         </div>
-
       </div>
     </div>
 
-    <p *ngIf="partneri.length === 0">Nema {{tipPartnera === TipPartnera.ROBNI ? 'robnih' : 'finansijskih'}} partneri partnera za prikaz.</p>
+    <div class="empty-state" *ngIf="partneri.length === 0">
+      <p>Nema {{ tipPartnera === TipPartnera.ROBNI ? 'robnih' : 'finansijskih' }} partnera za prikaz.</p>
+    </div>
+
   </div>
 </div>

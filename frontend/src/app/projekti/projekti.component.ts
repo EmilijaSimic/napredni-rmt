@@ -50,9 +50,7 @@ export class ProjektiComponent implements OnInit {
     });
   }
 
-  goToProjectPartners(id: number) {
-    this.router.navigate([`projekat/${id}/robni-partneri`], {
-      queryParams: { tipPartnera: 'robni' },
-    });
+  goToProject(id: number) {
+    this.router.navigate([`projekat/${id}/robni-partneri`]);
   }
 }

@@ -70,22 +70,41 @@ export class IteracijaProjektaService {
       relations: { kompanija: true, korisnik: true },
     });
 
-    return items.map(item => ({
-      ID: item.kompanija.id,
-      naziv: item.kompanija.naziv,
-      websajt: item.kompanija.websajt,
-      kontakt: item.kompanija.kontakt,
-      zaduzen: item.korisnik ? `${item.korisnik.ime} ${item.korisnik.prezime}` : null,
-      korisnikId: item.korisnik?.id ?? null,
-      datumCimanja: item.datum_cimanja,
-      datumPodsetnik: item.datum_podsetnik,
-      datumPoziva: item.datum_poziv,
-      odobreno: item.odobrena,
-      stanje: item.stanje ?? (item.odobrena === true ? 'Odobreno' : item.odobrena === false ? 'Odbijeno' : 'Nije dodeljeno'),
-      brojCimanja: item.broj_cimanja,
-      brojOdbijanja: item.broj_odbijanja,
-      brojPrihvatanja: item.broj_prihvatanja,
-      napomena: item.napomena ?? '',
-    }));
+    if (items.length === 0) return [];
+
+    const kompanijaIds = items.map(i => i.kompanija_id);
+
+    const stats = await this.kompanijaIteracijaRepository
+      .createQueryBuilder('ki')
+      .select('ki.kompanija_id', 'kompanijaId')
+      .addSelect('COUNT(CASE WHEN ki.datum_cimanja IS NOT NULL THEN 1 END)', 'brojCimanja')
+      .addSelect('COUNT(CASE WHEN ki.odobrena = true THEN 1 END)', 'brojOdobravanja')
+      .addSelect('COUNT(CASE WHEN ki.odobrena = false THEN 1 END)', 'brojOdbijanja')
+      .where('ki.kompanija_id IN (:...ids)', { ids: kompanijaIds })
+      .groupBy('ki.kompanija_id')
+      .getRawMany();
+
+    const statsMap = new Map(stats.map(s => [Number(s.kompanijaId), s]));
+
+    return items.map(item => {
+      const s = statsMap.get(item.kompanija.id);
+      return {
+        ID: item.kompanija.id,
+        naziv: item.kompanija.naziv,
+        websajt: item.kompanija.websajt,
+        kontakt: item.kompanija.kontakt,
+        zaduzen: item.korisnik ? `${item.korisnik.ime} ${item.korisnik.prezime}` : null,
+        korisnikId: item.korisnik?.id ?? null,
+        datumCimanja: item.datum_cimanja,
+        datumPodsetnik: item.datum_podsetnik,
+        datumPoziva: item.datum_poziv,
+        odobreno: item.odobrena,
+        stanje: item.stanje ?? (item.odobrena === true ? 'Odobreno' : item.odobrena === false ? 'Odbijeno' : 'Nije dodeljeno'),
+        napomena: item.napomena ?? '',
+        brojCimanja: Number(s?.brojCimanja ?? 0),
+        brojOdobravanja: Number(s?.brojOdobravanja ?? 0),
+        brojOdbijanja: Number(s?.brojOdbijanja ?? 0),
+      };
+    });
   }
 }

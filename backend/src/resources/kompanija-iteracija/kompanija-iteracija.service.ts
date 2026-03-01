@@ -48,9 +48,15 @@ export class KompanijaIteracijaService {
 
     if (stanje !== undefined) {
       record.stanje = stanje;
+
       if (stanje === 'Odobreno') record.odobrena = true;
       else if (stanje === 'Odbijeno') record.odobrena = false;
       else record.odobrena = null;
+
+      const today = new Date();
+      if (stanje === 'Poslat email') record.datum_cimanja = today;
+      if (stanje === 'Poslat podsetnik') record.datum_podsetnik = today;
+      if (stanje === 'Poziv') record.datum_poziv = today;
     }
 
     if (korisnik_id !== undefined) {

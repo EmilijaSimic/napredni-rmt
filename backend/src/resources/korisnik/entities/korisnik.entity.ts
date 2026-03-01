@@ -24,6 +24,9 @@ export class Korisnik {
     @Column()
     tip:TipKorisnika;
 
+    @Column({ nullable: true, type: 'text' })
+    refresh_token: string | null;
+
     @OneToMany(() => KompanijaIteracija, ki => ki.korisnik)
     ki:KompanijaIteracija[];
 

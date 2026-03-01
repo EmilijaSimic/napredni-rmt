@@ -1,11 +1,17 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import {
+  Injectable
+} from '@angular/core';
+import {
+  Observable,
+  of
+} from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ClanService {
 
-  // Lista članova
-  getClanovi(): Observable<string[]> {
+  getClanovi(): Observable < string[] > {
     return of([
       'Marko Marković',
       'Jovana Petrović',
@@ -14,15 +20,11 @@ export class ClanService {
     ]);
   }
 
-  // Lista stanja
-  getStanja(): Observable<string[]> {
+  getStanja(): Observable < string[] > {
     return of([
-      'Nije dodeljeno',
-      'Aktivno',
-      'Na čekanju',
       'Poslat email',
+      'Poslat podsetnik',
       'Poziv',
-      'Zatvoreno',
       'Odobreno',
       'Odbijeno',
     ]);
