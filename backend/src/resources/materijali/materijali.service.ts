@@ -44,32 +44,59 @@ export class MaterijaliService {
       originalnoIme: uploaded.originalName,
       imeCloud: uploaded.displayName,
       kompanija_id: Number(kompanija_id),
+      tags: uploaded.tags,
     });
 
     return await this.materijaliRepository.save(materijal);
   }
 
-  async findByKompanija(kompanija_id: number) {
-    return await this.materijaliRepository.find({
-      where: { kompanija_id },
-      order: { datumKreiranja: 'DESC' },
-    });
+  async findAll(search?: string) {
+    const qb = this.materijaliRepository.createQueryBuilder('m')
+      .leftJoinAndSelect('m.kompanija', 'k')
+      .orderBy('k.naziv', 'ASC')
+      .addOrderBy('m.datumKreiranja', 'DESC');
+
+    if (search) {
+      qb.where(
+        'k.naziv ILIKE :s OR m."originalnoIme" ILIKE :s OR m.tags ILIKE :s',
+        { s: `%${search}%` },
+      );
+    }
+
+    return await qb.getMany();
   }
 
-  async findMoje(authHeader: string) {
-    if (!authHeader?.startsWith('Bearer ')) throw new UnauthorizedException();
-    const token = authHeader.split(' ')[1];
-    let payload: any;
-    try {
-      payload = this.jwtService.verify(token);
-    } catch {
-      throw new UnauthorizedException();
+  async findKompanije() {
+    return await this.materijaliRepository
+      .createQueryBuilder('m')
+      .select('k.id', 'id')
+      .addSelect('k.naziv', 'naziv')
+      .leftJoin('m.kompanija', 'k')
+      .groupBy('k.id')
+      .addGroupBy('k.naziv')
+      .orderBy('k.naziv', 'ASC')
+      .getRawMany();
+  }
+
+  async syncTags(authHeader: string) {
+    this.verifyAdmin(authHeader);
+
+    const cloudinaryResources = await this.cloudinaryService.getAllResourceTags();
+    const tagMap = new Map(cloudinaryResources.map(r => [r.publicId, r.tags]));
+
+    const all = await this.materijaliRepository.find();
+    let updated = 0;
+
+    for (const m of all) {
+      const tags = tagMap.get(m.javniId);
+      if (tags !== undefined) {
+        m.tags = tags;
+        await this.materijaliRepository.save(m);
+        updated++;
+      }
     }
-    if (!payload.kompanija_id) return [];
-    return await this.materijaliRepository.find({
-      where: { kompanija_id: payload.kompanija_id },
-      order: { datumKreiranja: 'DESC' },
-    });
+
+    return { message: `Sinkronizirano ${updated} materijala.`, updated };
   }
 
   async remove(id: number, authHeader: string) {

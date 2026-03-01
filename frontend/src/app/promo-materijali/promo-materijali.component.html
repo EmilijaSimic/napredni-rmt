@@ -6,13 +6,11 @@
       <h2>Promo Materijali</h2>
     </div>
 
-    <!-- ADMIN VIEW -->
     <ng-container *ngIf="isAdmin">
-
       <div class="upload-panel">
         <div class="select-wrapper">
           <label>Kompanija</label>
-          <select [(ngModel)]="selectedKompanijaId" (change)="onKompanijaChange()">
+          <select [(ngModel)]="selectedKompanijaId">
             <option [ngValue]="null" disabled>Odaberi kompaniju...</option>
             <option *ngFor="let k of kompanije" [ngValue]="k.id">{{ k.naziv }}</option>
           </select>
@@ -35,37 +33,27 @@
         <p class="error" *ngIf="uploadError">{{ uploadError }}</p>
       </div>
 
-      <div *ngIf="selectedKompanijaId" class="materials-section">
-        <p class="section-label" *ngIf="materijali.length > 0">
-          {{ selectedKompanijaNaziv() }} — {{ materijali.length }} materijal{{ materijali.length === 1 ? '' : 'a' }}
-        </p>
-        <p class="empty-msg" *ngIf="materijali.length === 0">
-          Nema materijala za ovu kompaniju.
-        </p>
-
-        <div class="materials-grid" *ngIf="materijali.length > 0">
-          <div class="material-card" *ngFor="let m of materijali">
-            <div class="media-wrapper">
-              <video *ngIf="isVideo(m.url)" [src]="m.url" controls class="media"></video>
-              <img *ngIf="!isVideo(m.url)" [src]="m.url" [alt]="m.originalnoIme" class="media">
-            </div>
-            <div class="card-footer">
-              <span class="file-name" [title]="m.originalnoIme">{{ m.originalnoIme }}</span>
-              <span class="date">{{ m.datumKreiranja | date:'d.M.yyyy.' }}</span>
-              <button class="delete-btn" (click)="deleteMaterijal(m.id)">Obriši</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <button class="sync-btn" [disabled]="isSyncing" (click)="syncTags()">
+        {{ isSyncing ? 'Sinkronizacija...' : 'Sinkronizuj tagove' }}
+      </button>
     </ng-container>
 
-    <!-- KOMPANIJA VIEW -->
-    <ng-container *ngIf="!isAdmin">
-      <p class="empty-msg" *ngIf="materijali.length === 0">Nema promo materijala za vašu kompaniju.</p>
+    <div class="search-row">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Pretraži po kompaniji ili imenu fajla..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()">
+    </div>
 
-      <div class="materials-grid" *ngIf="materijali.length > 0">
-        <div class="material-card" *ngFor="let m of materijali">
+    <p class="empty-msg" *ngIf="materijali.length === 0">Nema promo materijala.</p>
+
+    <div *ngFor="let grupa of materijaliPoKompaniji" class="company-group">
+      <p class="company-label">{{ grupa.naziv }} — {{ grupa.stavke.length }} materijal{{ grupa.stavke.length === 1 ? '' : 'a' }}</p>
+
+      <div class="materials-grid">
+        <div class="material-card" *ngFor="let m of grupa.stavke">
           <div class="media-wrapper">
             <video *ngIf="isVideo(m.url)" [src]="m.url" controls class="media"></video>
             <img *ngIf="!isVideo(m.url)" [src]="m.url" [alt]="m.originalnoIme" class="media">
@@ -73,10 +61,14 @@
           <div class="card-footer">
             <span class="file-name" [title]="m.originalnoIme">{{ m.originalnoIme }}</span>
             <span class="date">{{ m.datumKreiranja | date:'d.M.yyyy.' }}</span>
+            <button *ngIf="isAdmin" class="delete-btn" (click)="deleteMaterijal(m.id)">Obriši</button>
+          </div>
+          <div class="tag-row" *ngIf="m.tags && m.tags.length > 0">
+            <span class="tag" *ngFor="let t of m.tags">{{ t }}</span>
           </div>
         </div>
       </div>
-    </ng-container>
+    </div>
 
   </div>
 </div>

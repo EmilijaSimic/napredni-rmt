@@ -5,10 +5,12 @@ import {
   Headers,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
   Body,
   BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -30,14 +32,20 @@ export class MaterijaliController {
     return this.materijaliService.uploadMaterijal(file, body.kompanija_id, authHeader);
   }
 
-  @Get('moje')
-  findMoje(@Headers('authorization') authHeader: string) {
-    return this.materijaliService.findMoje(authHeader);
+  @Get()
+  findAll(@Query('search') search?: string) {
+    return this.materijaliService.findAll(search);
   }
 
-  @Get('kompanija/:id')
-  findByKompanija(@Param('id') id: string) {
-    return this.materijaliService.findByKompanija(+id);
+  @Get('kompanije')
+  findKompanije() {
+    return this.materijaliService.findKompanije();
+  }
+
+  @Post('sync-tags')
+  @HttpCode(200)
+  syncTags(@Headers('authorization') authHeader: string) {
+    return this.materijaliService.syncTags(authHeader);
   }
 
   @Delete(':id')

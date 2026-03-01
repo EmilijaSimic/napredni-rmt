@@ -7,6 +7,7 @@ export interface CloudinaryUploadResult {
   publicId: string;
   originalName: string;
   displayName: string;
+  tags: string[];
 }
 
 @Injectable()
@@ -41,6 +42,7 @@ export class CloudinaryService {
             publicId: result.public_id,
             originalName: file.originalname,
             displayName: result.display_name ?? file.originalname,
+            tags: result.tags ?? [],
           });
         },
       );
@@ -48,6 +50,19 @@ export class CloudinaryService {
       const readable = Readable.from(file.buffer);
       readable.pipe(uploadStream);
     });
+  }
+
+  async getAllResourceTags(): Promise<{ publicId: string; tags: string[] }[]> {
+    const result = await (cloudinary.search as any)
+      .expression('folder:promo-materijali')
+      .with_field('tags')
+      .max_results(500)
+      .execute();
+
+    return (result.resources ?? []).map((r: any) => ({
+      publicId: r.public_id,
+      tags: r.tags ?? [],
+    }));
   }
 
   async deleteFile(publicId: string, url: string): Promise<void> {
