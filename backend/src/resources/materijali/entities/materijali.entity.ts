@@ -1,12 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Kompanija } from 'src/resources/kompanija/entities/kompanija.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Materijali {
-    @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  url: string; 
+  url: string;
 
   @Column()
   javniId: string;
@@ -17,6 +18,13 @@ export class Materijali {
   @Column()
   imeCloud: string;
 
-  @Column()
+  @CreateDateColumn()
   datumKreiranja: Date;
+
+  @Column()
+  kompanija_id: number;
+
+  @ManyToOne(() => Kompanija, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'kompanija_id' })
+  kompanija: Kompanija;
 }

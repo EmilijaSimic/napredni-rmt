@@ -32,6 +32,7 @@ export class AccountsService {
       sub: korisnik.id,
       username: korisnik.username,
       roles: korisnik.tip,
+      kompanija_id: korisnik.kompanija_id ?? null,
     };
 
     const token = this.jwtService.sign(payload);

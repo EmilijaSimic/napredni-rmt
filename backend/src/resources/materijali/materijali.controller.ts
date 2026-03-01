@@ -1,34 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+  Body,
+  BadRequestException,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { MaterijaliService } from './materijali.service';
 import { CreateMaterijaliDto } from './dto/create-materijali.dto';
-import { UpdateMaterijaliDto } from './dto/update-materijali.dto';
 
 @Controller('materijali')
 export class MaterijaliController {
   constructor(private readonly materijaliService: MaterijaliService) {}
 
   @Post()
-  create(@Body() createMaterijaliDto: CreateMaterijaliDto) {
-    return this.materijaliService.create(createMaterijaliDto);
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: CreateMaterijaliDto,
+    @Headers('authorization') authHeader: string,
+  ) {
+    if (!file) throw new BadRequestException('Fajl je obavezan.');
+    return this.materijaliService.uploadMaterijal(file, body.kompanija_id, authHeader);
   }
 
-  @Get()
-  findAll() {
-    return this.materijaliService.findAll();
+  @Get('moje')
+  findMoje(@Headers('authorization') authHeader: string) {
+    return this.materijaliService.findMoje(authHeader);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.materijaliService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMaterijaliDto: UpdateMaterijaliDto) {
-    return this.materijaliService.update(+id, updateMaterijaliDto);
+  @Get('kompanija/:id')
+  findByKompanija(@Param('id') id: string) {
+    return this.materijaliService.findByKompanija(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.materijaliService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Headers('authorization') authHeader: string,
+  ) {
+    return this.materijaliService.remove(+id, authHeader);
   }
 }
