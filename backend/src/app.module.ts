@@ -7,7 +7,6 @@ import { KorisnikModule } from './resources/korisnik/korisnik.module';
 import { IteracijaProjektaModule } from './resources/iteracija-projekta/iteracija-projekta.module';
 import { KorisnikIteracijaModule } from './resources/korisnik-iteracija/korisnik-iteracija.module';
 import { KompanijaIteracijaModule } from './resources/kompanija-iteracija/kompanija-iteracija.module';
-import { Materijali } from './resources/materijali/entities/materijali.entity';
 import { MaterijaliModule } from './resources/materijali/materijali.module';
 
 
