@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, ElementRef, HostListener } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { KompanijaResponseModel, KorisnikModel } from '../shared/models/kompanija';
 import { ClanService } from '../shared/services/clan.service';
 import { KompanijaService } from '../shared/services/kompanija.service';
@@ -23,14 +24,6 @@ export class KompanijaDetaljiModalComponent implements OnInit {
   stanjeDropdownOpen = false;
   saving = false;
 
-  edit = {
-    naziv: false,
-    websajt: false,
-    kontakt: false,
-    zaduzen: false,
-    stanje: false,
-    napomena: false
-  };
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: KompanijaResponseModel,
@@ -58,48 +51,53 @@ export class KompanijaDetaljiModalComponent implements OnInit {
     }
   }
 
+  get stanjeClass(): string {
+    switch (this.data.stanje) {
+      case 'Odobreno': return 'dot-green';
+      case 'Odbijeno': return 'dot-red';
+      case 'Poziv':
+      case 'Poslat email': return 'dot-blue';
+      default: return 'dot-gray';
+    }
+  }
+
   get selectedKorisnikNaziv(): string {
     const k = this.korisnici.find(k => k.id === this.selectedKorisnikId);
     return k ? `${k.ime} ${k.prezime}` : (this.data.zaduzen || 'Izaberi člana');
   }
 
   sacuvaj() {
+    this.saving = true;
+
+    const kompanijaUpdate$ = this.kompanijaService.updateKompanija(this.data.ID, {
+      naziv: this.data.naziv,
+      websajt: this.data.websajt,
+      kontakt: this.data.kontakt,
+    });
+
     if (!this.data.iteracijaId) {
-      this.dialogRef.close();
+      kompanijaUpdate$.subscribe({
+        next: () => { this.saving = false; this.dialogRef.close(true); },
+        error: (err) => { console.error('Greška pri čuvanju', err); this.saving = false; },
+      });
       return;
     }
 
-    const payload: Record<string, any> = {
-      stanje: this.data.stanje,
-    };
+    const iteracijaPayload: Record<string, any> = { stanje: this.data.stanje };
+    if (this.data.napomena != null) iteracijaPayload['napomena'] = this.data.napomena;
+    if (this.selectedKorisnikId != null) iteracijaPayload['korisnik_id'] = this.selectedKorisnikId;
 
-    if (this.data.napomena != null) {
-      payload['napomena'] = this.data.napomena;
-    }
-
-    if (this.selectedKorisnikId != null) {
-      payload['korisnik_id'] = this.selectedKorisnikId;
-    }
-
-    this.saving = true;
-    this.kompanijaService.updateKompanijaIteracija(this.data.ID, this.data.iteracijaId, payload).subscribe({
-      next: () => {
-        this.saving = false;
-        this.dialogRef.close(true);
-      },
-      error: (err) => {
-        console.error('Greška pri čuvanju', err);
-        this.saving = false;
-      }
+    forkJoin({
+      kompanija: kompanijaUpdate$,
+      iteracija: this.kompanijaService.updateKompanijaIteracija(this.data.ID, this.data.iteracijaId, iteracijaPayload),
+    }).subscribe({
+      next: () => { this.saving = false; this.dialogRef.close(true); },
+      error: (err) => { console.error('Greška pri čuvanju', err); this.saving = false; },
     });
   }
 
   zatvori() {
     this.dialogRef.close();
-  }
-
-  toggleEdit(field: keyof typeof this.edit) {
-    this.edit[field] = !this.edit[field];
   }
 
   toggleDropdown() {

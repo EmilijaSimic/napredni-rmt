@@ -1,75 +1,86 @@
 <div class="modal-header">
-  <h4>{{ data.naziv }}</h4>
+  <div class="header-identity">
+    <div class="company-avatar">{{ data.naziv.charAt(0) }}</div>
+    <div class="header-text">
+      <h4 class="company-name">{{ data.naziv }}</h4>
+      <p class="company-meta" *ngIf="data.websajt">{{ data.websajt }}</p>
+    </div>
+  </div>
   <button class="close-btn" (click)="zatvori()">✕</button>
 </div>
 
 <div class="modal-body">
 
+  <!-- Stats -->
   <div class="stats-section">
-    <div class="stat-card">
-      <div class="stat-main">
-        <span class="stat-value">{{ data.brojCimanja }}</span>
-        <span class="stat-label">Cimanja</span>
-      </div>
+    <div class="stat-card stat-blue">
+      <span class="stat-value">{{ data.brojCimanja }}</span>
+      <span class="stat-label">Cimanja</span>
     </div>
-    <div class="stat-card">
-      <div class="stat-main">
-        <span class="stat-value">{{ data.brojOdobravanja }}</span>
-        <span class="stat-label">Odobravanja</span>
-      </div>
+    <div class="stat-card stat-green">
+      <span class="stat-value">{{ data.brojOdobravanja }}</span>
+      <span class="stat-label">Odobravanja</span>
     </div>
-    <div class="stat-card">
-      <div class="stat-main">
-        <span class="stat-value">{{ data.brojOdbijanja }}</span>
-        <span class="stat-label">Odbijanja</span>
-      </div>
+    <div class="stat-card stat-red">
+      <span class="stat-value">{{ data.brojOdbijanja }}</span>
+      <span class="stat-label">Odbijanja</span>
     </div>
   </div>
 
-  <!-- FORM GRID -->
+  <!-- Company details -->
+  <!-- <p class="section-title">Podaci o kompaniji</p> -->
   <div class="form-grid">
 
-    <!-- Naziv -->
-    <div class="form-group">
+    <div class="form-group full">
       <label>Naziv</label>
-      <div class="input-wrapper">
-        <input type="text" [(ngModel)]="data.naziv" [readonly]="!edit.naziv" [class.disabled]="!edit.naziv">
-        <button class="edit-btn" (click)="toggleEdit('naziv')"></button>
-      </div>
+      <input type="text" [(ngModel)]="data.naziv" placeholder="Naziv kompanije" />
     </div>
 
-    <!-- Websajt -->
     <div class="form-group">
       <label>Websajt</label>
-      <div class="input-wrapper">
-        <input type="text" [(ngModel)]="data.websajt" [readonly]="!edit.websajt" [class.disabled]="!edit.websajt">
-        <button class="edit-btn" (click)="toggleEdit('websajt')"></button>
-      </div>
+      <input type="text" [(ngModel)]="data.websajt" placeholder="https://..." />
     </div>
 
-    <!-- Kontakt -->
     <div class="form-group">
       <label>Kontakt</label>
-      <div class="input-wrapper">
-        <input type="text" [(ngModel)]="data.kontakt" [readonly]="!edit.kontakt" [class.disabled]="!edit.kontakt">
-        <button class="edit-btn" (click)="toggleEdit('kontakt')"></button>
+      <input type="text" [(ngModel)]="data.kontakt" placeholder="email ili telefon" />
+    </div>
+
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Iteration details -->
+  <!-- <p class="section-title">Detalji saradnje</p> -->
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Stanje</label>
+      <div class="custom-select" [class.open]="stanjeDropdownOpen" (click)="$event.stopPropagation()">
+        <div class="select-display" (click)="toggleStanjeDropdown()">
+          <span class="stanje-dot" [ngClass]="stanjeClass"></span>
+          <span>{{ data.stanje }}</span>
+          <svg class="arrow" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="select-options" *ngIf="stanjeDropdownOpen">
+          <div class="option" *ngFor="let s of stanja" (click)="selectStanje(s)">{{ s }}</div>
+        </div>
       </div>
     </div>
 
-    <!-- Član (real korisnici from DB) -->
     <div class="form-group">
-      <label>Član</label>
+      <label>Zadužen član</label>
       <div class="custom-select" [class.open]="dropdownOpen" (click)="$event.stopPropagation()">
         <div class="select-display" (click)="toggleDropdown()">
           <span>{{ selectedKorisnikNaziv }}</span>
           <svg class="arrow" viewBox="0 0 24 24">
-            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </div>
         <div class="select-options" *ngIf="dropdownOpen">
-          <div class="option" *ngIf="korisnici.length === 0" style="color: #666; font-style: italic;">
-            Nema članova za ovaj projekat
-          </div>
+          <div class="option empty" *ngIf="korisnici.length === 0">Nema članova za ovaj projekat</div>
           <div class="option" *ngFor="let k of korisnici" (click)="selectKorisnik(k)">
             {{ k.ime }} {{ k.prezime }}
           </div>
@@ -77,35 +88,18 @@
       </div>
     </div>
 
-    <!-- Stanje -->
-    <div class="form-group">
-      <label>Stanje</label>
-      <div class="custom-select" [class.open]="stanjeDropdownOpen" (click)="$event.stopPropagation()">
-        <div class="select-display" (click)="toggleStanjeDropdown()">
-          <span>{{ data.stanje }}</span>
-          <svg class="arrow" viewBox="0 0 24 24">
-            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="select-options" *ngIf="stanjeDropdownOpen">
-          <div class="option" *ngFor="let s of stanja" (click)="selectStanje(s)">
-            {{ s }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Napomena -->
     <div class="form-group full">
       <label>Napomena</label>
-      <div class="input-wrapper textarea-wrapper">
-        <textarea rows="3" [(ngModel)]="data.napomena" [readonly]="!edit.napomena" [class.disabled]="!edit.napomena"></textarea>
-        <button class="edit-btn" (click)="toggleEdit('napomena')"></button>
-      </div>
+      <textarea rows="3" [(ngModel)]="data.napomena" placeholder="Dodaj napomenu..."></textarea>
     </div>
+
   </div>
+
 </div>
 
 <div class="actions">
-  <button (click)="sacuvaj()" [disabled]="saving">{{ saving ? 'Čuvanje...' : 'Sačuvaj' }}</button>
+  <button class="cancel-btn" (click)="zatvori()">Otkaži</button>
+  <button class="primary-btn" (click)="sacuvaj()" [disabled]="saving">
+    {{ saving ? 'Čuvanje...' : 'Sačuvaj' }}
+  </button>
 </div>

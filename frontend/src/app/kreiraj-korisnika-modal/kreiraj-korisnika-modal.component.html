@@ -6,7 +6,25 @@
 <div class="modal-body">
   <div class="alert error" *ngIf="errorMsg">{{ errorMsg }}</div>
 
+  <div class="form-group-2">
+    <label>Projekat</label>
+    <select [(ngModel)]="form.iteracijaId">
+      <option [ngValue]="null" disabled>Odaberi projekat...</option>
+      <option *ngFor="let p of projekti" [ngValue]="p.iteracija!.id">
+        {{ p.label }} {{ p.iteracija!.godina }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group-2">
+    <label>Tip</label>
+    <select [(ngModel)]="form.tip">
+      <option *ngFor="let t of tipovi" [value]="t">{{ t }}</option>
+    </select>
+  </div>
+  <div class="divider"></div>
   <div class="form-grid">
+
     <div class="form-group">
       <label>Ime</label>
       <input type="text" [(ngModel)]="form.ime" placeholder="Ime">
@@ -23,18 +41,12 @@
       <label>Lozinka</label>
       <input type="password" [(ngModel)]="form.lozinka" placeholder="Lozinka">
     </div>
-    <div class="form-group">
-      <label>Tip</label>
-      <select [(ngModel)]="form.tip">
-        <option *ngFor="let t of tipovi" [value]="t">{{ t }}</option>
-      </select>
-    </div>
+
   </div>
 </div>
 
 <div class="actions">
-  <button class="cancel-btn" (click)="zatvori()">Otkaži</button>
   <button class="primary-btn" (click)="sacuvaj()" [disabled]="saving">
-    {{ saving ? 'Kreiranje...' : 'Kreiraj i dodaj' }}
+    {{ saving ? 'Kreiranje...' : 'Kreiraj' }}
   </button>
 </div>

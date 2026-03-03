@@ -122,10 +122,9 @@ export class ClanoviComponent implements OnInit {
   }
 
   openKreirajModal(): void {
-    if (!this.iteracijaId) return;
     const ref = this.dialog.open(KreirajKorisnikaModalComponent, {
       width: '560px',
-      data: { iteracijaId: this.iteracijaId },
+      data: { projekti: this.projekti, selectedIteracijaId: this.iteracijaId },
     });
     ref.afterClosed().subscribe((created: boolean) => {
       if (created) {

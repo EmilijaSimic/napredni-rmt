@@ -1,4 +1,5 @@
-import { IsString } from "class-validator";
+import { IsEnum, IsString } from "class-validator";
+import { TipPartnera } from "src/enums/tip-partnera";
 
 export class CreateKompanijaDto {
     @IsString()
@@ -9,4 +10,7 @@ export class CreateKompanijaDto {
 
     @IsString()
     kontakt: string;
+
+    @IsEnum(TipPartnera)
+    tip: TipPartnera;
 }

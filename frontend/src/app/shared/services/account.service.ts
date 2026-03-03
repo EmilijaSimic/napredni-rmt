@@ -36,8 +36,15 @@ export class AccountService {
     }
 
     const language = localStorage.getItem(LS_USER_LANGUAGE);
+    const preserved: [string, string][] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!;
+      if (k.startsWith('onboarding_seen_')) preserved.push([k, localStorage.getItem(k)!]);
+    }
+
     localStorage.clear();
     localStorage.setItem(LS_USER_LANGUAGE, language);
+    preserved.forEach(([k, v]) => localStorage.setItem(k, v));
     location.href = '/';
   }
 
@@ -87,6 +94,14 @@ export class AccountService {
 
   getLoggedUserRoles() {
     return localStorage.getItem(LS_USER_ROLES);
+  }
+
+  getUsername(): string | null {
+    const token = localStorage.getItem(LS_USER_TOKEN);
+    if (!token) return null;
+    try {
+      return this.parseJwt(token).username ?? null;
+    } catch { return null; }
   }
 
   isInRole(roleName: string): boolean {

@@ -34,19 +34,20 @@ export class PartnerModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    this.kompanijaService.getAll().subscribe({
+    this.kompanijaService.getDostupne(this.data.projekatId, this.data.tipPartnera).subscribe({
       next: (res) => {
         this.kompanije = res.map((r: any) => ({
           ...r,
           ID: r.ID ?? r.id,
+          napomena: r.napomena ?? '',
           websajt: r.websajt ?? '',
           kontakt: r.kontakt ?? '',
-          stanje: r.stanje || 'Nije dodeljeno',
-          zaduzen: r.zaduzen ?? '',
-          datumCimanja: r.datumCimanja ?? new Date(),
-          datumPodsetnik: r.datumPodsetnik ?? new Date(),
-          datumPoziva: r.datumPoziva ?? new Date(),
-          odobreno: r.odobreno ?? false,
+          stanje: 'Nije dodeljeno',
+          zaduzen: '',
+          datumCimanja: new Date(),
+          datumPodsetnik: new Date(),
+          datumPoziva: new Date(),
+          odobreno: false,
         }));
         this.loading = false;
       },

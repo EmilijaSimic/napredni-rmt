@@ -6,6 +6,9 @@ import {
   AuthenticatedGuard
 } from './shared/guard/authenticated.guard';
 import {
+  AdminGuard
+} from './shared/guard/admin.guard';
+import {
   ProjectGuard
 } from './shared/guard/project.guard';
 import {
@@ -50,7 +53,7 @@ export const routes: Routes = [{
     path: 'nova-iteracija',
     loadComponent: () =>
       import('./nova-iteracija/nova-iteracija.component').then(c => c.NovaIteracijaComponent),
-    canActivate: [AuthenticatedGuard],
+    canActivate: [AuthenticatedGuard, AdminGuard],
   },
   {
     path: 'projekat/:id/clanovi',

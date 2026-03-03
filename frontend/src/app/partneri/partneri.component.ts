@@ -11,6 +11,7 @@ import { TipPartnera } from '../shared/enums/tip-partnera.enum';
 import { IteracijaProjekta } from '../shared/models/iteracija-projekta';
 import { KompanijaResponseModel } from '../shared/models/kompanija';
 import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.component';
+import { AccountService } from '../shared/services/account.service';
 import { IteracijaProjektaService } from '../shared/services/iteracija-projekta.service';
 import { KompanijaService } from '../shared/services/kompanija.service';
 
@@ -29,16 +30,32 @@ export class PartneriComponent implements OnInit {
   status: string;
   routeSegment: string;
   TipPartnera = TipPartnera;
+  isAdmin = false;
+  isKompanija = false;
+  showOnboarding = false;
 
   constructor(
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
+    private accountService: AccountService,
     private kompanijaService: KompanijaService,
     private iteracijaService: IteracijaProjektaService,
   ) {}
 
   ngOnInit(): void {
+    this.isAdmin = this.accountService.isInRole('admin');
+    this.isKompanija = this.accountService.isInRole('kompanija');
+
+    if (!this.isAdmin && !this.isKompanija) {
+      const username = this.accountService.getUsername();
+      const key = `onboarding_seen_${username}`;
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, '1');
+        this.showOnboarding = true;
+      }
+    }
+
     combineLatest([this.route.params, this.route.queryParams]).subscribe(([params, qParams]) => {
       this.projekatId = +params['id'];
       this.tipPartnera = qParams['tipPartnera'];
@@ -90,15 +107,23 @@ export class PartneriComponent implements OnInit {
   }
 
   openKreirajKompanijuModal() {
-    this.dialog.open(KreirajKompanijuModalComponent, { width: '700px' });
+    const dialogRef = this.dialog.open(KreirajKompanijuModalComponent, {
+      width: '700px',
+      data: { tipPartnera: this.tipPartnera, projekatId: this.projekatId },
+    });
+
+    dialogRef.afterClosed().subscribe((created: boolean) => {
+      if (created) this.loadPartneri();
+    });
   }
 
   getStanjeClass(stanje: string | undefined): string {
     switch (stanje) {
       case 'Odobreno': return 'stanje-odobreno';
       case 'Odbijeno': return 'stanje-odbijeno';
-      case 'Poziv':
-      case 'Poslat email': return 'stanje-poziv-email';
+      case 'Poziv': return 'stanje-poziv-email';
+      case 'Poslat email': return 'stanje-email';
+      case 'Poslat podsetnik': return 'stanje-podsetnik';
       default: return 'stanje-nije-dodeljeno';
     }
   }
@@ -111,9 +136,14 @@ export class PartneriComponent implements OnInit {
     }
   }
 
+  closeOnboarding(): void {
+    this.showOnboarding = false;
+  }
+
   openDetaljiModal(kompanija: KompanijaResponseModel) {
     const dialogRef = this.dialog.open(KompanijaDetaljiModalComponent, {
       width: '600px',
+      maxHeight: '95vh',
       data: { ...kompanija, iteracijaId: this.projekatId }
     });
 

@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4>Dodaj robne partnere</h4>
+  <h4>Dodaj {{ data.tipPartnera }} partnere</h4>
   <button class="close-btn" (click)="otkazi()">✕</button>
 </div>
 
@@ -16,19 +16,20 @@
     <div class="row">
       <input type="checkbox" [checked]="selektovane.has(k.ID)" (change)="toggleSelektovan(k.ID)">
       <span>{{ k.naziv }}</span>
-      <button (click)="toggleDetaljnije(k.ID)" class="details-button">Detaljnije</button>
+      <button class="details-button" (click)="toggleDetaljnije(k.ID)">Detaljnije</button>
     </div>
 
-  <div *ngIf="otvorenoDetaljnije.has(k.ID)" class="detaljnije">
-  <p data-label="Napomena">{{ k.napomena }}</p>
-</div>
+    <div *ngIf="otvorenoDetaljnije.has(k.ID)" class="detaljnije">
+      <p data-label="Napomena">{{ k.napomena }}</p>
+    </div>
   </div>
 </div>
 
-<ng-template #loadingTpl>
-
-</ng-template>
+<ng-template #loadingTpl></ng-template>
 
 <div class="actions">
-  <button (click)="potvrdi()">Dodaj</button>
+  <button class="cancel-btn" (click)="otkazi()">Otkaži</button>
+  <button class="primary-btn" [disabled]="saving || selektovane.size === 0" (click)="potvrdi()">
+    {{ saving ? 'Dodavanje...' : 'Dodaj' }}
+  </button>
 </div>

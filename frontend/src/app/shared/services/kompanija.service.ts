@@ -30,8 +30,15 @@ export class KompanijaService {
     return this.http.get<KompanijaBasicModel[]>(`${environment.apiUrl}/kompanija`);
   }
 
-  create(naziv: string, websajt: string, kontakt: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/kompanija`, { naziv, websajt, kontakt });
+  create(naziv: string, websajt: string, kontakt: string, tip: TipPartnera): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/kompanija`, { naziv, websajt, kontakt, tip });
+  }
+
+  getDostupne(iteracijaId: number, tipPartnera: TipPartnera): Observable<KompanijaBasicModel[]> {
+    return this.http.get<KompanijaBasicModel[]>(
+      `${this.API_ENDPOINT}/${iteracijaId}/kompanije/dostupne`,
+      { params: { tipPartnera } },
+    );
   }
 
   batchAddToIteracija(iteracijaId: number, kompanijaIds: number[], tipPartnera: TipPartnera): Observable<any> {
@@ -49,6 +56,10 @@ export class KompanijaService {
       `${this.API_ENDPOINT}/${iteracijaId}/kompanije`,
       { params },
     );
+  }
+
+  updateKompanija(id: number, dto: { naziv?: string; websajt?: string; kontakt?: string }): Observable<any> {
+    return this.http.patch(`${environment.apiUrl}/kompanija/${id}`, dto);
   }
 
   updateKompanijaIteracija(kompanijaId: number, iteracijaId: number, dto: Record<string, any>): Observable<any> {

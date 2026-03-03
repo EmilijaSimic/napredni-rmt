@@ -1,9 +1,11 @@
 <div class="page">
 
-  <div class="page-header">
-    <h1>Projekti</h1>
-    <p class="subtitle">Odaberite projekat</p>
-  </div>
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="heading">Odaberi projekat</h1>
+      <p class="subheading">Kliknite na projekat koji želite da otvorite</p>
+    </div>
+  </header>
 
   <div class="cards">
     <button
@@ -15,9 +17,18 @@
         <img [src]="p.image" [alt]="p.iteracija.naziv_projekta">
       </div>
 
-      <div class="card-info">
-        <span class="card-name">{{ p.iteracija.naziv_projekta }}</span>
+      <div class="card-footer">
+        <div class="card-meta">
+          <span class="card-name">{{ p.iteracija.naziv_projekta }}</span>
+          <span class="card-year">{{ p.iteracija.godina }}</span>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </div>
       </div>
+
     </button>
   </div>
 

@@ -1,14 +1,37 @@
-<div class="home-layout">
+<div class="page-layout">
   <la-partneri-menu></la-partneri-menu>
 
-  <div class="content">
-    <div class="header">
-      <h2>Promo Materijali</h2>
+  <div class="main-content">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Promo Materijali</h1>
+        <!-- <span class="results-count" *ngIf="materijali.length > 0">
+          {{ materijali.length }} fajl{{ materijali.length === 1 ? '' : 'ova' }}
+        </span> -->
+      </div>
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.5" />
+          <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Pretraži po kompaniji ili fajlu..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()">
+      </div>
     </div>
 
-    <ng-container *ngIf="isAdmin">
-      <div class="upload-panel">
-        <div class="select-wrapper">
+    <!-- Admin/koordinator upload card -->
+    <div class="admin-card" *ngIf="isAdmin || isKoordinator">
+      <div class="admin-card-header">
+        <span class="admin-card-title">Dodaj materijal</span>
+      </div>
+
+      <div class="upload-form">
+        <div class="form-field">
           <label>Kompanija</label>
           <select [(ngModel)]="selectedKompanijaId">
             <option [ngValue]="null" disabled>Odaberi kompaniju...</option>
@@ -16,59 +39,129 @@
           </select>
         </div>
 
-        <div class="file-row">
-          <label class="file-label">
+        <div class="form-field">
+          <label>Fajl</label>
+          <label class="file-pick">
             <input type="file" accept="image/*,video/*" (change)="onFileSelected($event)" hidden>
-            <span class="file-btn">{{ fileName || 'Odaberi fajl' }}</span>
+            <svg viewBox="0 0 24 24" fill="currentColor" class="pick-icon">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.01l1.41 1.41L11 14.84V19h2v-4.16l1.59 1.59L16 15.01 12.01 11z" />
+            </svg>
+            <span>{{ fileName || 'Odaberi fajl...' }}</span>
           </label>
-
-          <button
-            class="upload-btn"
-            [disabled]="!selectedFile || !selectedKompanijaId || isUploading"
-            (click)="upload()">
-            {{ isUploading ? 'Uploaduje se...' : 'Upload' }}
-          </button>
         </div>
 
-        <p class="error" *ngIf="uploadError">{{ uploadError }}</p>
+        <button
+          class="upload-btn"
+          [disabled]="!selectedFile || !selectedKompanijaId || isUploading"
+          (click)="upload()">
+          {{ isUploading ? 'Šalje se...' : 'Upload' }}
+        </button>
       </div>
 
-      <button class="sync-btn" [disabled]="isSyncing" (click)="syncTags()">
-        {{ isSyncing ? 'Sinkronizacija...' : 'Sinkronizuj tagove' }}
-      </button>
-    </ng-container>
-
-    <div class="search-row">
-      <input
-        class="search-input"
-        type="text"
-        placeholder="Pretraži po kompaniji ili imenu fajla..."
-        [(ngModel)]="searchTerm"
-        (input)="onSearch()">
+      <p class="upload-error" *ngIf="uploadError">{{ uploadError }}</p>
     </div>
 
-    <p class="empty-msg" *ngIf="materijali.length === 0">Nema promo materijala.</p>
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="materijali.length === 0">
+      <svg viewBox="0 0 64 64" fill="none" class="empty-icon">
+        <rect x="8" y="12" width="48" height="36" rx="4" stroke="currentColor" stroke-width="2" />
+        <path d="M8 36l12-10 10 8 10-12 16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="22" cy="24" r="4" stroke="currentColor" stroke-width="2" />
+      </svg>
+      <p class="empty-title">Nema promo materijala</p>
+      <p class="empty-sub" *ngIf="searchTerm">Pokušajte sa drugačijim pojmom za pretragu.</p>
+    </div>
 
-    <div *ngFor="let grupa of materijaliPoKompaniji" class="company-group">
-      <p class="company-label">{{ grupa.naziv }} — {{ grupa.stavke.length }} materijal{{ grupa.stavke.length === 1 ? '' : 'a' }}</p>
+    <!-- Company sections -->
+    <div class="company-section" *ngFor="let grupa of materijaliPoKompaniji">
+      <div class="section-head">
+        <span class="co-name">{{ grupa.naziv }}</span>
+        <span class="count-badge">{{ grupa.stavke.length }}</span>
+        <div class="section-line"></div>
+      </div>
 
       <div class="materials-grid">
         <div class="material-card" *ngFor="let m of grupa.stavke">
-          <div class="media-wrapper">
-            <video *ngIf="isVideo(m.url)" [src]="m.url" controls class="media"></video>
+
+          <div class="thumb" (click)="openMaterial(m)">
+            <video *ngIf="isVideo(m.url)" [src]="m.url" class="media" muted></video>
             <img *ngIf="!isVideo(m.url)" [src]="m.url" [alt]="m.originalnoIme" class="media">
+            <button
+              *ngIf="isAdmin || isKoordinator"
+              class="card-delete-btn"
+              title="Obriši"
+              (click)="$event.stopPropagation(); confirmDelete(m.id)">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+              </svg>
+            </button>
+            <div class="media-type-badge" *ngIf="isVideo(m.url)">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Video
+            </div>
           </div>
-          <div class="card-footer">
-            <span class="file-name" [title]="m.originalnoIme">{{ m.originalnoIme }}</span>
-            <span class="date">{{ m.datumKreiranja | date:'d.M.yyyy.' }}</span>
-            <button *ngIf="isAdmin" class="delete-btn" (click)="deleteMaterijal(m.id)">Obriši</button>
-          </div>
-          <div class="tag-row" *ngIf="m.tags && m.tags.length > 0">
-            <span class="tag" *ngFor="let t of m.tags">{{ t }}</span>
-          </div>
+
         </div>
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" *ngIf="selectedMaterial" (click)="closeMaterial()">
+  <div class="lightbox-box" (click)="$event.stopPropagation()">
+
+    <div class="lightbox-header">
+      <span class="lightbox-name">{{ selectedMaterial.originalnoIme }}</span>
+      <div class="lightbox-actions">
+        <a [href]="selectedMaterial.url" target="_blank" class="lbox-btn" title="Otvori u novom tabu" (click)="$event.stopPropagation()">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" />
+          </svg>
+        </a>
+        <button *ngIf="isAdmin || isKoordinator" class="lbox-btn lbox-danger" title="Obriši" (click)="confirmDelete(selectedMaterial.id)">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+          </svg>
+        </button>
+        <button class="lbox-btn lbox-close" title="Zatvori" (click)="closeMaterial()">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="lightbox-media-wrap">
+      <video *ngIf="isVideo(selectedMaterial.url)" [src]="selectedMaterial.url" controls class="lightbox-media"></video>
+      <img *ngIf="!isVideo(selectedMaterial.url)" [src]="selectedMaterial.url" [alt]="selectedMaterial.originalnoIme" class="lightbox-media">
+    </div>
+
+    <div class="lightbox-footer" *ngIf="selectedMaterial.tags && selectedMaterial.tags.length > 0">
+      <div class="lightbox-tags">
+        <span class="tag" *ngFor="let t of selectedMaterial.tags">{{ t }}</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="confirm-overlay" *ngIf="deleteTargetId !== null" (click)="cancelDelete()">
+  <div class="confirm-box" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+      </svg>
+    </div>
+    <p class="confirm-title">Obriši materijal</p>
+    <p class="confirm-sub">Da li ste sigurni da želite da obrišete ovaj materijal? Ova akcija se ne može poništiti.</p>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" (click)="cancelDelete()">Otkaži</button>
+      <button class="confirm-delete" (click)="executeDelete()">Da, obriši</button>
+    </div>
   </div>
 </div>

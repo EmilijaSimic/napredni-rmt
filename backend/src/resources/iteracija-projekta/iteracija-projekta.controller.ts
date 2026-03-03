@@ -27,6 +27,14 @@ export class IteracijaProjektaController {
     return this.iteracijaProjektaService.batchAddKompanije(+id, dto);
   }
 
+  @Get(':id/kompanije/dostupne')
+  findDostupne(
+    @Param('id') id: string,
+    @Query('tipPartnera') tipPartnera: TipPartnera,
+  ) {
+    return this.iteracijaProjektaService.findDostupne(+id, tipPartnera);
+  }
+
   @Get(':id/kompanije')
   findKompanije(
     @Param('id') id: string,

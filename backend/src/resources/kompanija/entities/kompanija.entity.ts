@@ -1,5 +1,6 @@
+import { TipPartnera } from "src/enums/tip-partnera";
 import { KompanijaIteracija } from "src/resources/kompanija-iteracija/entities/kompanija-iteracija.entity";
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Kompanija {
@@ -15,6 +16,9 @@ export class Kompanija {
 
     @Column()
     kontakt:string;
+
+    @Column({ type: 'varchar' })
+    tip: TipPartnera;
 
     @OneToMany(() => KompanijaIteracija, ki => ki.kompanija)
     kompanijaIteracije: KompanijaIteracija[];

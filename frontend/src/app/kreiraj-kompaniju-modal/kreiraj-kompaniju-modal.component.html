@@ -1,23 +1,28 @@
 <div class="modal-header">
-  <h4>Kreiraj novu kompaniju</h4>
+  <div class="header-left">
+    <h4>Kreiraj novu kompaniju</h4>
+    <span class="tip-badge" [class.tip-finansijski]="data.tipPartnera === 'finansijski'" [class.tip-robni]="data.tipPartnera === 'robni'">
+      {{ tipLabel }} partner
+    </span>
+  </div>
   <button class="close-btn" (click)="otkazi()">✕</button>
 </div>
 
 <div class="modal-body">
 
-  <div class="section">
+  <div class="form-group">
     <label>Naziv kompanije</label>
     <input type="text" [(ngModel)]="naziv" name="naziv" />
   </div>
 
   <div class="grid-2">
 
-    <div class="section">
+    <div class="form-group">
       <label>Websajt</label>
       <input type="text" [(ngModel)]="websajt" name="websajt" />
     </div>
 
-    <div class="section">
+    <div class="form-group">
       <label>Kontakt</label>
       <input type="text" [(ngModel)]="kontakt" name="kontakt" />
     </div>
@@ -26,7 +31,10 @@
 
 </div>
 
+<p class="error-msg" *ngIf="error">{{ error }}</p>
+
 <div class="actions">
+  <button class="cancel-btn" (click)="otkazi()">Otkaži</button>
   <button class="primary-btn" (click)="potvrdi()" [disabled]="saving || !naziv.trim()">
     {{ saving ? 'Kreiranje...' : 'Kreiraj' }}
   </button>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { KompanijaBasicModel } from '../shared/models/kompanija';
 import { MaterijaliModel } from '../shared/models/materijali';
@@ -17,8 +17,9 @@ import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.com
 })
 export class PromoMaterijaliComponent implements OnInit {
   isAdmin = false;
+  isKoordinator = false;
 
-  // Admin upload state
+  // Admin/koordinator upload state
   kompanije: KompanijaBasicModel[] = [];
   selectedKompanijaId: number | null = null;
   selectedFile: File | null = null;
@@ -30,6 +31,8 @@ export class PromoMaterijaliComponent implements OnInit {
   // Shared state
   materijali: MaterijaliModel[] = [];
   searchTerm = '';
+  selectedMaterial: MaterijaliModel | null = null;
+  deleteTargetId: number | null = null;
 
   constructor(
     private accountService: AccountService,
@@ -39,8 +42,9 @@ export class PromoMaterijaliComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.accountService.isInRole('admin');
+    this.isKoordinator = this.accountService.isInRole('koordinator');
 
-    if (this.isAdmin) {
+    if (this.isAdmin || this.isKoordinator) {
       this.kompanijaService.getAll().subscribe({
         next: (data) => this.kompanije = data,
       });
@@ -109,12 +113,37 @@ export class PromoMaterijaliComponent implements OnInit {
     });
   }
 
-  deleteMaterijal(id: number): void {
+  confirmDelete(id: number): void {
+    this.deleteTargetId = id;
+  }
+
+  cancelDelete(): void {
+    this.deleteTargetId = null;
+  }
+
+  executeDelete(): void {
+    if (this.deleteTargetId === null) return;
+    const id = this.deleteTargetId;
+    this.deleteTargetId = null;
+    this.selectedMaterial = null;
     this.materijaliService.delete(id).subscribe({
       next: () => {
         this.materijali = this.materijali.filter(m => m.id !== id);
       },
     });
+  }
+
+  openMaterial(m: MaterijaliModel): void {
+    this.selectedMaterial = m;
+  }
+
+  closeMaterial(): void {
+    this.selectedMaterial = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  handleEscape(): void {
+    this.selectedMaterial = null;
   }
 
   isVideo(url: string): boolean {

@@ -31,8 +31,7 @@ export class AccountsService {
       throw new UnauthorizedException('Pogrešno korisničko ime ili lozinka.');
     }
 
-    const passwordMatch = await bcrypt.compare(loginDto.password, korisnik.lozinka);
-    if (!passwordMatch) {
+    if (loginDto.password !== korisnik.lozinka) {
       throw new UnauthorizedException('Pogrešno korisničko ime ili lozinka.');
     }
 

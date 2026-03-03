@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { NazivProjekta } from '../shared/enums/naziv-projekta.enum';
 import { IteracijaProjekta } from '../shared/models/iteracija-projekta';
 import { PartneriMenuComponent } from '../shared/partneri-menu/partneri-menu.component';
 import { IteracijaProjektaService } from '../shared/services/iteracija-projekta.service';
+import { KreirajIteracijuModalComponent } from './kreiraj-iteraciju-modal.component';
 
 interface ProjectCard {
   naziv: NazivProjekta;
@@ -13,7 +15,6 @@ interface ProjectCard {
   image: string;
   trenutna: IteracijaProjekta | null;
   isCreating: boolean;
-  pendingConfirm: boolean;
   createdId: number | null;
   error: string;
 }
@@ -21,21 +22,24 @@ interface ProjectCard {
 @Component({
   selector: 'la-nova-iteracija',
   standalone: true,
-  imports: [CommonModule, PartneriMenuComponent],
+  imports: [CommonModule, PartneriMenuComponent, MatDialogModule],
   templateUrl: './nova-iteracija.component.html',
   styleUrl: './nova-iteracija.component.scss',
 })
 export class NovaIteracijaComponent implements OnInit {
+  lastCreated: ProjectCard | null = null;
+
   projekti: ProjectCard[] = [
-    { naziv: NazivProjekta.FON_HAKATON, displayNaziv: 'Fon hakaton',              image: 'assets/images/hahaton.png', trenutna: null, isCreating: false, pendingConfirm: false, createdId: null, error: '' },
-    { naziv: NazivProjekta.HZS,         displayNaziv: 'Hakaton za srednjoškolce', image: 'assets/images/hzs.png',     trenutna: null, isCreating: false, pendingConfirm: false, createdId: null, error: '' },
-    { naziv: NazivProjekta.S2S,         displayNaziv: 'Studenti studentima',      image: 'assets/images/s2s.png',     trenutna: null, isCreating: false, pendingConfirm: false, createdId: null, error: '' },
-    { naziv: NazivProjekta.C2S,         displayNaziv: 'Kompanije studentima',     image: 'assets/images/c2s.png',     trenutna: null, isCreating: false, pendingConfirm: false, createdId: null, error: '' },
+    { naziv: NazivProjekta.FON_HAKATON, displayNaziv: 'Fon hakaton',              image: 'assets/images/hahaton.png', trenutna: null, isCreating: false, createdId: null, error: '' },
+    { naziv: NazivProjekta.HZS,         displayNaziv: 'Hakaton za srednjoškolce', image: 'assets/images/hzs.png',     trenutna: null, isCreating: false, createdId: null, error: '' },
+    { naziv: NazivProjekta.S2S,         displayNaziv: 'Studenti studentima',      image: 'assets/images/s2s.png',     trenutna: null, isCreating: false, createdId: null, error: '' },
+    { naziv: NazivProjekta.C2S,         displayNaziv: 'Kompanije studentima',     image: 'assets/images/c2s.png',     trenutna: null, isCreating: false, createdId: null, error: '' },
   ];
 
   constructor(
     private iteracijaService: IteracijaProjektaService,
     private router: Router,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -58,16 +62,18 @@ export class NovaIteracijaComponent implements OnInit {
   }
 
   requestConfirm(projekat: ProjectCard): void {
-    projekat.pendingConfirm = true;
-  }
-
-  cancelKreiraj(projekat: ProjectCard): void {
-    projekat.pendingConfirm = false;
+    if (!projekat.trenutna) return;
+    const ref = this.dialog.open(KreirajIteracijuModalComponent, {
+      width: '420px',
+      data: { displayNaziv: projekat.displayNaziv, novaGodina: projekat.trenutna.godina + 1 },
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) this.kreiraj(projekat);
+    });
   }
 
   kreiraj(projekat: ProjectCard): void {
     if (!projekat.trenutna || projekat.isCreating) return;
-    projekat.pendingConfirm = false;
     projekat.isCreating = true;
     projekat.error = '';
 
@@ -78,6 +84,7 @@ export class NovaIteracijaComponent implements OnInit {
         projekat.isCreating = false;
         projekat.createdId = nova.id;
         if (projekat.trenutna) projekat.trenutna = { ...projekat.trenutna, godina: novaGodina, id: nova.id };
+        this.lastCreated = projekat;
       },
       error: () => {
         projekat.isCreating = false;

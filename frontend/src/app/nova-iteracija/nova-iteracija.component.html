@@ -1,53 +1,77 @@
-<div class="home-layout">
+<div class="page-layout">
   <la-partneri-menu></la-partneri-menu>
 
-  <div class="content">
-    <div class="header">
-      <h2>Nova iteracija</h2>
-      <p class="subtitle">Kreirajte novu iteraciju za svaki projekat</p>
+  <div class="main-content">
+
+    <div class="topbar">
+      <h1 class="page-title">Nova iteracija</h1>
+      <p class="page-sub">Pokrenite novu iteraciju za projekat</p>
     </div>
 
-    <div class="projekti-grid">
-      <div class="projekat-card" *ngFor="let p of projekti">
+    <!-- Success banner -->
+    <div class="success-banner" *ngIf="lastCreated">
+      <div class="banner-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </div>
+      <div class="banner-body">
+        <p class="banner-title">Iteracija uspešno kreirana!</p>
+        <p class="banner-sub">{{ lastCreated.displayNaziv }} · {{ lastCreated.trenutna?.godina }}</p>
+      </div>
+      <button class="banner-nav-btn" (click)="idNaIteraciju(lastCreated)">
+        Otvori iteraciju
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </button>
+      <button class="banner-close" (click)="lastCreated = null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
 
-        <div class="card-logo">
-          <img [src]="p.image" [alt]="p.displayNaziv">
+    <div class="projekti-list">
+      <div class="projekat-row" *ngFor="let p of projekti">
+
+        <!-- Identity -->
+        <div class="row-identity">
+          <div class="row-logo">
+            <img [src]="p.image" [alt]="p.displayNaziv">
+          </div>
+          <span class="row-naziv">{{ p.displayNaziv }}</span>
         </div>
 
-        <div class="card-body">
-          <p class="projekat-naziv">{{ p.displayNaziv }}</p>
+        <!-- Year transition -->
+        <div class="row-years" *ngIf="p.trenutna">
+          <span class="year-pill current">{{ p.trenutna.godina }}</span>
+        </div>
+        <span class="no-iteracija" *ngIf="!p.trenutna">Nema iteracija</span>
 
-          <div class="iteracija-info" *ngIf="p.trenutna">
-            <span class="trenutna-label">Trenutna</span>
-            <span class="godina">{{ p.trenutna.godina }}</span>
-          </div>
-
-          <p class="no-iteracija" *ngIf="!p.trenutna">Nema iteracija za ovaj projekat.</p>
+        <!-- Actions -->
+        <div class="row-actions">
           <p class="error-msg" *ngIf="p.error">{{ p.error }}</p>
 
-          <div class="card-actions">
-            <button
-              *ngIf="!p.createdId && p.trenutna && !p.pendingConfirm"
-              class="kreiraj-btn"
-              [disabled]="p.isCreating"
-              (click)="requestConfirm(p)">
-              {{ p.isCreating ? 'Kreiranje...' : 'Kreiraj ' + (p.trenutna.godina + 1) }}
-            </button>
+          <button
+            class="kreiraj-btn"
+            *ngIf="!p.createdId && p.trenutna"
+            [disabled]="p.isCreating"
+            (click)="requestConfirm(p)">
+            {{ p.isCreating ? 'Kreiranje...' : 'Kreiraj novu iteraciju' }}
+          </button>
 
-            <div class="confirm-row" *ngIf="p.pendingConfirm && !p.createdId">
-              <span class="confirm-text">Da li ste sigurni?</span>
-              <button class="confirm-btn" (click)="kreiraj(p)">Da, kreiraj</button>
-              <button class="cancel-btn" (click)="cancelKreiraj(p)">Otkaži</button>
-            </div>
-
-            <div class="success-row" *ngIf="p.createdId">
-              <span class="success-badge">✓ Kreirana {{ p.trenutna?.godina }}</span>
-              <button class="idi-btn" (click)="idNaIteraciju(p)">Idi na iteraciju →</button>
-            </div>
-          </div>
+          <span class="created-badge" *ngIf="p.createdId">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Kreirana {{ p.trenutna?.godina }}
+          </span>
         </div>
 
       </div>
     </div>
+
   </div>
 </div>

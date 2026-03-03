@@ -4,10 +4,11 @@ import { IteracijaProjektaController } from './iteracija-projekta.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IteracijaProjekta } from './entities/iteracija-projekta.entity';
 import { KompanijaIteracija } from '../kompanija-iteracija/entities/kompanija-iteracija.entity';
+import { Kompanija } from '../kompanija/entities/kompanija.entity';
 import { Korisnik } from '../korisnik/entities/korisnik.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([IteracijaProjekta, KompanijaIteracija, Korisnik])],
+  imports: [TypeOrmModule.forFeature([IteracijaProjekta, KompanijaIteracija, Kompanija, Korisnik])],
   controllers: [IteracijaProjektaController],
   providers: [IteracijaProjektaService],
 })

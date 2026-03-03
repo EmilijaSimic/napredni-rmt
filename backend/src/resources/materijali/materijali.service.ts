@@ -1,41 +1,31 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { Materijali } from './entities/materijali.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { TipKorisnika } from 'src/enums/tip-korisnika';
+import {
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
+import {
+  InjectRepository
+} from '@nestjs/typeorm';
+import {
+  Repository
+} from 'typeorm';
+import {
+  Materijali
+} from './entities/materijali.entity';
+import {
+  CloudinaryService
+} from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class MaterijaliService {
   constructor(
-    @InjectRepository(Materijali)
-    private readonly materijaliRepository: Repository<Materijali>,
+    @InjectRepository(Materijali) private readonly materijaliRepository: Repository < Materijali > ,
     private readonly cloudinaryService: CloudinaryService,
-    private readonly jwtService: JwtService,
   ) {}
-
-  private verifyAdmin(authHeader: string): void {
-    if (!authHeader?.startsWith('Bearer ')) throw new UnauthorizedException();
-    const token = authHeader.split(' ')[1];
-    let payload: any;
-    try {
-      payload = this.jwtService.verify(token);
-    } catch {
-      throw new UnauthorizedException();
-    }
-    if (payload.roles !== TipKorisnika.ADMIN) {
-      throw new UnauthorizedException('Samo admin može pristupiti ovoj akciji.');
-    }
-  }
 
   async uploadMaterijal(
     file: Express.Multer.File,
     kompanija_id: string,
-    authHeader: string,
   ) {
-    this.verifyAdmin(authHeader);
-
     const uploaded = await this.cloudinaryService.uploadFile(file);
 
     const materijal = this.materijaliRepository.create({
@@ -50,7 +40,7 @@ export class MaterijaliService {
     return await this.materijaliRepository.save(materijal);
   }
 
-  async findAll(search?: string) {
+  async findAll(search ? : string) {
     const qb = this.materijaliRepository.createQueryBuilder('m')
       .leftJoinAndSelect('m.kompanija', 'k')
       .orderBy('k.naziv', 'ASC')
@@ -58,8 +48,9 @@ export class MaterijaliService {
 
     if (search) {
       qb.where(
-        'k.naziv ILIKE :s OR m."originalnoIme" ILIKE :s OR m.tags ILIKE :s',
-        { s: `%${search}%` },
+        'k.naziv ILIKE :s OR m."originalnoIme" ILIKE :s OR m.tags ILIKE :s', {
+          s: `%${search}%`
+        },
       );
     }
 
@@ -78,9 +69,7 @@ export class MaterijaliService {
       .getRawMany();
   }
 
-  async syncTags(authHeader: string) {
-    this.verifyAdmin(authHeader);
-
+  async syncTags() {
     const cloudinaryResources = await this.cloudinaryService.getAllResourceTags();
     const tagMap = new Map(cloudinaryResources.map(r => [r.publicId, r.tags]));
 
@@ -96,18 +85,23 @@ export class MaterijaliService {
       }
     }
 
-    return { message: `Sinkronizirano ${updated} materijala.`, updated };
+    return {
+      message: `Sinkronizirano ${updated} materijala.`,
+      updated
+    };
   }
 
-  async remove(id: number, authHeader: string) {
-    this.verifyAdmin(authHeader);
-
-    const materijal = await this.materijaliRepository.findOneBy({ id });
+  async remove(id: number) {
+    const materijal = await this.materijaliRepository.findOneBy({
+      id
+    });
     if (!materijal) throw new NotFoundException('Materijal nije pronađen.');
 
     await this.cloudinaryService.deleteFile(materijal.javniId, materijal.url);
     await this.materijaliRepository.delete(id);
 
-    return { message: 'Materijal je uspješno obrisan.' };
+    return {
+      message: 'Materijal je uspešno obrisan.'
+    };
   }
 }

@@ -3,17 +3,47 @@
 
   <div class="content">
 
-    <div class="header">
-      <h2>{{ tipPartnera === TipPartnera.ROBNI ? 'Robni' : 'Finansijski' }} partneri</h2>
-      <div class="header-actions">
-        <button class="add-btn" (click)="openRobniModal()">
-          + Dodaj {{ tipPartnera === TipPartnera.ROBNI ? 'robnog' : 'finansijskog' }} partnera
-        </button>
-        <button class="create-btn" (click)="openKreirajKompanijuModal()">Kreiraj kompaniju</button>
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">{{ tipPartnera === TipPartnera.ROBNI ? 'Robni' : 'Finansijski' }} partneri</h1>
+        <span class="partner-count" *ngIf="partneri.length > 0">{{ partneri.length }}</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="btn-with-help">
+          <button class="btn-secondary" (click)="openKreirajKompanijuModal()">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Kreiraj kompaniju
+          </button>
+          <div class="help-tip">
+            <button class="help-btn">?</button>
+            <div class="help-tooltip">
+              <strong>Kreiraj kompaniju</strong>
+              Kompanija još ne postoji u sistemu, kreirajte novu kompaniju.
+            </div>
+          </div>
+        </div>
+        <div class="btn-with-help">
+          <button class="btn-primary" (click)="openRobniModal()">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+            </svg>
+            Dodaj partnera
+          </button>
+          <div class="help-tip">
+            <button class="help-btn">?</button>
+            <div class="help-tooltip">
+              <strong>Dodaj partnera</strong>
+              Kompanija već postoji u sistemu iz prethodnih iteracija, dodajte je na vašoj trenutnoj iteraciji.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="iteracija-switcher" *ngIf="iteracije.length > 1">
+    <div class="iteracija-switcher" *ngIf="isAdmin && iteracije.length > 1">
+      <span class="switcher-label">Godina</span>
       <button
         *ngFor="let it of iteracije"
         class="iteracija-pill"
@@ -28,7 +58,6 @@
         <span>Kompanija</span>
         <span>Status</span>
         <span>Zadužen</span>
-        <span>Datum cimanja</span>
         <span></span>
       </div>
 
@@ -36,35 +65,128 @@
         <div
           *ngFor="let r of partneri"
           class="partner-row"
-          [ngClass]="getBorderClass(r.stanje)">
+          [ngClass]="getBorderClass(r.stanje)"
+          (click)="openDetaljiModal(r)">
 
-          <div class="col naziv-col">
-            <div class="logo-placeholder">{{ r.naziv.charAt(0) }}</div>
-            <span class="naziv">{{ r.naziv }}</span>
+          <div class="naziv-col">
+            <div class="avatar">{{ r.naziv.charAt(0) }}</div>
+            <div class="naziv-info">
+              <span class="naziv">{{ r.naziv }}</span>
+              <span class="naziv-sub" *ngIf="r.websajt">{{ r.websajt }}</span>
+              <span class="naziv-sub muted" *ngIf="!r.websajt && r.kontakt">{{ r.kontakt }}</span>
+            </div>
           </div>
 
-          <div class="col status-col">
+          <div class="status-col">
             <span class="status-pill" [ngClass]="getStanjeClass(r.stanje)">
               {{ r.stanje || 'Nije dodeljeno' }}
             </span>
           </div>
 
-          <div class="col zaduzen-col">{{ r.zaduzen || '—' }}</div>
+          <div class="zaduzen-col">{{ r.zaduzen || '—' }}</div>
 
-          <div class="col datum-col">
-            {{ r.datumCimanja ? (r.datumCimanja | date:'d.M.yyyy.') : '—' }}
-          </div>
-
-          <div class="col actions-col">
-            <button class="detalji-btn" (click)="openDetaljiModal(r)">Detalji</button>
+          <div class="arrow-col">
+            <button class="btn-detaljnije" (click)="$event.stopPropagation(); openDetaljiModal(r)">Detaljnije</button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="empty-state" *ngIf="partneri.length === 0">
-      <p>Nema {{ tipPartnera === TipPartnera.ROBNI ? 'robnih' : 'finansijskih' }} partnera za prikaz.</p>
+      <div class="empty-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <p class="empty-title">Nema {{ tipPartnera === TipPartnera.ROBNI ? 'robnih' : 'finansijskih' }} partnera</p>
+      <p class="empty-sub">Koristite dugme iznad da dodate prvog partnera u ovu iteraciju.</p>
     </div>
+
+  </div>
+</div>
+
+<!-- Onboarding modal -->
+<!-- Onboarding modal -->
+<div class="onboarding-overlay" *ngIf="showOnboarding" (click)="closeOnboarding()">
+  <div class="onboarding-box" (click)="$event.stopPropagation()">
+
+    <div class="onboarding-header">
+      <div class="onboarding-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <h2 class="onboarding-title">Dobrodošli na Partnerko!</h2>
+      <p class="onboarding-sub">Kratak pregled kako funkcioniše aplikacija.</p>
+    </div>
+
+    <div class="onboarding-steps">
+
+      <div class="onboarding-step">
+        <div class="step-icon step-icon--blue">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+          </svg>
+        </div>
+        <div class="step-body">
+          <span class="step-title">Robni i finansijski partneri</span>
+          <span class="step-desc">
+            U sistem možete unositi robne i finansijske partnere i pratiti njihovo stanje kroz projekat.
+          </span>
+        </div>
+      </div>
+
+      <div class="onboarding-step">
+        <div class="step-icon step-icon--green">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+          </svg>
+        </div>
+        <div class="step-body">
+          <span class="step-title">Dodavanje i kreiranje kompanija</span>
+          <span class="step-desc">
+            Možete dodati kompaniju koja već postoji u sistemu iz prethodnih iteracija ili kreirati potpuno novu kompaniju i odmah je povezati sa trenutnom iteracijom.
+          </span>
+        </div>
+      </div>
+
+      <div class="onboarding-step">
+        <div class="step-icon step-icon--purple">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+          </svg>
+        </div>
+        <div class="step-body">
+          <span class="step-title">Detalji i status partnera</span>
+          <span class="step-desc">
+            Klikom na dugme <strong>Detaljnije</strong> možete videti dodatne informacije o partneru i pratiti njegovo stanje.
+          </span>
+        </div>
+      </div>
+
+      <div class="onboarding-step">
+        <div class="step-icon step-icon--orange">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+          </svg>
+        </div>
+        <div class="step-body">
+          <span class="step-title">Promo materijali</span>
+          <span class="step-desc">
+            Koordinatori imaju mogućnost da postavljaju i pregledaju promo materijale vezane za kompanije.
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="onboarding-cta" (click)="closeOnboarding()">Počni sa radom</button>
 
   </div>
 </div>

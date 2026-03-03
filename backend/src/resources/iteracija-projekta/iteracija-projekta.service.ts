@@ -6,6 +6,7 @@ import { IteracijaProjekta } from './entities/iteracija-projekta.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { NazivProjekta } from 'src/enums/naziv-projekta';
 import { KompanijaIteracija } from '../kompanija-iteracija/entities/kompanija-iteracija.entity';
+import { Kompanija } from '../kompanija/entities/kompanija.entity';
 import { TipPartnera } from 'src/enums/tip-partnera';
 import { BatchKompanijaIteracijaDto } from './dto/batch-kompanija-iteracija.dto';
 
@@ -15,6 +16,7 @@ export class IteracijaProjektaService {
   constructor(
     @InjectRepository(IteracijaProjekta) private readonly iteracijaProjektaRepository: Repository<IteracijaProjekta>,
     @InjectRepository(KompanijaIteracija) private readonly kompanijaIteracijaRepository: Repository<KompanijaIteracija>,
+    @InjectRepository(Kompanija) private readonly kompanijaRepository: Repository<Kompanija>,
   ) {}
   
   create(createIteracijaProjektaDto: CreateIteracijaProjektaDto) {
@@ -57,6 +59,50 @@ export class IteracijaProjektaService {
       }),
     );
     return await this.kompanijaIteracijaRepository.save(records);
+  }
+
+  async findDostupne(iteracijaId: number, tipPartnera: TipPartnera) {
+    const vecDodane = await this.kompanijaIteracijaRepository.find({
+      where: { iteracija_id: iteracijaId, tip_partnera: tipPartnera },
+      select: ['kompanija_id'],
+    });
+    const dodaneIds = vecDodane.map(ki => ki.kompanija_id);
+
+    const qb = this.kompanijaRepository
+      .createQueryBuilder('k')
+      .where('k.tip = :tip', { tip: tipPartnera })
+      .orderBy('k.naziv', 'ASC');
+
+    if (dodaneIds.length > 0) {
+      qb.andWhere('k.id NOT IN (:...ids)', { ids: dodaneIds });
+    }
+    const kompanije = await qb.getMany();
+
+    if (kompanije.length === 0) return [];
+
+    const kompanijaIds = kompanije.map(k => k.id);
+
+    const stats = await this.kompanijaIteracijaRepository
+      .createQueryBuilder('ki')
+      .select('ki.kompanija_id', 'kompanijaId')
+      .addSelect('COUNT(CASE WHEN ki.datum_cimanja IS NOT NULL THEN 1 END)', 'brojCimanja')
+      .addSelect('COUNT(CASE WHEN ki.odobrena = true THEN 1 END)', 'brojOdobravanja')
+      .addSelect('COUNT(CASE WHEN ki.odobrena = false THEN 1 END)', 'brojOdbijanja')
+      .where('ki.kompanija_id IN (:...ids)', { ids: kompanijaIds })
+      .groupBy('ki.kompanija_id')
+      .getRawMany();
+
+    const statsMap = new Map(stats.map(s => [Number(s.kompanijaId), s]));
+
+    return kompanije.map(k => {
+      const s = statsMap.get(k.id);
+      return {
+        ...k,
+        brojCimanja: Number(s?.brojCimanja ?? 0),
+        brojOdobravanja: Number(s?.brojOdobravanja ?? 0),
+        brojOdbijanja: Number(s?.brojOdbijanja ?? 0),
+      };
+    });
   }
 
   async findKompanije(iteracijaId: number, tipPartnera: TipPartnera, status?: string) {

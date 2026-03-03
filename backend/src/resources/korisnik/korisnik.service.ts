@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateKorisnikDto } from './dto/create-korisnik.dto';
 import { UpdateKorisnikDto } from './dto/update-korisnik.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 import { TipKorisnika } from 'src/enums/tip-korisnika';
 import { KorisnikIteracija } from '../korisnik-iteracija/entities/korisnik-iteracija.entity';
 import { IteracijaProjekta } from '../iteracija-projekta/entities/iteracija-projekta.entity';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class KorisnikService {
@@ -22,7 +21,10 @@ export class KorisnikService {
   async create(createKorisnikDto: CreateKorisnikDto) {
 
     const { iteracija_id, ...korisnikData } = createKorisnikDto;
-    korisnikData.lozinka = await bcrypt.hash(korisnikData.lozinka, 10);
+
+    const existing = await this.korisnikRepository.findOneBy({ username: korisnikData.username });
+    if (existing) throw new ConflictException('Korisnik je već kreiran u bazi.');
+
     const korisnik = this.korisnikRepository.create(korisnikData);
 
     // Ako nije admin

@@ -2,20 +2,11 @@
   <la-partneri-menu></la-partneri-menu>
 
   <div class="content">
+
+
+
     <div class="header">
       <h2>Članovi</h2>
-    </div>
-
-    <!-- Project tabs -->
-    <div class="project-tabs">
-      <button
-        *ngFor="let p of projekti"
-        class="project-tab"
-        [class.active]="selectedProjekat?.naziv === p.naziv"
-        (click)="selectProjekat(p)">
-        {{ p.label }}
-        <span class="tab-godina" *ngIf="p.iteracija">{{ p.iteracija.godina }}</span>
-      </button>
     </div>
 
     <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
@@ -23,11 +14,23 @@
 
     <ng-container *ngIf="selectedProjekat">
 
-      <!-- Current members -->
+
       <div class="section-header">
         <h3>Trenutni članovi</h3>
-        <button class="primary-btn" (click)="openKreirajModal()" [disabled]="!iteracijaId">
+
+        <button class="primary-btn" (click)="openKreirajModal()">
           + Kreiraj novog korisnika
+        </button>
+      </div>
+
+      <div class="project-tabs">
+        <button
+          *ngFor="let p of projekti"
+          class="project-tab"
+          [class.active]="selectedProjekat?.naziv === p.naziv"
+          (click)="selectProjekat(p)">
+          {{ p.label }}
+          <span class="tab-godina" *ngIf="p.iteracija">{{ p.iteracija.godina }}</span>
         </button>
       </div>
 
@@ -46,10 +49,10 @@
         </div>
       </div>
 
-      <div class="divider"></div>
+      <!-- <div class="divider"></div>
 
-      <!-- Add existing user -->
-      <div class="section">
+       Add existing user -->
+      <!-- <div class="section">
         <h3>Dodaj postojećeg korisnika</h3>
         <div class="add-existing-row">
           <select class="select-input" [(ngModel)]="selectedKorisnikId">
@@ -65,7 +68,7 @@
         <p class="empty-msg" *ngIf="dostupniKorisnici.length === 0 && sviKorisnici.length > 0">
           Svi korisnici su već dodati na ovu iteraciju.
         </p>
-      </div>
+      </div> -->
 
     </ng-container>
   </div>

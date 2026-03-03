@@ -2,7 +2,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   Param,
   Post,
   Query,
@@ -14,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { Roles } from 'src/auth/roles.decorator';
+import { TipKorisnika } from 'src/enums/tip-korisnika';
 import { MaterijaliService } from './materijali.service';
 import { CreateMaterijaliDto } from './dto/create-materijali.dto';
 
@@ -21,15 +22,15 @@ import { CreateMaterijaliDto } from './dto/create-materijali.dto';
 export class MaterijaliController {
   constructor(private readonly materijaliService: MaterijaliService) {}
 
+  @Roles(TipKorisnika.ADMIN, TipKorisnika.KOORDINATOR)
   @Post()
   @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
   async upload(
     @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateMaterijaliDto,
-    @Headers('authorization') authHeader: string,
   ) {
     if (!file) throw new BadRequestException('Fajl je obavezan.');
-    return this.materijaliService.uploadMaterijal(file, body.kompanija_id, authHeader);
+    return this.materijaliService.uploadMaterijal(file, body.kompanija_id);
   }
 
   @Get()
@@ -42,17 +43,16 @@ export class MaterijaliController {
     return this.materijaliService.findKompanije();
   }
 
+  @Roles(TipKorisnika.ADMIN)
   @Post('sync-tags')
   @HttpCode(200)
-  syncTags(@Headers('authorization') authHeader: string) {
-    return this.materijaliService.syncTags(authHeader);
+  syncTags() {
+    return this.materijaliService.syncTags();
   }
 
+  @Roles(TipKorisnika.ADMIN, TipKorisnika.KOORDINATOR)
   @Delete(':id')
-  remove(
-    @Param('id') id: string,
-    @Headers('authorization') authHeader: string,
-  ) {
-    return this.materijaliService.remove(+id, authHeader);
+  remove(@Param('id') id: string) {
+    return this.materijaliService.remove(+id);
   }
 }
