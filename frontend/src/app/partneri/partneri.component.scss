@@ -13,8 +13,6 @@
   background: var(--bg);
 }
 
-// ─── Topbar ──────────────────────────────────────────────────────────────────
-
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -182,8 +180,6 @@
   }
 }
 
-// ─── Iteration switcher ───────────────────────────────────────────────────────
-
 .iteracija-switcher {
   display: flex;
   align-items: center;
@@ -240,8 +236,6 @@
     }
   }
 }
-
-// ─── List ─────────────────────────────────────────────────────────────────────
 
 .list-container {
   overflow: hidden;
@@ -415,8 +409,6 @@
   transition: border-color 0.12s, color 0.12s, background 0.12s;
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
-
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -460,8 +452,6 @@
   font-size: 13px;
   color: var(--text-muted);
 }
-
-// ─── Onboarding modal ─────────────────────────────────────────────────────────
 
 .onboarding-overlay {
   position: fixed;

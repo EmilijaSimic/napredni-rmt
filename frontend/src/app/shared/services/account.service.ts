@@ -10,7 +10,6 @@ export class AccountService {
   user: UserMeModel = {} as UserMeModel;
 
   private readonly API_ENDPOINT: string = `${environment.apiUrl}/accounts`;
-  // httpDirect bypasses interceptors — used for refresh to avoid infinite loop
   private readonly httpDirect: HttpClient;
 
   constructor(private http: HttpClient, handler: HttpBackend) {
@@ -65,7 +64,6 @@ export class AccountService {
       const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
       if (payload.exp * 1000 > Date.now()) return true;
     } catch {}
-    // Access token expired — still authenticated if refresh token exists (interceptor will refresh)
     return localStorage.getItem(LS_REFRESH_TOKEN) != null;
   }
 

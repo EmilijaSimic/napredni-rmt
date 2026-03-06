@@ -1,4 +1,3 @@
-// Referenced from https://github.com/moff/angular2-ladda/blob/master/projects/ladda/src/lib/ladda.module.ts
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { LaddaConfig, LaddaConfigArgs } from './ladda-config';

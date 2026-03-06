@@ -86,11 +86,9 @@ export class AccountsService {
   async logout(userId: number, jti: string, exp: number) {
     await this.korisnikRepository.update(userId, { refresh_token: null });
 
-    // Blacklist the current access token until it naturally expires
     const expiresAt = new Date(exp * 1000);
     await this.blacklistedTokenRepository.save({ jti, expiresAt });
 
-    // Clean up already-expired blacklist entries
     await this.blacklistedTokenRepository
       .createQueryBuilder()
       .delete()

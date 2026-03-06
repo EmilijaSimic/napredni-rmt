@@ -5,7 +5,6 @@ import { create as createLadda, LaddaButton } from 'ladda';
 
 import { configAttributes, LaddaConfig, LaddaConfigArgs } from './ladda-config';
 
-// Referenced from https://github.com/moff/angular2-ladda/blob/master/projects/ladda/src/lib/ladda.directive.ts
 export type LaddaValue = boolean | number | undefined | null;
 
 @Directive({
@@ -30,16 +29,14 @@ export class LaddaDirective implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    // apply default styles if they aren't overwritten by an attribute
     for (const attribute in configAttributes) {
       const configValue = config[configAttributes[attribute]];
 
       if (!configValue) {
-        continue; // don't waste time reading the attribute
+        continue;
       }
 
       if (!this.el.getAttribute(attribute)) {
-        // attribute isn't set - apply the default config value
         const value = (typeof configValue === 'number') ? configValue.toString() : configValue;
         this.el.setAttribute(attribute, value);
       }
@@ -48,7 +45,7 @@ export class LaddaDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (!this.ladda) {
-      return; // needed since ngOnChanges is called before ngOnInit
+      return;
     }
 
     if (changes.loading) {
@@ -67,8 +64,6 @@ export class LaddaDirective implements OnInit, OnDestroy, OnChanges {
 
     this.ladda = createLadda(this.el);
 
-    // if the initial loading value isn't false, a timeout of 0 ms
-    // is necessary for the calculated spinner size to be correct.
     setTimeout(() => { this.updateLadda(false); }, 0);
   }
 

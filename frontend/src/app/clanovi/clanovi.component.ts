@@ -68,7 +68,6 @@ export class ClanoviComponent implements OnInit {
       };
       this.projekti.forEach(p => p.iteracija = map[p.naziv]);
 
-      // Pre-select project from route if available
       this.route.params.subscribe(params => {
         const idFromRoute = +params['id'];
         const match = this.projekti.find(p => p.iteracija?.id === idFromRoute);

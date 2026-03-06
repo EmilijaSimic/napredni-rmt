@@ -111,7 +111,6 @@
   }
 }
 
-// #region Hover state
 :host:hover::ng-deep {
   mat-select {
     color: var(--default);
@@ -131,7 +130,6 @@
     color: var(--default) !important;
   }
 
-  // #region Hover and Invalid state
   .mat-mdc-form-field.ng-invalid.ng-dirty {
     mat-select {
       border-color: var(--negative) !important;
@@ -147,26 +145,21 @@
     }
   }
 
-  // #endregion
 
-  // #region Hover and ReadOnly state
   .mat-mdc-form-field.field-readonly:not(.date-picker) {
     .mat-form-field-label-wrapper .mat-form-field-label {
       color: var(--default-40) !important;
     }
   }
 
-  // #region Hover and Disabled state
   .mat-mdc-form-field.field-disabled {
     .mat-form-field-label-wrapper .mat-form-field-label {
       color: var(--default-40) !important;
     }
   }
 
-  // #endregion
 }
 
-// #endregion
 
 :host::ng-deep {
   .mat-mdc-select-trigger {
@@ -253,7 +246,6 @@
     }
   }
 
-  // #region Default state
   .mat-mdc-form-field {
     top: 0;
     width: 100%;
@@ -307,11 +299,8 @@
     }
   }
 
-  // #endregion
 
-  // #region Invalid state
   .mat-mdc-form-field.ng-invalid.ng-dirty {
-    // #region Invalid and focused state
     &.mat-focused {
       .mat-form-field-label-wrapper .mat-form-field-label {
         color: var(--negative) !important;
@@ -327,7 +316,6 @@
       }
     }
 
-    // #endregion
 
     .mat-form-field-label-wrapper .mat-form-field-label {
       color: var(--negative-20) !important;
@@ -343,9 +331,7 @@
     }
   }
 
-  // #endregion
 
-  // #region Focused state
   .mat-mdc-form-field.mat-focused {
     .mat-form-field-label {
       color: var(--default) !important;
@@ -356,9 +342,7 @@
     }
   }
 
-  // #endregion
 
-  // #region No Label
   .mat-mdc-form-field.no-label {
     .mat-form-field-infix {
       padding-top: 0;
@@ -378,9 +362,7 @@
     }
   }
 
-  // #endregion
 
-  // #region Field readonly
   .mat-mdc-form-field.field-readonly:not(.date-picker) {
     .mat-mdc-form-field-icon-prefix pt-icon i,
     .mat-mdc-form-field-icon-suffix pt-icon i {
@@ -388,9 +370,7 @@
     }
   }
 
-  // #endregion
 
-  // #region Field disabled
   .mat-mdc-form-field.field-disabled {
     .mat-mdc-form-field-icon-prefix pt-icon i,
     .mat-mdc-form-field-icon-suffix pt-icon i {
@@ -398,9 +378,7 @@
     }
   }
 
-  // #endregion
 
-  // #region Prefix/Sufix default state
   .mat-mdc-form-field-icon-prefix,
   .mat-mdc-form-field-icon-suffix {
     position: absolute;
@@ -423,13 +401,10 @@
     right: 17px;
   }
 
-  // #endregion
 
-  // #region Error default state
   .mat-form-field-subscript-wrapper {
     top: 100%;
     margin-top: 1px;
   }
 
-  // #endregion
 }

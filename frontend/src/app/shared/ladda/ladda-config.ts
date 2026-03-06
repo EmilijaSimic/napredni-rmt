@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-// Referenced from https://github.com/moff/angular2-ladda/blob/master/projects/ladda/src/lib/ladda-config.ts
-
 export type LaddaStyle =
   'expand-left' | 'expand-right' | 'expand-up' | 'expand-down' |
   'contract' | 'contract-overlay' | 'zoom-in' | 'zoom-out' |

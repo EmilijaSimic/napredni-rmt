@@ -11,7 +11,6 @@ const AppDataSource = new DataSource({
   synchronize: false,
 });
 
-// ─── Finansijski partneri ─────────────────────────────────────────────────────
 const finansijskiPartneri = [
   { naziv: 'Banca Intesa Beograd',  websajt: 'https://www.bancaintesa.rs',          kontakt: 'info@bancaintesa.rs' },
   { naziv: 'Raiffeisen Banka',      websajt: 'https://www.raiffeisenbank.rs',        kontakt: 'kontakt@raiffeisenbank.rs' },
@@ -30,7 +29,6 @@ const finansijskiPartneri = [
   { naziv: 'MK Group',              websajt: 'https://www.mkgroup.rs',              kontakt: 'info@mkgroup.rs' },
 ];
 
-// ─── Robni partneri ───────────────────────────────────────────────────────────
 const robniPartneri = [
   { naziv: 'Stark',                 websajt: 'https://www.stark.rs',                kontakt: 'info@stark.rs' },
   { naziv: 'Bambi',                 websajt: 'https://www.bambi.rs',                kontakt: 'info@bambi.rs' },
@@ -52,12 +50,10 @@ const robniPartneri = [
 async function seed() {
   await AppDataSource.initialize();
 
-  // ─── Clear company data ──────────────────────────────────────────────────────
   await AppDataSource.query(`DELETE FROM kompanija_iteracija`);
   await AppDataSource.query(`DELETE FROM kompanija`);
   console.log('Obrisani svi partneri i veze.');
 
-  // ─── Seed finansijski partneri ───────────────────────────────────────────────
   for (const k of finansijskiPartneri) {
     await AppDataSource.query(
       `INSERT INTO kompanija (naziv, websajt, kontakt, tip) VALUES ($1, $2, $3, $4)`,
@@ -66,7 +62,6 @@ async function seed() {
     console.log(`  [finansijski] ${k.naziv}`);
   }
 
-  // ─── Seed robni partneri ─────────────────────────────────────────────────────
   for (const k of robniPartneri) {
     await AppDataSource.query(
       `INSERT INTO kompanija (naziv, websajt, kontakt, tip) VALUES ($1, $2, $3, $4)`,
@@ -75,7 +70,6 @@ async function seed() {
     console.log(`  [robni]       ${k.naziv}`);
   }
 
-  // ─── Seed users ──────────────────────────────────────────────────────────────
   const users = [
     { username: 'admin',     lozinka: 'admin123',     ime: 'Admin', prezime: 'Korisnik', tip: 'admin' },
     { username: 'kompanija', lozinka: 'kompanija123', ime: 'Test',  prezime: 'Kompanija', tip: 'kompanija' },

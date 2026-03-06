@@ -51,6 +51,6 @@ export class ProjektiComponent implements OnInit {
   }
 
   goToProject(id: number) {
-    this.router.navigate([`projekat/${id}/robni-partneri`]);
+    this.router.navigate([`projekat/${id}/pocetna`]);
   }
 }

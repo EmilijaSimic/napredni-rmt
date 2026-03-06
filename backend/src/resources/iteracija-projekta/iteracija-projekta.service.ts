@@ -82,17 +82,36 @@ export class IteracijaProjektaService {
 
     const kompanijaIds = kompanije.map(k => k.id);
 
-    const stats = await this.kompanijaIteracijaRepository
-      .createQueryBuilder('ki')
-      .select('ki.kompanija_id', 'kompanijaId')
-      .addSelect('COUNT(CASE WHEN ki.datum_cimanja IS NOT NULL THEN 1 END)', 'brojCimanja')
-      .addSelect('COUNT(CASE WHEN ki.odobrena = true THEN 1 END)', 'brojOdobravanja')
-      .addSelect('COUNT(CASE WHEN ki.odobrena = false THEN 1 END)', 'brojOdbijanja')
-      .where('ki.kompanija_id IN (:...ids)', { ids: kompanijaIds })
-      .groupBy('ki.kompanija_id')
-      .getRawMany();
+    const [stats, napomenaRows] = await Promise.all([
+      this.kompanijaIteracijaRepository
+        .createQueryBuilder('ki')
+        .select('ki.kompanija_id', 'kompanijaId')
+        .addSelect('COUNT(CASE WHEN ki.datum_cimanja IS NOT NULL THEN 1 END)', 'brojCimanja')
+        .addSelect('COUNT(CASE WHEN ki.odobrena = true THEN 1 END)', 'brojOdobravanja')
+        .addSelect('COUNT(CASE WHEN ki.odobrena = false THEN 1 END)', 'brojOdbijanja')
+        .where('ki.kompanija_id IN (:...ids)', { ids: kompanijaIds })
+        .groupBy('ki.kompanija_id')
+        .getRawMany(),
+
+      this.kompanijaIteracijaRepository
+        .createQueryBuilder('ki')
+        .select('ki.kompanija_id', 'kompanijaId')
+        .addSelect('ki.napomena', 'napomena')
+        .where('ki.kompanija_id IN (:...ids)', { ids: kompanijaIds })
+        .andWhere('ki.napomena IS NOT NULL')
+        .andWhere("ki.napomena <> ''")
+        .orderBy('ki.iteracija_id', 'ASC')
+        .getRawMany(),
+    ]);
 
     const statsMap = new Map(stats.map(s => [Number(s.kompanijaId), s]));
+
+    const napomeneMap = new Map<number, string[]>();
+    for (const row of napomenaRows) {
+      const id = Number(row.kompanijaId);
+      if (!napomeneMap.has(id)) napomeneMap.set(id, []);
+      napomeneMap.get(id)!.push(row.napomena);
+    }
 
     return kompanije.map(k => {
       const s = statsMap.get(k.id);
@@ -101,6 +120,7 @@ export class IteracijaProjektaService {
         brojCimanja: Number(s?.brojCimanja ?? 0),
         brojOdobravanja: Number(s?.brojOdobravanja ?? 0),
         brojOdbijanja: Number(s?.brojOdbijanja ?? 0),
+        napomene: napomeneMap.get(k.id) ?? [],
       };
     });
   }

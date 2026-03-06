@@ -28,8 +28,6 @@
   color: var(--text-muted);
 }
 
-// ─── Success banner ───────────────────────────────────────────────────────────
-
 .success-banner {
   display: flex;
   align-items: center;
@@ -130,8 +128,6 @@
   }
 }
 
-// ─── Created badge (in row) ───────────────────────────────────────────────────
-
 .created-badge {
   display: inline-flex;
   align-items: center;
@@ -211,8 +207,6 @@
   white-space: nowrap;
 }
 
-// ─── Year transition ─────────────────────────────────────────────────────────
-
 .row-years {
   display: flex;
   align-items: center;
@@ -248,8 +242,6 @@
   font-size: 13px;
   color: var(--text-muted);
 }
-
-// ─── Actions ─────────────────────────────────────────────────────────────────
 
 .row-actions {
   display: flex;

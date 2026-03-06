@@ -1,5 +1,3 @@
-// ─── Header ───────────────────────────────────────────────────────────────────
-
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -74,14 +72,10 @@
   }
 }
 
-// ─── Body ─────────────────────────────────────────────────────────────────────
-
 .modal-body {
   overflow: visible;
   padding: 20px 24px 38px;
 }
-
-// ─── Stats ────────────────────────────────────────────────────────────────────
 
 .stats-section {
   display: flex;
@@ -99,9 +93,20 @@
   flex: 1;
   gap: 2px;
 
-  &.stat-blue { background: #eff6ff; border-color: #bfdbfe; }
-  &.stat-green { background: #f0fdf4; border-color: #bbf7d0; }
-  &.stat-red { background: #fef2f2; border-color: #fecaca; }
+  &.stat-blue {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+  }
+
+  &.stat-green {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  &.stat-red {
+    background: #fef2f2;
+    border-color: #fecaca;
+  }
 }
 
 .stat-value {
@@ -138,8 +143,6 @@
   margin: 10px;
   background: #ffffff;
 }
-
-// ─── Form ─────────────────────────────────────────────────────────────────────
 
 .form-grid {
   display: grid;
@@ -186,8 +189,6 @@
 
   textarea { resize: none; }
 }
-
-// ─── Custom select ────────────────────────────────────────────────────────────
 
 .custom-select {
   position: relative;
@@ -261,11 +262,19 @@
   cursor: pointer;
   transition: background 0.1s;
 
-  &:hover { color: #2563eb; background: #eff6ff; }
-  &.empty { font-style: italic; color: #94a3b8; cursor: default; &:hover { background: transparent; } }
-}
+  &:hover {
+    color: #2563eb;
+    background: #eff6ff;
+  }
 
-// ─── Actions ──────────────────────────────────────────────────────────────────
+  &.empty {
+    font-style: italic;
+    color: #94a3b8;
+    cursor: default;
+
+    &:hover { background: transparent; }
+  }
+}
 
 .actions {
   display: flex;
@@ -286,7 +295,10 @@
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover { border-color: #94a3b8; color: #0f172a; }
+  &:hover {
+    border-color: #94a3b8;
+    color: #0f172a;
+  }
 }
 
 .primary-btn {
@@ -300,11 +312,26 @@
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); background: #1d4ed8; }
-  &:disabled { box-shadow: none; cursor: not-allowed; opacity: 0.5; }
+  &:hover {
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    background: #1d4ed8;
+  }
+
+  &:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

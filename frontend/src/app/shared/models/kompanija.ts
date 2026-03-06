@@ -15,6 +15,7 @@ export interface KompanijaResponseModel {
   ID: number;
   naziv: string;
   napomena: string;
+  napomene?: string[];
   websajt: string;
   kontakt: string;
   zaduzen: string;

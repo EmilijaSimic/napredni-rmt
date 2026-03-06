@@ -19,7 +19,6 @@ export class PromoMaterijaliComponent implements OnInit {
   isAdmin = false;
   isKoordinator = false;
 
-  // Admin/koordinator upload state
   kompanije: KompanijaBasicModel[] = [];
   selectedKompanijaId: number | null = null;
   selectedFile: File | null = null;
@@ -28,7 +27,6 @@ export class PromoMaterijaliComponent implements OnInit {
   uploadError = '';
   fileName = '';
 
-  // Shared state
   materijali: MaterijaliModel[] = [];
   searchTerm = '';
   selectedMaterial: MaterijaliModel | null = null;

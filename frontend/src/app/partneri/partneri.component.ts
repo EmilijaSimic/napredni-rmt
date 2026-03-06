@@ -61,7 +61,6 @@ export class PartneriComponent implements OnInit {
       this.tipPartnera = qParams['tipPartnera'];
       this.status = qParams['status'];
 
-      // Determine route segment for switching iterations
       const url = this.router.url;
       if (url.includes('robni-partneri')) this.routeSegment = 'robni-partneri';
       else if (url.includes('finansijski-partneri')) this.routeSegment = 'finansijski-partneri';

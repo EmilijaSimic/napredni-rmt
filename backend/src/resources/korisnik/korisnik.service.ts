@@ -27,7 +27,6 @@ export class KorisnikService {
 
     const korisnik = this.korisnikRepository.create(korisnikData);
 
-    // Ako nije admin
     if (korisnik.tip !== TipKorisnika.ADMIN) {
 
         if (!iteracija_id) {
@@ -54,7 +53,6 @@ export class KorisnikService {
         return sacuvanKorisnik;
     }
 
-    // admin slučaj
     return await this.korisnikRepository.save(korisnik);
   }
 

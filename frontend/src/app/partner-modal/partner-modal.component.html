@@ -20,7 +20,20 @@
     </div>
 
     <div *ngIf="otvorenoDetaljnije.has(k.ID)" class="detaljnije">
-      <p data-label="Napomena">{{ k.napomena }}</p>
+      <div class="detalji-stats">
+        <div class="stat-card stat-blue">
+          <span class="stat-value">{{ k.brojCimanja }}</span>
+          <span class="stat-label">Cimanja</span>
+        </div>
+        <div class="stat-card stat-green">
+          <span class="stat-value">{{ k.brojOdobravanja }}</span>
+          <span class="stat-label">Prihvatanja</span>
+        </div>
+        <div class="stat-card stat-red">
+          <span class="stat-value">{{ k.brojOdbijanja }}</span>
+          <span class="stat-label">Odbijanja</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

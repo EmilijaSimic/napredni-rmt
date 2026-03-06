@@ -33,7 +33,6 @@ export class AuthInterceptorService implements HttpInterceptor {
   private handle401(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const refreshToken = localStorage.getItem(LS_REFRESH_TOKEN);
 
-    // No refresh token or it's the refresh call itself failing → sign out
     if (!refreshToken || request.url.includes('/accounts/refresh')) {
       this.accountService.signOut();
       return throwError(() => new Error('Session expired'));
@@ -58,7 +57,6 @@ export class AuthInterceptorService implements HttpInterceptor {
       );
     }
 
-    // Another request is already refreshing — wait for it then retry
     return this.refreshSubject.pipe(
       filter(token => token !== null),
       take(1),

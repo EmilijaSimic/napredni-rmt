@@ -32,6 +32,12 @@ export const routes: Routes = [{
     canActivate: [AuthenticatedGuard]
   },
   {
+    path: 'projekat/:id/pocetna',
+    loadComponent: () =>
+      import('./pocetna/pocetna.component').then(c => c.PocetnaComponent),
+    canActivate: [AuthenticatedGuard, AdminGuard],
+  },
+  {
     path: 'projekat/:id/robni-partneri',
     loadComponent: () =>
       import('./partneri/partneri.component').then(c => c.PartneriComponent),

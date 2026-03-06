@@ -11,9 +11,9 @@ export interface UserLoginModel {
 }
 
 export interface UserMeModel extends UserInitialsModel {
-  id: string; // Guid → string
-  dateVerificationCodeExpires: string; // DateTime → ISO string
-  createdAt: string; // DateTime → ISO string
+  id: string;
+  dateVerificationCodeExpires: string;
+  createdAt: string;
 }
 
 export interface UserRegisterModel {

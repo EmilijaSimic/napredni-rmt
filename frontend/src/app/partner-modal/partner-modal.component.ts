@@ -48,6 +48,10 @@ export class PartnerModalComponent implements OnInit {
           datumPodsetnik: new Date(),
           datumPoziva: new Date(),
           odobreno: false,
+          brojCimanja: r.brojCimanja ?? 0,
+          brojOdobravanja: r.brojOdobravanja ?? 0,
+          brojOdbijanja: r.brojOdbijanja ?? 0,
+          napomene: r.napomene ?? [],
         }));
         this.loading = false;
       },
