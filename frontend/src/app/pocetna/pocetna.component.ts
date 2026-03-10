@@ -32,6 +32,10 @@ export class PocetnaComponent implements OnInit {
     const external = ['nova-iteracija', 'promo-materijali'];
     if (external.includes(path)) {
       this.router.navigate([`/${path}`]);
+    } else if (path === 'robni-partneri') {
+      this.router.navigate([`/projekat/${this.projekatId}/robni-partneri`], { queryParams: { tipPartnera: 'robni' } });
+    } else if (path === 'finansijski-partneri') {
+      this.router.navigate([`/projekat/${this.projekatId}/finansijski-partneri`], { queryParams: { tipPartnera: 'finansijski' } });
     } else {
       this.router.navigate([`/projekat/${this.projekatId}/${path}`]);
     }
