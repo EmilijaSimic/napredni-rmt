@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { NazivProjekta } from '../shared/enums/naziv-projekta.enum';
 import { IteracijaProjekta } from '../shared/models/iteracija-projekta';
@@ -39,33 +39,47 @@ export class NovaIteracijaComponent implements OnInit {
   constructor(
     private iteracijaService: IteracijaProjektaService,
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    forkJoin({
-      hakaton: this.iteracijaService.findLast(NazivProjekta.FON_HAKATON),
-      hzs:     this.iteracijaService.findLast(NazivProjekta.HZS),
-      s2s:     this.iteracijaService.findLast(NazivProjekta.S2S),
-      c2s:     this.iteracijaService.findLast(NazivProjekta.C2S),
-    }).subscribe({
-      next: ({ hakaton, hzs, s2s, c2s }) => {
-        const map: Record<NazivProjekta, IteracijaProjekta> = {
-          [NazivProjekta.FON_HAKATON]: hakaton,
-          [NazivProjekta.HZS]: hzs,
-          [NazivProjekta.S2S]: s2s,
-          [NazivProjekta.C2S]: c2s,
-        };
-        this.projekti.forEach(p => p.trenutna = map[p.naziv]);
-      },
-    });
+    const projekatId = this.route.snapshot.queryParamMap.get('projekatId');
+
+    if (projekatId) {
+      this.iteracijaService.findById(+projekatId).subscribe({
+        next: (iteracija) => {
+          this.projekti = this.projekti.filter(p => p.naziv === iteracija.naziv_projekta);
+          this.iteracijaService.findLast(iteracija.naziv_projekta).subscribe({
+            next: (poslednja) => this.projekti[0].trenutna = poslednja,
+          });
+        },
+      });
+    } else {
+      forkJoin({
+        hakaton: this.iteracijaService.findLast(NazivProjekta.FON_HAKATON),
+        hzs:     this.iteracijaService.findLast(NazivProjekta.HZS),
+        s2s:     this.iteracijaService.findLast(NazivProjekta.S2S),
+        c2s:     this.iteracijaService.findLast(NazivProjekta.C2S),
+      }).subscribe({
+        next: ({ hakaton, hzs, s2s, c2s }) => {
+          const map: Record<NazivProjekta, IteracijaProjekta> = {
+            [NazivProjekta.FON_HAKATON]: hakaton,
+            [NazivProjekta.HZS]: hzs,
+            [NazivProjekta.S2S]: s2s,
+            [NazivProjekta.C2S]: c2s,
+          };
+          this.projekti.forEach(p => p.trenutna = map[p.naziv]);
+        },
+      });
+    }
   }
 
   requestConfirm(projekat: ProjectCard): void {
     if (!projekat.trenutna) return;
     const ref = this.dialog.open(KreirajIteracijuModalComponent, {
       width: '420px',
-      data: { displayNaziv: projekat.displayNaziv, novaGodina: projekat.trenutna.godina + 1 },
+      data: { displayNaziv: projekat.displayNaziv, trenutnaGodina: projekat.trenutna.godina, novaGodina: projekat.trenutna.godina + 1 },
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) this.kreiraj(projekat);

@@ -11,7 +11,8 @@
     <!-- Success banner -->
     <div class="success-banner" *ngIf="lastCreated">
       <div class="banner-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12" />
         </svg>
       </div>
@@ -21,12 +22,13 @@
       </div>
       <button class="banner-nav-btn" (click)="idNaIteraciju(lastCreated)">
         Otvori iteraciju
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M13 6l6 6-6 6" />
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
         </svg>
       </button>
       <button class="banner-close" (click)="lastCreated = null">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18" />
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
@@ -36,7 +38,6 @@
     <div class="projekti-list">
       <div class="projekat-row" *ngFor="let p of projekti">
 
-        <!-- Identity -->
         <div class="row-identity">
           <div class="row-logo">
             <img [src]="p.image" [alt]="p.displayNaziv">
@@ -44,26 +45,23 @@
           <span class="row-naziv">{{ p.displayNaziv }}</span>
         </div>
 
-        <!-- Year transition -->
+
         <div class="row-years" *ngIf="p.trenutna">
           <span class="year-pill current">{{ p.trenutna.godina }}</span>
         </div>
         <span class="no-iteracija" *ngIf="!p.trenutna">Nema iteracija</span>
 
-        <!-- Actions -->
         <div class="row-actions">
           <p class="error-msg" *ngIf="p.error">{{ p.error }}</p>
 
-          <button
-            class="kreiraj-btn"
-            *ngIf="!p.createdId && p.trenutna"
-            [disabled]="p.isCreating"
+          <button class="kreiraj-btn" *ngIf="!p.createdId && p.trenutna" [disabled]="p.isCreating"
             (click)="requestConfirm(p)">
             {{ p.isCreating ? 'Kreiranje...' : 'Kreiraj novu iteraciju' }}
           </button>
 
           <span class="created-badge" *ngIf="p.createdId">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
             Kreirana {{ p.trenutna?.godina }}
