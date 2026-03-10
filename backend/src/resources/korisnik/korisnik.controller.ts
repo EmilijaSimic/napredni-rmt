@@ -1,4 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Roles } from 'src/auth/roles.decorator';
+import { TipKorisnika } from 'src/enums/tip-korisnika';
 import { KorisnikService } from './korisnik.service';
 import { CreateKorisnikDto } from './dto/create-korisnik.dto';
 import { UpdateKorisnikDto } from './dto/update-korisnik.dto';
@@ -7,6 +9,7 @@ import { UpdateKorisnikDto } from './dto/update-korisnik.dto';
 export class KorisnikController {
   constructor(private readonly korisnikService: KorisnikService) {}
 
+  @Roles(TipKorisnika.ADMIN)
   @Post()
   async create(@Body() createKorisnikDto: CreateKorisnikDto) {
     return await this.korisnikService.create(createKorisnikDto);
