@@ -11,7 +11,6 @@
 
 <div class="modal-body">
 
-  <!-- Stats -->
   <div class="stats-section">
     <div class="stat-card stat-blue">
       <span class="stat-value">{{ data.brojCimanja }}</span>
@@ -27,8 +26,6 @@
     </div>
   </div>
 
-  <!-- Company details -->
-  <!-- <p class="section-title">Podaci o kompaniji</p> -->
   <div class="form-grid">
 
     <div class="form-group full">
@@ -50,8 +47,6 @@
 
   <div class="section-divider"></div>
 
-  <!-- Iteration details -->
-  <!-- <p class="section-title">Detalji saradnje</p> -->
   <div class="form-grid">
 
     <div class="form-group">
@@ -61,7 +56,8 @@
           <span class="stanje-dot" [ngClass]="stanjeClass"></span>
           <span>{{ data.stanje }}</span>
           <svg class="arrow" viewBox="0 0 24 24">
-            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
         </div>
         <div class="select-options" *ngIf="stanjeDropdownOpen">
@@ -76,7 +72,8 @@
         <div class="select-display" (click)="toggleDropdown()">
           <span>{{ selectedKorisnikNaziv }}</span>
           <svg class="arrow" viewBox="0 0 24 24">
-            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
         </div>
         <div class="select-options" *ngIf="dropdownOpen">

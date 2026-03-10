@@ -28,8 +28,8 @@ export class PartneriMenuComponent implements OnInit {
   isAdmin = false;
   isKoordinator = false;
   isKompanija = false;
-  finansijskiOpen = true;
-  robniOpen = true;
+  finansijskiOpen = false;
+  robniOpen = false;
 
   constructor(
     private accountService: AccountService,
@@ -52,12 +52,18 @@ export class PartneriMenuComponent implements OnInit {
       }
     });
     const url = this.router.url;
-    this.finansijskiOpen = url.includes('finansijski');
-    this.robniOpen = url.includes('robni');
-    if (!this.finansijskiOpen && !this.robniOpen) {
-      this.finansijskiOpen = true;
-      this.robniOpen = true;
-    }
+    this.finansijskiOpen = url.includes('finansijski') || localStorage.getItem('nav_finansijski') === 'true';
+    this.robniOpen = url.includes('robni') || localStorage.getItem('nav_robni') === 'true';
+  }
+
+  toggleFinansijski(): void {
+    this.finansijskiOpen = !this.finansijskiOpen;
+    localStorage.setItem('nav_finansijski', String(this.finansijskiOpen));
+  }
+
+  toggleRobni(): void {
+    this.robniOpen = !this.robniOpen;
+    localStorage.setItem('nav_robni', String(this.robniOpen));
   }
 
   signOut() {

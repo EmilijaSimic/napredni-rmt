@@ -2,29 +2,19 @@
   <la-partneri-menu></la-partneri-menu>
 
   <div class="main-content">
-
-    <!-- Top bar -->
     <div class="topbar">
       <div class="topbar-left">
         <h1 class="page-title">Promo Materijali</h1>
-        <!-- <span class="results-count" *ngIf="materijali.length > 0">
-          {{ materijali.length }} fajl{{ materijali.length === 1 ? '' : 'ova' }}
-        </span> -->
       </div>
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 20 20" fill="none">
           <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.5" />
           <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
         </svg>
-        <input
-          type="text"
-          placeholder="Pretraži po kompaniji ili fajlu..."
-          [(ngModel)]="searchTerm"
+        <input type="text" placeholder="Pretraži po kompaniji ili fajlu..." [(ngModel)]="searchTerm"
           (input)="onSearch()">
       </div>
     </div>
-
-    <!-- Admin/koordinator upload card -->
     <div class="admin-card" *ngIf="isAdmin || isKoordinator">
       <div class="admin-card-header">
         <span class="admin-card-title">Dodaj materijal</span>
@@ -44,35 +34,31 @@
           <label class="file-pick">
             <input type="file" accept="image/*,video/*" (change)="onFileSelected($event)" hidden>
             <svg viewBox="0 0 24 24" fill="currentColor" class="pick-icon">
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.01l1.41 1.41L11 14.84V19h2v-4.16l1.59 1.59L16 15.01 12.01 11z" />
+              <path
+                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.01l1.41 1.41L11 14.84V19h2v-4.16l1.59 1.59L16 15.01 12.01 11z" />
             </svg>
             <span>{{ fileName || 'Odaberi fajl...' }}</span>
           </label>
         </div>
 
-        <button
-          class="upload-btn"
-          [disabled]="!selectedFile || !selectedKompanijaId || isUploading"
-          (click)="upload()">
+        <button class="upload-btn" [disabled]="!selectedFile || !selectedKompanijaId || isUploading" (click)="upload()">
           {{ isUploading ? 'Šalje se...' : 'Upload' }}
         </button>
       </div>
 
       <p class="upload-error" *ngIf="uploadError">{{ uploadError }}</p>
     </div>
-
-    <!-- Empty state -->
     <div class="empty-state" *ngIf="materijali.length === 0">
       <svg viewBox="0 0 64 64" fill="none" class="empty-icon">
         <rect x="8" y="12" width="48" height="36" rx="4" stroke="currentColor" stroke-width="2" />
-        <path d="M8 36l12-10 10 8 10-12 16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M8 36l12-10 10 8 10-12 16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
         <circle cx="22" cy="24" r="4" stroke="currentColor" stroke-width="2" />
       </svg>
       <p class="empty-title">Nema promo materijala</p>
       <p class="empty-sub" *ngIf="searchTerm">Pokušajte sa drugačijim pojmom za pretragu.</p>
     </div>
 
-    <!-- Company sections -->
     <div class="company-section" *ngFor="let grupa of materijaliPoKompaniji">
       <div class="section-head">
         <span class="co-name">{{ grupa.naziv }}</span>
@@ -86,10 +72,7 @@
           <div class="thumb" (click)="openMaterial(m)">
             <video *ngIf="isVideo(m.url)" [src]="m.url" class="media" muted></video>
             <img *ngIf="!isVideo(m.url)" [src]="m.url" [alt]="m.originalnoIme" class="media">
-            <button
-              *ngIf="isAdmin || isKoordinator"
-              class="card-delete-btn"
-              title="Obriši"
+            <button *ngIf="isAdmin || isKoordinator" class="card-delete-btn" title="Obriši"
               (click)="$event.stopPropagation(); confirmDelete(m.id)">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
@@ -110,26 +93,29 @@
   </div>
 </div>
 
-<!-- Lightbox -->
 <div class="lightbox" *ngIf="selectedMaterial" (click)="closeMaterial()">
   <div class="lightbox-box" (click)="$event.stopPropagation()">
 
     <div class="lightbox-header">
       <span class="lightbox-name">{{ selectedMaterial.originalnoIme }}</span>
       <div class="lightbox-actions">
-        <a [href]="selectedMaterial.url" target="_blank" class="lbox-btn" title="Otvori u novom tabu" (click)="$event.stopPropagation()">
+        <a [href]="selectedMaterial.url" target="_blank" class="lbox-btn" title="Otvori u novom tabu"
+          (click)="$event.stopPropagation()">
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" />
+            <path
+              d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" />
           </svg>
         </a>
-        <button *ngIf="isAdmin || isKoordinator" class="lbox-btn lbox-danger" title="Obriši" (click)="confirmDelete(selectedMaterial.id)">
+        <button *ngIf="isAdmin || isKoordinator" class="lbox-btn lbox-danger" title="Obriši"
+          (click)="confirmDelete(selectedMaterial.id)">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
           </svg>
         </button>
         <button class="lbox-btn lbox-close" title="Zatvori" (click)="closeMaterial()">
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
           </svg>
         </button>
       </div>
@@ -137,7 +123,8 @@
 
     <div class="lightbox-media-wrap">
       <video *ngIf="isVideo(selectedMaterial.url)" [src]="selectedMaterial.url" controls class="lightbox-media"></video>
-      <img *ngIf="!isVideo(selectedMaterial.url)" [src]="selectedMaterial.url" [alt]="selectedMaterial.originalnoIme" class="lightbox-media">
+      <img *ngIf="!isVideo(selectedMaterial.url)" [src]="selectedMaterial.url" [alt]="selectedMaterial.originalnoIme"
+        class="lightbox-media">
     </div>
 
     <div class="lightbox-footer" *ngIf="selectedMaterial.tags && selectedMaterial.tags.length > 0">
@@ -149,7 +136,6 @@
   </div>
 </div>
 
-<!-- Delete confirmation modal -->
 <div class="confirm-overlay" *ngIf="deleteTargetId !== null" (click)="cancelDelete()">
   <div class="confirm-box" (click)="$event.stopPropagation()">
     <div class="confirm-icon">

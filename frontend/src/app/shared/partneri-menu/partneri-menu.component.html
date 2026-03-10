@@ -20,7 +20,7 @@
 
     <ng-container *ngIf="!isKompanija">
       <div class="nav-group">
-        <button class="nav-title" (click)="finansijskiOpen = !finansijskiOpen">
+        <button class="nav-title" (click)="toggleFinansijski()">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
           </svg>
@@ -57,7 +57,7 @@
       <div class="nav-divider"></div>
 
       <div class="nav-group">
-        <button class="nav-title" (click)="robniOpen = !robniOpen">
+        <button class="nav-title" (click)="toggleRobni()">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.11.88 2 1.99 2H19c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
           </svg>
